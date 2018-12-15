@@ -1,0 +1,244 @@
+.field {
+    border: 0;
+    display: inline-flex;
+    padding: 0;
+    position: relative;
+    min-width: 0;
+    flex-direction: column;
+    vertical-align: top;
+    width: 200px;
+    margin-bottom: 8px;
+}
+
+.area {
+    width: 500px;
+}
+
+.number {}
+
+.search {}
+
+.text {}
+
+.number {}
+
+.password {}
+
+.image,
+.images {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.field label {
+    transition: color 200ms cubic-bezier(0.0, 0, 0.2, 1) 0ms, transform 200ms cubic-bezier(0.0, 0, 0.2, 1) 0ms;
+    top: 0;
+    left: 0;
+    position: absolute;
+    transform: translate(0, 24px) scale(1);
+    transform-origin: top left;
+    color: rgba(0, 0, 0, 0.54);
+    padding: 0;
+    font-size: 1rem;
+    font-family: "RobotoRegular", "Helvetica", "Arial", sans-serif;
+    line-height: 1;
+}
+
+.field label+.inputContainer {
+    margin-top: 16px;
+}
+
+.required label:after {
+    content: ' *';
+    vertical-align: text-top;
+}
+
+.inputContainer {
+    position: relative;
+    color: rgba(0, 0, 0, 0.87);
+    cursor: text;
+    display: inline-flex;
+    font-size: 1rem;
+    font-family: "RobotoRegular", "Helvetica", "Arial", sans-serif;
+    line-height: 1.1875em;
+    align-items: center;
+}
+
+.inputContainer:before {
+    left: 0;
+    right: 0;
+    bottom: 0;
+    content: "\00a0";
+    position: absolute;
+    transition: border-bottom-color 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.42);
+    pointer-events: none;
+}
+
+.inputContainer:after {
+    left: 0;
+    right: 0;
+    bottom: 0;
+    content: "";
+    position: absolute;
+    transform: scaleX(0);
+    transition: transform 200ms cubic-bezier(0.0, 0, 0.2, 1) 0ms;
+    border-bottom: 2px solid #2b7a77;
+    pointer-events: none;
+}
+
+.inputContainer input {
+    font: inherit;
+    color: currentColor;
+    width: 100%;
+    border: 0;
+    margin: 0;
+    padding: 6px 0 7px;
+    display: block;
+    min-width: 0;
+    box-sizing: content-box;
+    background: none;
+    -webkit-tap-highlight-color: transparent;
+    padding-top: 3px;
+}
+
+.inputContainer input::-webkit-input-placeholder,
+.inputContainer input::-moz-placeholder,
+.inputContainer input:-ms-input-placeholder {
+    color: transparent;
+}
+
+.inputContainer input:focus::-webkit-input-placeholder,
+.inputContainer input:focus::-moz-placeholder,
+.inputContainer input:focus:-ms-input-placeholder {
+    color: rgba(0, 0, 0, 0.5);
+}
+
+.image input,
+.images input {
+    height: 0;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    width: 0;
+}
+
+.image label,
+.images label {
+    height: 32px;
+    margin-bottom: 0;
+    margin-top: 0;
+    font-size: 13px;
+    display: block;
+    background: #2b7a77;
+    color: #fff;
+    border-radius: 2px;
+    font-weight: 500;
+    min-width: 88px;
+    padding: 5px 16px;
+    text-transform: uppercase;
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12), 0 3px 1px -2px rgba(0, 0, 0, .2);
+    transition: background .15s, box-shadow .3s, color .15s;
+    position: static;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    width: 165px;
+}
+
+.image label:hover,
+.images label:hover {
+    background: #21605e;
+}
+
+.image label .fileIcon,
+.images label .fileIcon {
+    width: 1.7em;
+    height: 1.7em;
+    stroke: currentColor;
+    fill: currentColor;
+    margin-left: 1.5em;
+    position: relative;
+    top: -2px;
+}
+
+.image .inputContainer,
+.image .inputContainer,
+.images .inputContainer,
+.images .inputContainer {
+    margin: 0 !important;
+}
+
+.image .inputContainer:before,
+.image .inputContainer:after,
+.images .inputContainer:before,
+.images .inputContainer:after {
+    content: "";
+    border: none;
+    position: static;
+}
+
+.image img {
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12), 0 3px 1px -2px rgba(0, 0, 0, .2);
+}
+
+.fileLoader {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fileLoaderBg {
+    background: #0000003d;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+}
+
+.area textarea {
+    resize: none;
+    padding: 0;
+    font: inherit;
+    color: currentColor;
+    width: 100%;
+    border: 0;
+    margin: 0;
+    display: block;
+    min-width: 0;
+    box-sizing: content-box;
+    background: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.inputContainer input:focus,
+.area textarea:focus {
+    outline: 0;
+}
+
+.field.focus label,
+.field.hasValue label {
+    transform: translate(0, 1.5px) scale(0.75);
+    transform-origin: top left;
+}
+
+.field.focus label {
+    color: #2b7a77;
+}
+
+.field.focus .inputContainer:after {
+    transform: scaleX(1);
+}
+
+.error label {
+    color: #f44336 !important;
+}
+
+.error .inputContainer:before,
+.error .inputContainer:after {
+    border-color: #f44336 !important;
+}

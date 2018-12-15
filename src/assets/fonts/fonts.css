@@ -1,0 +1,41 @@
+@font-face {
+    font-family: "SubHeader";
+    src: url(./new-art-deco.ttf) format("opentype");
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "CardTitle";
+    src: url(./unispace.ttf) format("opentype");
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Stars";
+    src: url(./unispace.ttf) format("opentype");
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "ModalTitle";
+    src: url(./unispace.ttf) format("opentype");
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "RobotoBold";
+    src: url(./Roboto-Bold.ttf) format("opentype");
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "RobotoRegular";
+    src: url(./Roboto-Regular.ttf) format("opentype");
+    font-weight: normal;
+    font-style: normal;
+}

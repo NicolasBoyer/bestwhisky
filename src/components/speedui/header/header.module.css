@@ -1,0 +1,18 @@
+.header {
+    background: #2b7a77;
+    height: 56px;
+    width: 100%;
+    box-shadow: 0 0 5px rgba(0, 0, 0, .5);
+    position: fixed;
+    left: 0;
+    top: 0;
+    padding: 0;
+    z-index: 500;
+    text-align: center;
+    /* transition: all .25s ease;
+    transform: translateZ(0); */
+}
+
+.header+* {
+    padding-top: 56px;
+}

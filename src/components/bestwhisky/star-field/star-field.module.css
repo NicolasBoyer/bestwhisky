@@ -1,0 +1,17 @@
+.infos {
+    margin-left: 1em;
+}
+
+.metas {
+    font-style: italic;
+    font-size: 95%;
+    font-weight: bold;
+}
+
+.price {
+    font-size: 95%;
+}
+
+.description {
+    margin-top: 0.2em;
+}
