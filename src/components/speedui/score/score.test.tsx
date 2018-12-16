@@ -1,14 +1,13 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import StarField from '.'
+import Score, { IScoreProps } from '.'
 // import StarField, { IStarFieldProps } from '.'
 
 it('renders without crashing', () => {
     const div = document.createElement('div')
-    // const props: IStarFieldProps = {
-
-    // }
-    // ReactDOM.render(<StarField {...props} />, div)
-    ReactDOM.render(<StarField />, div)
+    const props: IScoreProps = {
+        maxScore: 5
+    }
+    ReactDOM.render(<Score {...props} />, div)
     ReactDOM.unmountComponentAtNode(div)
 })

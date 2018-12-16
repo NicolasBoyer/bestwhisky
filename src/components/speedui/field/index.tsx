@@ -4,11 +4,12 @@ import Ink from 'react-ink'
 import { cloudinary } from '../../../tools/config'
 import Icon from '../icon'
 import Loader from '../loader'
+import Score from '../score'
 import Toast, { EToastType } from '../toast'
 import styles from './field.module.css'
 
 // TODO : Pensez à améliorer password et à finaliser les types non faits
-export enum EFieldType { text = 'text', area = 'area', number = 'number', password = 'password', search = 'search', email = 'email', url = 'url', image = 'image', images = 'images', video = 'video', videos = 'videos', checkbox = 'checkbox', radio = 'radio', select = 'select', color = 'color', date = 'date', range = 'range' }
+export enum EFieldType { text = 'text', area = 'area', number = 'number', password = 'password', search = 'search', email = 'email', url = 'url', image = 'image', images = 'images', video = 'video', videos = 'videos', checkbox = 'checkbox', radio = 'radio', select = 'select', color = 'color', date = 'date', range = 'range', note = 'note' }
 
 export interface IFieldProps {
     label: string
@@ -45,6 +46,9 @@ export default class Field extends React.Component<IFieldProps, IFieldStates> {
         const { isFileLoading, isToasCloseButton, isToastOpen, previewImage, toastAutoHideDuration, toastType, toastMessage } = this.state
         let input = null
         switch (type) {
+            case EFieldType.note:
+                input = <Score maxScore={5} />
+                break
             case EFieldType.image:
             case EFieldType.images:
                 const attributes: any = {}

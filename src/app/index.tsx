@@ -1,10 +1,12 @@
 import React, { Fragment } from 'react'
 import Whisky, { IWhiskyProps } from '../components/bestwhisky/whisky'
+import { EFieldType } from '../components/speedui/field'
 import Footer from '../components/speedui/footer'
+import { IFormInput } from '../components/speedui/form'
 import FormDialog, { EMode } from '../components/speedui/form-dialog'
 import Header from '../components/speedui/header'
 import SubHeader from '../components/speedui/sub-header'
-import { addWhiskyInputs } from '../tools/config'
+// import { addWhiskyInputs } from '../tools/config'
 import styles from './app.module.css'
 
 // TODO : A lier avec Firebase
@@ -90,6 +92,31 @@ const whiskiesJSON: IWhiskyProps[] = [
                 view: 'TextArea'
             }
         ]
+    }
+]
+
+// TODO : A passer dans config
+export const addWhiskyInputs: IFormInput[] = [
+    {
+        label: 'Nom',
+        name: 'name',
+        required: true,
+        type: EFieldType.text
+    },
+    {
+        label: 'Description',
+        name: 'description',
+        type: EFieldType.area
+    },
+    {
+        label: 'Choisir une image',
+        name: 'image',
+        type: EFieldType.image
+    },
+    {
+        label: 'Note',
+        name: 'note',
+        type: EFieldType.note
     }
 ]
 

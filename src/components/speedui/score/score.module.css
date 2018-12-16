@@ -1,0 +1,13 @@
+.score {
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+.note {
+    opacity: 0.5;
+}
+
+.note:hover,
+.note:hover~.note {
+    opacity: 1;
+}

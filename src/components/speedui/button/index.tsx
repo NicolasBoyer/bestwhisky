@@ -7,6 +7,9 @@ export enum EIconPosition { beforeLabel = 'beforeLabel', afterLabel = 'afterLabe
 
 export enum EVariant { fab = 'fab', outlined = 'outlined', contained = 'contained', rounded = 'rounded' }
 
+// TODO : large n'est pas fait !
+export enum ESize { small = 'small', normal = 'normal', large = 'large' }
+
 interface IButtonProps {
     label: string
     iconName?: string
@@ -14,6 +17,7 @@ interface IButtonProps {
     handleClick: (e: React.SyntheticEvent) => void
     variant?: EVariant
     className?: string
+    size?: ESize
 }
 
 // TODO : étudier la possibilité d'avoir des children et dans ce cas le lael serait sur aria-label
@@ -22,14 +26,14 @@ export default class Button extends React.Component<IButtonProps> {
     protected refButton: React.RefObject<HTMLButtonElement> = React.createRef()
 
     public render() {
-        const { className, iconName, iconPosition, label, variant } = this.props
+        const { className, iconName, iconPosition, label, size, variant } = this.props
         const icon = iconName && <Icon className={styles[iconPosition || ''] + ' ' + styles.icon} name={iconName} />
         const attributes: any = {}
         if (iconName && !iconPosition) {
             attributes['aria-label'] = label
         }
         return (
-            <button onBlur={this.onBlur} className={(variant ? styles[variant] : '') + ' ' + (!icon && !iconPosition ? styles.textButton : styles.iconButton) + ' ' + styles.light + ' ' + (className ? className : '')} onClick={this.action} {...attributes} type='button' tabIndex={0} ref={this.refButton}>
+            <button onBlur={this.onBlur} className={(size ? styles[size] : '') + ' ' + (variant ? styles[variant] : '') + ' ' + (!icon && !iconPosition ? styles.textButton : styles.iconButton) + ' ' + styles.light + ' ' + (className ? className : '')} onClick={this.action} {...attributes} type='button' tabIndex={0} ref={this.refButton}>
                 {(iconName && !iconPosition || iconName && iconPosition && iconPosition === EIconPosition.beforeLabel) && icon}
                 {(!iconName || iconName && iconPosition) && <span className={styles.label}>{label}</span>}
                 {(iconName && iconPosition && iconPosition === EIconPosition.afterLabel && label) && icon}

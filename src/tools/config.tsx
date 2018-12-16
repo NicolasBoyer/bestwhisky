@@ -13,22 +13,3 @@ export const cloudinary = {
 // export const signInputs: IFormInput[] = [
 
 // ]
-
-export const addWhiskyInputs: IFormInput[] = [
-    {
-        label: 'Nom',
-        name: 'name',
-        required: true,
-        type: EFieldType.text
-    },
-    {
-        label: 'Description',
-        name: 'description',
-        type: EFieldType.area
-    },
-    {
-        label: 'Choisir une image',
-        name: 'image',
-        type: EFieldType.image
-    }
-]

@@ -7,7 +7,6 @@ button {
     border: none;
     background: transparent;
     padding: 7px 8px;
-    min-width: 64px;
     font-size: 0.8125rem;
     min-height: 32px;
     min-width: 64px;
@@ -40,6 +39,10 @@ button {
     justify-content: center;
     align-items: center;
     user-select: none;
+}
+
+.small {
+    min-width: 32px;
 }
 
 .textButton:hover {
