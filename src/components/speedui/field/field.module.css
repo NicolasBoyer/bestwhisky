@@ -24,6 +24,8 @@
 
 .password {}
 
+.note {}
+
 .image,
 .images {
     width: 100%;
@@ -174,7 +176,9 @@
 .image .inputContainer:before,
 .image .inputContainer:after,
 .images .inputContainer:before,
-.images .inputContainer:after {
+.images .inputContainer:after,
+.note .inputContainer:before,
+.note .inputContainer:after {
     content: "";
     border: none;
     position: static;
@@ -221,12 +225,14 @@
 }
 
 .field.focus label,
-.field.hasValue label {
+.field.hasValue label,
+.note label {
     transform: translate(0, 1.5px) scale(0.75);
     transform-origin: top left;
 }
 
-.field.focus label {
+.field.focus label,
+.note label {
     color: #2b7a77;
 }
 

@@ -12,11 +12,7 @@ export interface IScoreProps {
 // }
 
 export default class Score extends React.Component<IScoreProps> {
-    // constructor(props: IWhiskyProps) {
-    //     super(props)
-    //     // this.state = {
-    //     // }
-    // }
+    protected refScore: React.RefObject<HTMLDivElement> = React.createRef()
 
     public render() {
         const { maxScore, minScore } = this.props
@@ -25,13 +21,24 @@ export default class Score extends React.Component<IScoreProps> {
             scores.push(i)
         }
         return (
-            <div className={styles.score}>
+            <div className={styles.score} ref={this.refScore}>
                 {scores.reverse().map((value) => <Button className={styles.note} key={value} label={'star_' + (value + 1)} iconName='star-full' handleClick={() => this.onChange(value + 1)} size={ESize.small} />)}
             </div>
         )
     }
 
     protected onChange(index: number) {
+        if (this.refScore.current) {
+            // TODO : a transformer en fonction pour l'edit
+            const buttons = this.refScore.current.childNodes
+            buttons.forEach((button, position) => {
+                if (index <= buttons.length - position - 1) {
+                    (button as HTMLElement).classList.remove(styles.selected)
+                } else {
+                    (button as HTMLElement).classList.add(styles.selected)
+                }
+            })
+        }
         console.log(index)
     }
 }

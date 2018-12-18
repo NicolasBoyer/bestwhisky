@@ -72,5 +72,4 @@ export default class Toast extends React.Component<IToastProps, IToastState> {
     }
 }
 
-// starField
 // firebase connexion
