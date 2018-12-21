@@ -3,9 +3,9 @@ import Button from '../button'
 import styles from './card.module.css'
 
 // tslint:disable-next-line:variable-name
-const Card = (props: { name: string, children?: any, loadMoreButton?: boolean, clickAction: (e: React.SyntheticEvent) => void }) => {
+const Card = (props: { name: string, className?: string, children?: any, loadMoreButton?: boolean, clickAction?: (e: React.SyntheticEvent) => void }) => {
     return (
-        <article className={styles.simple}>
+        <article className={(props.className ? (props.className + ' ') : '') + styles.simple}>
             <h2 className={styles.title}>
                 <span>{props.name}</span>
             </h2>

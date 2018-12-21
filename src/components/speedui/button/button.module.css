@@ -66,8 +66,8 @@ button {
     height: 1.7em;
     stroke: currentColor;
     fill: currentColor;
-    margin-top: -0.1em;
-    position: absolute;
+    /* margin-top: -0.1em; */
+    /* position: absolute; */
 }
 
 .textButton:focus:before,

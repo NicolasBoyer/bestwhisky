@@ -1,5 +1,6 @@
 import { Image } from 'cloudinary-react'
 import React from 'react'
+import Utils from '../../../tools/utils'
 import Card from '../../speedui/card'
 import Stars from '../stars'
 import styles from './whisky.module.css'
@@ -48,6 +49,6 @@ export default class Whisky extends React.Component<IWhiskyProps> {
     }
 
     protected showWhisky = (e: React.SyntheticEvent) => {
-        console.log(this.props.id)
+        console.log(Utils.slugify(this.props.name))
     }
 }

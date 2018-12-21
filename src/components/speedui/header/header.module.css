@@ -16,3 +16,39 @@
 .header+* {
     padding-top: 56px;
 }
+
+.header nav {
+    position: relative;
+    display: inline-block;
+    font-size: 100%;
+    user-select: none;
+    font-family: 'HeaderFont', Arial, Helvetica, sans-serif;
+}
+
+.header nav a {
+    display: inline-flex;
+    position: relative;
+    height: 56px;
+    line-height: 56px;
+    padding: 0 15px;
+    min-width: 50px;
+    border: none;
+    text-align: center;
+    background-color: hsla(0, 0%, 100%, 0);
+    text-decoration: none;
+    font-size: 10px;
+    color: #eee;
+    cursor: pointer;
+    align-items: center;
+    border-radius: 0;
+}
+
+.header nav a:hover {
+    background-color: hsla(0, 0%, 100%, .3);
+}
+
+.login svg {
+    width: 2.5em !important;
+    height: 2.5em !important;
+    margin-right: 1.2em;
+}

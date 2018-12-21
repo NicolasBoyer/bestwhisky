@@ -1,12 +1,12 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import Card from '.'
+import Home, { IHomeProps } from '.'
 
 it('renders without crashing', () => {
     const div = document.createElement('div')
-    const handleClick: (e: React.SyntheticEvent) => void = () => {
-        //
+    const props: IHomeProps = {
+        path: ''
     }
-    ReactDOM.render(<Card name='testname' clickAction={handleClick} />, div)
+    ReactDOM.render(<Home {...props} />, div)
     ReactDOM.unmountComponentAtNode(div)
 })

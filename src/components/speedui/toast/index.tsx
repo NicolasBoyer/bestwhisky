@@ -72,4 +72,4 @@ export default class Toast extends React.Component<IToastProps, IToastState> {
     }
 }
 
-// firebase connexion
+// TODO : firebase connexion
