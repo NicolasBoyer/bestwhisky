@@ -59,19 +59,20 @@ export default class SignUp extends React.Component<IAuthProps, any> {
         this.setState({ [field.id]: field.value, ['valid_' + field.id]: Utils.isValidField(field) })
     }
 
-    protected onSubmit = (e: React.SyntheticEvent) => {
-        console.log(this.state)
-        // const { username, email, passwordOne } = this.state;
-
-        // this.props.firebase
-        // .doCreateUserWithEmailAndPassword(email, passwordOne)
-        // .then(authUser => {
-        //     this.setState({ ...INITIAL_STATE });
-        // })
-        // .catch(error => {
-        //     this.setState({ error });
-        // });
-
+    protected onSubmit = async (e: React.SyntheticEvent) => {
+        if (this.props.firebase) {
+            const { username, email, passwordOne } = this.state
+            try {
+                const authUser = await this.props.firebase.doCreateUserWithEmailAndPassword(email, passwordOne)
+                this.setState({ ...this.initalStates })
+                console.log('success')
+            } catch (error) {
+                console.log('error')
+            }
+            // .catch(error => {
+            //     this.setState({ error });
+            // });
+        }
         e.preventDefault()
     }
 

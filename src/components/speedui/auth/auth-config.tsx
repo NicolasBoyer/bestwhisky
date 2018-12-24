@@ -8,7 +8,7 @@ import styles from './auth.module.css'
 export interface IAuthProps {
     path?: string
     // TODO : connection firebase
-    // firebase: Firebase | null
+    firebase: Firebase | null
 }
 
 export default abstract class Auth {
