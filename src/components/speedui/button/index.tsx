@@ -20,6 +20,7 @@ export interface IButtonProps {
     variant?: EVariant
     className?: string
     size?: ESize
+    disabled?: boolean
 }
 
 // TODO : étudier la possibilité d'avoir des children et dans ce cas le lael serait sur aria-label
@@ -28,10 +29,11 @@ export default class Button extends React.Component<IButtonProps> {
     protected refButton: React.RefObject<HTMLButtonElement> = React.createRef()
 
     public render() {
-        const { className, handleClick, iconName, iconPosition, label, size, variant } = this.props
+        const { className, disabled, handleClick, iconName, iconPosition, label, size, variant } = this.props
         const icon = iconName && <Icon className={styles[iconPosition || ''] + ' ' + styles.icon} name={iconName} />
         const attributes: any = {
             className: (size ? styles[size] : '') + ' ' + (variant ? styles[variant] : '') + ' ' + (!icon && !iconPosition ? styles.textButton : styles.iconButton) + ' ' + styles.light + ' ' + (className ? className : ''),
+            disabled,
             tabIndex: 0
         }
         const children = (
@@ -39,7 +41,7 @@ export default class Button extends React.Component<IButtonProps> {
                 {(iconName && !iconPosition || iconName && iconPosition && iconPosition === EIconPosition.beforeLabel) && icon}
                 {(!iconName || iconName && iconPosition) && <span className={styles.label}>{label}</span>}
                 {(iconName && iconPosition && iconPosition === EIconPosition.afterLabel && label) && icon}
-                <Ink />
+                {!disabled && <Ink />}
             </Fragment>
         )
         if (iconName && !iconPosition) {

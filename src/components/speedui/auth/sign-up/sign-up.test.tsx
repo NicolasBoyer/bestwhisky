@@ -1,12 +1,13 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import AuthForm, { EAuthType, IAuthFormProps } from '.'
+import SignUp from '.'
+import { IAuthProps } from '../auth-config'
 
 it('renders without crashing', () => {
     const div = document.createElement('div')
-    const props: IAuthFormProps = {
-        type: EAuthType.signin
+    const props: IAuthProps = {
+        firebase: null
     }
-    ReactDOM.render(<AuthForm {...props} />, div)
+    ReactDOM.render(<SignUp {...props} />, div)
     ReactDOM.unmountComponentAtNode(div)
 })

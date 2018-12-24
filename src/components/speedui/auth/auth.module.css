@@ -11,3 +11,13 @@
     margin-bottom: 1em;
     margin-top: 0.5em;
 }
+
+.extraSignin {
+    text-align: center;
+    font-size: 90%;
+}
+
+.extraSignin a {
+    position: relative;
+    text-decoration: none;
+}

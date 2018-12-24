@@ -1,10 +1,11 @@
 import { Router } from '@reach/router'
 import React from 'react'
 import Home from '../components/bestwhisky/home'
-import AuthForm, { EAuthType } from '../components/speedui/auth-form'
+import SignIn from '../components/speedui/auth/sign-in'
+import SignUp from '../components/speedui/auth/sign-up'
 import NotFound from '../components/speedui/not-found'
 
-export enum ERoutes { signin = 'signin', signup = 'signup' }
+export enum ERoutes { signin = '/signin', signup = '/signup' }
 
 // tslint:disable-next-line:variable-name
 const Routes = () => {
@@ -12,8 +13,8 @@ const Routes = () => {
         <Router>
             <NotFound default />
             <Home path='/' />
-            <AuthForm path={ERoutes.signin} type={EAuthType.signin} />
-            <AuthForm path={ERoutes.signup} type={EAuthType.signup} />
+            <SignIn path={ERoutes.signin} />
+            <SignUp path={ERoutes.signup} />
         </Router>
     )
 }

@@ -158,3 +158,13 @@ button {
 .hideFocus:focus:before {
     opacity: 0;
 }
+
+button[disabled] {
+    color: silver;
+    font-style: italic;
+    cursor: default;
+}
+
+button[disabled]:hover {
+    background: none;
+}

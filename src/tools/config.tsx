@@ -1,4 +1,5 @@
 export const cloudinary = {
     cloudName: 'elendil',
-    uploadPreset: 'bestwhisky'
+    uploadPreset: 'bestwhisky',
+    url: 'https://api.cloudinary.com/v1_1/'
 }
