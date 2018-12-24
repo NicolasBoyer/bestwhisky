@@ -1,0 +1,15 @@
+.score {
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+.note {
+    opacity: 0.3;
+    color: #eeb829;
+}
+
+.note:hover,
+.note:hover~.note,
+.selected {
+    opacity: 1;
+}

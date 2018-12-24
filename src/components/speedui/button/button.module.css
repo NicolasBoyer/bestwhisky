@@ -7,7 +7,6 @@ button {
     border: none;
     background: transparent;
     padding: 7px 8px;
-    min-width: 64px;
     font-size: 0.8125rem;
     min-height: 32px;
     min-width: 64px;
@@ -42,6 +41,10 @@ button {
     user-select: none;
 }
 
+.small {
+    min-width: 32px;
+}
+
 .textButton:hover {
     background-color: rgba(33, 150, 243, 0.08);
 }
@@ -63,8 +66,8 @@ button {
     height: 1.7em;
     stroke: currentColor;
     fill: currentColor;
-    margin-top: -0.1em;
-    position: absolute;
+    /* margin-top: -0.1em; */
+    /* position: absolute; */
 }
 
 .textButton:focus:before,
@@ -154,4 +157,14 @@ button {
 
 .hideFocus:focus:before {
     opacity: 0;
+}
+
+button[disabled] {
+    color: silver;
+    font-style: italic;
+    cursor: default;
+}
+
+button[disabled]:hover {
+    background: none;
 }

@@ -1,12 +1,13 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import Card from '.'
+import SignIn from '.'
+import { IAuthProps } from '../auth-config'
 
 it('renders without crashing', () => {
     const div = document.createElement('div')
-    const handleClick: (e: React.SyntheticEvent) => void = () => {
-        //
+    const props: IAuthProps = {
+        firebase: null
     }
-    ReactDOM.render(<Card name='testname' clickAction={handleClick} />, div)
+    ReactDOM.render(<SignIn {...props} />, div)
     ReactDOM.unmountComponentAtNode(div)
 })

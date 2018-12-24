@@ -3,7 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@reach/router": "^1.2.1",
+    "@types/reach__router": "^1.2.2",
     "cloudinary-react": "^1.0.6",
+    "firebase": "^5.7.0",
     "focus-trap-react": "^4.0.1",
     "react": "^16.6.3",
     "react-dom": "^16.6.3",

@@ -2,13 +2,15 @@ import { Image } from 'cloudinary-react'
 import React from 'react'
 import Ink from 'react-ink'
 import { cloudinary } from '../../../tools/config'
+import Utils from '../../../tools/utils'
 import Icon from '../icon'
 import Loader from '../loader'
+import Score from '../score'
 import Toast, { EToastType } from '../toast'
 import styles from './field.module.css'
 
 // TODO : Pensez à améliorer password et à finaliser les types non faits
-export enum EFieldType { text = 'text', area = 'area', number = 'number', password = 'password', search = 'search', email = 'email', url = 'url', image = 'image', images = 'images', video = 'video', videos = 'videos', checkbox = 'checkbox', radio = 'radio', select = 'select', color = 'color', date = 'date', range = 'range' }
+export enum EFieldType { text = 'text', area = 'area', number = 'number', password = 'password', search = 'search', email = 'email', url = 'url', image = 'image', images = 'images', video = 'video', videos = 'videos', checkbox = 'checkbox', radio = 'radio', select = 'select', color = 'color', date = 'date', range = 'range', note = 'note' }
 
 export interface IFieldProps {
     label: string
@@ -45,6 +47,9 @@ export default class Field extends React.Component<IFieldProps, IFieldStates> {
         const { isFileLoading, isToasCloseButton, isToastOpen, previewImage, toastAutoHideDuration, toastType, toastMessage } = this.state
         let input = null
         switch (type) {
+            case EFieldType.note:
+                input = <Score maxScore={5} />
+                break
             case EFieldType.image:
             case EFieldType.images:
                 const attributes: any = {}
@@ -114,10 +119,7 @@ export default class Field extends React.Component<IFieldProps, IFieldStates> {
             if (this.refInput.current && this.refInput.current.value !== '') {
                 this.refRoot.current.classList.add(styles.hasValue)
                 // Email / pattern / url validation
-                const validRegExp = this.props.pattern && new RegExp(this.props.pattern)
-                const validUrl = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/gm
-                const validEmail = /(?!.*\.{2})^([a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+(\.[a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+)*|"((([ \t]*\r\n)?[ \t]+)?([\x01-\x08\x0b\x0c\x0e-\x1f\x7f\x21\x23-\x5b\x5d-\x7e\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|\\[\x01-\x09\x0b\x0c\x0d-\x7f\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))*(([ \t]*\r\n)?[ \t]+)?")@(([a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.)+([a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.?$/i
-                if (!validEmail.test(this.refInput.current.value) && this.props.type === EFieldType.email || validRegExp && !validRegExp.test(this.refInput.current.value) || !validUrl.test(this.refInput.current.value) && this.props.type === EFieldType.url) {
+                if (!Utils.isValidField(this.refInput.current)) {
                     this.refRoot.current.classList.add(styles.error)
                 } else {
                     this.refRoot.current.classList.remove(styles.error)
@@ -139,7 +141,7 @@ export default class Field extends React.Component<IFieldProps, IFieldStates> {
             this.setState({ isFileLoading: true })
             formData.append('upload_preset', cloudinary.uploadPreset)
             formData.append('file', file)
-            const response = await fetch('https://api.cloudinary.com/v1_1/' + cloudinary.cloudName + '/upload', { body: formData, method: 'POST' })
+            const response = await fetch(cloudinary.url + cloudinary.cloudName + '/upload', { body: formData, method: 'POST' })
             const success = await response.json()
             if (success.error) {
                 this.setState({ isToastOpen: true, toastMessage: 'Erreur : ' + success.error.message, toastType: EToastType.error, isToasCloseButton: true })

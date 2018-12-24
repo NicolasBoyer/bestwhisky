@@ -1,12 +1,9 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import Card from '.'
+import NotFound from '.'
 
 it('renders without crashing', () => {
     const div = document.createElement('div')
-    const handleClick: (e: React.SyntheticEvent) => void = () => {
-        //
-    }
-    ReactDOM.render(<Card name='testname' clickAction={handleClick} />, div)
+    ReactDOM.render(<NotFound default />, div)
     ReactDOM.unmountComponentAtNode(div)
 })

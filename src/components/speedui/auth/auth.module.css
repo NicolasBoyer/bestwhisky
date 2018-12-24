@@ -1,0 +1,23 @@
+.auth>div {
+    display: flex;
+    flex-direction: column;
+    margin-top: 0.6em !important;
+}
+
+.auth>div>form>div,
+.auth>div>form,
+.auth>div>button {
+    width: 100%;
+    margin-bottom: 1em;
+    margin-top: 0.5em;
+}
+
+.extraSignin {
+    text-align: center;
+    font-size: 90%;
+}
+
+.extraSignin a {
+    position: relative;
+    text-decoration: none;
+}
