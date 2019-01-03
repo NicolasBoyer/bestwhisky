@@ -29,11 +29,15 @@ export default abstract class Utils {
         return validUrl.test(url)
     }
 
+    public static isValidPassword(password: string) {
+        return password.length >= 8
+    }
+
     public static isValidRegexp(value: string, regExp: RegExp) {
         return regExp.test(value)
     }
 
     public static isValidField(field: HTMLInputElement) {
-        return this.isValidEmail(field.value) && field.type === EFieldType.email || field.pattern && this.isValidRegexp(field.value, new RegExp(field.pattern)) || this.isValidUrl(field.value) && field.type === EFieldType.url || field.type !== EFieldType.email && field.type !== EFieldType.url && !field.pattern && (!field.required || field.required && field.value !== '')
+        return this.isValidPassword(field.value) && field.type === EFieldType.password || this.isValidEmail(field.value) && field.type === EFieldType.email || field.pattern && this.isValidRegexp(field.value, new RegExp(field.pattern)) || this.isValidUrl(field.value) && field.type === EFieldType.url || field.type !== EFieldType.password && field.type !== EFieldType.email && field.type !== EFieldType.url && !field.pattern && (!field.required || field.required && field.value !== '')
     }
 }

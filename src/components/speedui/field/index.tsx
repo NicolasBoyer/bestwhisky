@@ -118,7 +118,7 @@ export default class Field extends React.Component<IFieldProps, IFieldStates> {
         if (this.refRoot.current) {
             if (this.refInput.current && this.refInput.current.value !== '') {
                 this.refRoot.current.classList.add(styles.hasValue)
-                // Email / pattern / url validation
+                // Email / pattern / url / password validation
                 if (!Utils.isValidField(this.refInput.current)) {
                     this.refRoot.current.classList.add(styles.error)
                 } else {

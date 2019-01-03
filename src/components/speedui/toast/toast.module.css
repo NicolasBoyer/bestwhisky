@@ -6,6 +6,7 @@
     width: 100%;
     display: flex;
     justify-content: center;
+    left: 0;
 }
 
 .visibilityOff {
@@ -18,7 +19,6 @@
 
 .toast {
     min-width: 340px;
-    max-width: 568px;
     border-radius: 4px;
     color: #fff;
     display: flex;
