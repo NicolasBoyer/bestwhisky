@@ -1,7 +1,7 @@
 import { navigate } from '@reach/router'
-import React, { Fragment } from 'react'
+import { Fragment } from 'react'
+import React from 'reactn'
 import { website } from '../../../../tools/config'
-import { withFirebase } from '../../../../tools/firebase'
 import { ERoutes } from '../../../../tools/routes'
 import Utils from '../../../../tools/utils'
 import Button from '../../button'
@@ -64,10 +64,10 @@ class SignIn extends React.Component<IAuthProps, any> {
     }
 
     protected onSubmit = async (e: React.SyntheticEvent) => {
-        if (this.props.firebase) {
+        if (this.global.firebase) {
             const { email, password } = this.state
             try {
-                const authUser = await this.props.firebase.signInWithEmailAndPassword(email, password)
+                const authUser = await this.global.firebase.signInWithEmailAndPassword(email, password)
                 if (authUser.user && !authUser.user.emailVerified) {
                     const error = { message: 'Votre compte n\'a pas été vérifié. Un mail de confirmation vous a été envoyé.' }
                     authUser.user.sendEmailVerification({ url: website.homepage })
@@ -84,4 +84,4 @@ class SignIn extends React.Component<IAuthProps, any> {
     }
 }
 
-export default withFirebase(SignIn)
+export default SignIn

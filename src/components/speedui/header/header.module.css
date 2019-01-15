@@ -22,10 +22,11 @@
     display: inline-block;
     font-size: 100%;
     user-select: none;
-    font-family: 'HeaderFont', Arial, Helvetica, sans-serif;
 }
 
-.header nav a {
+.header nav a,
+.header nav button {
+    font-family: 'HeaderFont', Arial, Helvetica, sans-serif;
     display: inline-flex;
     position: relative;
     height: 56px;
@@ -43,11 +44,12 @@
     border-radius: 0;
 }
 
-.header nav a:hover {
+.header nav a:hover,
+.header nav button:hover {
     background-color: hsla(0, 0%, 100%, .3);
 }
 
-.login svg {
+.log svg {
     width: 2.5em !important;
     height: 2.5em !important;
     margin-right: 1.2em;

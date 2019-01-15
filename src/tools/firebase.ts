@@ -18,17 +18,6 @@ class Firebase {
         this.auth = app.auth()
     }
 
-    updateCurrentUserProfile = (displayName: string, photoURL: string) => {
-        const user = this.auth.currentUser
-        if (user) {
-            user.updateProfile({ displayName, photoURL })
-        }
-    }
-
-    getCurrentUserProfile = () => this.auth.currentUser && this.auth.currentUser.providerData
-
-    getCurrentUser = () => this.auth.currentUser
-
     sendEmailVerification = () => this.auth.currentUser && this.auth.currentUser.sendEmailVerification()
 
     createUserWithEmailAndPassword = (email: string, password: string) => this.auth.createUserWithEmailAndPassword(email, password)
@@ -40,6 +29,31 @@ class Firebase {
     resetPassword = (email: string) => this.auth.sendPasswordResetEmail(email)
 
     updatePassword = (password: string) => this.auth.currentUser && this.auth.currentUser.updatePassword(password)
+
+    updateCurrentUserProfile = (displayName: string, photoURL: string) => {
+        const user = this.auth.currentUser
+        if (user) {
+            user.updateProfile({ displayName, photoURL })
+        }
+    }
+
+    // getCurrentUserProfile() {
+    //     let profile: Array<(app.UserInfo | null)> | null = null
+    //     this.auth.onAuthStateChanged((user) => profile = user && user.providerData)
+    //     return profile
+    // }
+
+    // getCurrentUser() {
+    //     let currentUser: app.User | null = null
+    //     this.auth.onAuthStateChanged((user) => currentUser = user)
+    //     return currentUser
+    // }
+
+    // getUserName() {
+    //     let userName: string | null = ''
+    //     this.auth.onAuthStateChanged((user) => userName = user && user.displayName)
+    //     return userName
+    // }
 }
 
 export default Firebase

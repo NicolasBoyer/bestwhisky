@@ -1,7 +1,6 @@
 import { navigate } from '@reach/router'
-import React from 'react'
+import React from 'reactn'
 import { website } from '../../../../tools/config'
-import { withFirebase } from '../../../../tools/firebase'
 import Utils from '../../../../tools/utils'
 import { EFieldType } from '../../field'
 import { IFormInput } from '../../form'
@@ -67,12 +66,11 @@ class SignUp extends React.Component<IAuthProps, any> {
 
     // TODO : bloquer si c le même displayName voir comment faire ! -> A PRIORI via une database ...
     // TODO : Voire si possible de mettre en rouge si c le pas le même password
-    // TODO : signin que si verif est faite => A V2RIFIER avec le logout
     protected onSubmit = async (e: React.SyntheticEvent) => {
-        if (this.props.firebase) {
+        if (this.global.firebase) {
             const { username, email, passwordOne } = this.state
             try {
-                const authUser = await this.props.firebase.createUserWithEmailAndPassword(email, passwordOne)
+                const authUser = await this.global.firebase.createUserWithEmailAndPassword(email, passwordOne)
                 if (authUser.user) {
                     authUser.user.updateProfile({
                         displayName: username,
@@ -85,11 +83,10 @@ class SignUp extends React.Component<IAuthProps, any> {
             } catch (error) {
                 this.setState({ toast: { isToastOpen: true, toastMessage: 'Erreur : ' + error.message, toastType: EToastType.error, isToasCloseButton: true } })
                 console.error(error)
-                // console.log(this.props.firebase.getCurrentUser())
             }
         }
         e.persist()
     }
 }
 
-export default withFirebase(SignUp)
+export default SignUp

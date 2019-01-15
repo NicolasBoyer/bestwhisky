@@ -1,4 +1,5 @@
-import React, { Fragment } from 'react'
+import { Fragment } from 'react'
+import React from 'reactn'
 import { EFieldType } from '../../speedui/field'
 import { IFormInput } from '../../speedui/form'
 import FormDialog, { EMode } from '../../speedui/form-dialog'
@@ -124,7 +125,7 @@ interface IHomeState {
     value: string
 }
 
-export default class Home extends React.Component<IHomeProps, IHomeState> {
+class Home extends React.Component<IHomeProps, IHomeState> {
     constructor(props: IHomeProps) {
         super(props)
         this.state = { value: '' }
@@ -133,7 +134,7 @@ export default class Home extends React.Component<IHomeProps, IHomeState> {
     public render() {
         return (
             <Fragment>
-                <FormDialog inputs={addWhiskyInputs} title='Ajouter un Whisky' mode={EMode.add} onSubmit={this.handleSubmit} onChange={this.handleChange} />
+                {this.global.user && <FormDialog inputs={addWhiskyInputs} title='Ajouter un Whisky' mode={EMode.add} onSubmit={this.handleSubmit} onChange={this.handleChange} />}
                 {/* <Sort /> */}
                 {whiskiesJSON.map((datas: IWhiskyProps) => <Whisky {...datas} />)}
             </Fragment>
@@ -149,3 +150,5 @@ export default class Home extends React.Component<IHomeProps, IHomeState> {
         this.setState({ value: (e.target as HTMLInputElement).value })
     }
 }
+
+export default Home

@@ -1,14 +1,17 @@
-import React from 'react'
 import ReactDOM from 'react-dom'
+import React, { setGlobal } from 'reactn'
 import App from './app'
 import './index.css'
 import * as serviceWorker from './serviceWorker'
-import Firebase, { FirebaseContext } from './tools/firebase'
+import Firebase from './tools/firebase'
+
+setGlobal({
+    firebase: new Firebase(),
+    user: null
+})
 
 ReactDOM.render(
-    <FirebaseContext.Provider value={new Firebase()}>
-        <App />
-    </FirebaseContext.Provider>,
+    <App />,
     document.getElementById('root')
 )
 

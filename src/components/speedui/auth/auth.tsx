@@ -1,5 +1,4 @@
 import React from 'react'
-import Firebase from '../../../tools/firebase'
 import Button from '../button'
 import Card from '../card'
 import Form, { IFormInput } from '../form'
@@ -7,8 +6,8 @@ import Toast from '../toast'
 import styles from './auth.module.css'
 
 export interface IAuthProps {
+    className?: string
     path?: string
-    firebase: Firebase | null
 }
 
 export default abstract class Auth {

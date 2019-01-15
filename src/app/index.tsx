@@ -1,11 +1,20 @@
-import React, { Fragment } from 'react'
+import { Fragment } from 'react'
+import React from 'reactn'
 import Footer from '../components/speedui/footer'
 import Header from '../components/speedui/header'
 import SubHeader from '../components/speedui/sub-header'
 import Routes from '../tools/routes'
 import styles from './app.module.css'
 
-export default class App extends React.Component {
+class App extends React.Component<{}> {
+
+    constructor(props: {}) {
+        super(props)
+        if (this.global.firebase) {
+            this.global.firebase.auth.onAuthStateChanged((user: firebase.User | null) => user && user.emailVerified && this.setGlobal({ user }))
+        }
+    }
+
     public render() {
         return (
             <Fragment>
@@ -23,3 +32,5 @@ export default class App extends React.Component {
         )
     }
 }
+
+export default App
