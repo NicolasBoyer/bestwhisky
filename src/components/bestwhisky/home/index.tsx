@@ -1,5 +1,6 @@
 import { Fragment } from 'react'
 import React from 'reactn'
+import Utils from '../../../tools/utils'
 import { EFieldType } from '../../speedui/field'
 import { IFormInput } from '../../speedui/form'
 import FormDialog, { EMode } from '../../speedui/form-dialog'
@@ -113,6 +114,7 @@ export const addWhiskyInputs: IFormInput[] = [
     {
         label: 'Note',
         name: 'note',
+        required: true,
         type: EFieldType.note
     }
 ]
@@ -121,33 +123,66 @@ export interface IHomeProps {
     path: string
 }
 
-interface IHomeState {
-    value: string
-}
+class Home extends React.Component<IHomeProps, any> {
+    initalStates: any = {
+        toast: null
+    }
+    requiredFieldsNumber: number = 0
 
-class Home extends React.Component<IHomeProps, IHomeState> {
     constructor(props: IHomeProps) {
         super(props)
-        this.state = { value: '' }
+        addWhiskyInputs.forEach((input) => {
+            this.initalStates[input.name] = ''
+            if (input.required || input.type === EFieldType.email || input.type === EFieldType.url || input.type === EFieldType.password) {
+                this.initalStates['valid_' + input.name] = !input.required
+                this.requiredFieldsNumber++
+            }
+        })
+        this.state = { ...this.initalStates }
     }
 
     public render() {
+        const isInvalid = Object.keys(this.state).filter((key) => this.state[key] === true && key.includes('valid_')).length !== this.requiredFieldsNumber
         return (
             <Fragment>
-                {this.global.user && <FormDialog inputs={addWhiskyInputs} title='Ajouter un Whisky' mode={EMode.add} onSubmit={this.handleSubmit} onChange={this.handleChange} />}
+                {this.global.user && <FormDialog isInvalid={isInvalid} inputs={addWhiskyInputs} title='Ajouter un Whisky' mode={EMode.add} onSubmit={this.onSubmit} onChange={this.onChange} />}
                 {/* <Sort /> */}
                 {whiskiesJSON.map((datas: IWhiskyProps) => <Whisky {...datas} />)}
             </Fragment>
         )
     }
 
-    protected handleSubmit = (e: React.SyntheticEvent) => {
-        alert('A name was submitted: ' + this.state.value)
-        e.preventDefault()
+    protected onChange = (e: React.SyntheticEvent) => {
+        const field = e.target as HTMLInputElement
+        if (field.required || field.type === EFieldType.email || field.type === EFieldType.url || field.type === EFieldType.password) {
+            this.setState({ ['valid_' + field.id]: Utils.isValidField(field) })
+        } else if (Utils.isStrInParentsClass(e.currentTarget as HTMLElement, 'required')) {
+            this.setState({ ['valid_' + (e.currentTarget.parentElement as HTMLElement).id]: true })
+        }
+        this.setState({ [field.id]: field.value, toast: null })
     }
 
-    protected handleChange = (e: React.SyntheticEvent) => {
-        this.setState({ value: (e.target as HTMLInputElement).value })
+    protected onSubmit = async (e: React.SyntheticEvent) => {
+        console.log(this.state)
+        // if (this.global.firebase) {
+        //     const { username, email, passwordOne } = this.state
+        //     try {
+        //         const authUser = await this.global.firebase.createUserWithEmailAndPassword(email, passwordOne)
+        //         if (authUser.user) {
+        //             authUser.user.updateProfile({
+        //                 displayName: username,
+        //                 photoURL: null
+        //             })
+        //             authUser.user.sendEmailVerification({ url: website.homepage })
+        //         }
+        //         this.setState({ ...this.initalStates, toast: { isToastOpen: true, toastMessage: 'Un mail de confirmation vous a été envoyé.', toastType: EToastType.success, toastAutoHideDuration: 4 } })
+        //         setTimeout(() => navigate('/'), 4000)
+        //     } catch (error) {
+        //         this.setState({ toast: { isToastOpen: true, toastMessage: 'Erreur : ' + error.message, toastType: EToastType.error, isToasCloseButton: true } })
+        //         console.error(error)
+        //     }
+        // }
+        e.persist()
     }
 }
 

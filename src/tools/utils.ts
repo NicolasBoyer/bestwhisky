@@ -1,4 +1,4 @@
-import Field, { EFieldType } from '../components/speedui/field'
+import { EFieldType } from '../components/speedui/field'
 
 export default abstract class Utils {
     public static toggleClass = (element: HTMLElement, oldClass: string, newClass: string) => element && element.classList.replace(oldClass, newClass)
@@ -39,5 +39,25 @@ export default abstract class Utils {
 
     public static isValidField(field: HTMLInputElement) {
         return this.isValidPassword(field.value) && field.type === EFieldType.password || this.isValidEmail(field.value) && field.type === EFieldType.email || field.pattern && this.isValidRegexp(field.value, new RegExp(field.pattern)) || this.isValidUrl(field.value) && field.type === EFieldType.url || field.type !== EFieldType.password && field.type !== EFieldType.email && field.type !== EFieldType.url && !field.pattern && (!field.required || field.required && field.value !== '')
+    }
+
+    public static getParents = (node: HTMLElement): HTMLElement[] => (node.parentElement ? Utils.getParents(node.parentElement) : []).concat([node])
+
+    public static isClassNameInParents(node: HTMLElement, className: string) {
+        for (const parent of this.getParents(node)) {
+            if (parent.classList.contains(className)) {
+                return true
+            }
+        }
+        return false
+    }
+
+    public static isStrInParentsClass(node: HTMLElement, str: string) {
+        for (const parent of this.getParents(node)) {
+            if (parent.className.indexOf(str) !== -1) {
+                return true
+            }
+        }
+        return false
     }
 }

@@ -10,6 +10,7 @@ export interface IFormDialogProps {
     mode: EMode
     title: string
     inputs: IFormInput[]
+    isInvalid?: boolean
     onChange: (e: React.SyntheticEvent) => void
     onSubmit: (e: React.SyntheticEvent) => void
 }
@@ -28,11 +29,11 @@ export default class FormDialog extends React.Component<IFormDialogProps, IFormD
 
     public render() {
         const { isModalOpen } = this.state
-        const { inputs, mode, onChange, onSubmit, title } = this.props
+        const { inputs, isInvalid, mode, onChange, onSubmit, title } = this.props
         const buttons = (
             <Fragment>
                 <Button label='Annuler' handleClick={this.closeForm} />
-                <Button label={EMode.add ? 'Ajouter' : 'Modifier'} handleClick={this.accept} />
+                <Button disabled={isInvalid || false} label={EMode.add ? 'Ajouter' : 'Modifier'} handleClick={this.accept} />
             </Fragment>
         )
         const openButton = mode === EMode.add ? <Button ref={this.refOpenButton} className={styles.addButton} variant={EVariant.fab} label='Ajouter' iconName='add' handleClick={this.openForm} /> : ''

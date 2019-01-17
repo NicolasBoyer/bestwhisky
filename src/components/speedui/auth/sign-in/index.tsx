@@ -36,8 +36,8 @@ class SignIn extends React.Component<IAuthProps, any> {
         super(props)
         inputs.forEach((input) => {
             this.initalStates[input.name] = ''
-            this.initalStates['valid_' + input.name] = !input.required
-            if (input.required) {
+            if (input.required || input.type === EFieldType.email || input.type === EFieldType.url || input.type === EFieldType.password) {
+                this.initalStates['valid_' + input.name] = !input.required
                 this.requiredFieldsNumber++
             }
         })
@@ -45,7 +45,7 @@ class SignIn extends React.Component<IAuthProps, any> {
     }
 
     public render() {
-        const isInvalid = Object.keys(this.state).filter((key) => this.state[key] === true).length !== this.requiredFieldsNumber
+        const isInvalid = Object.keys(this.state).filter((key) => this.state[key] === true && key.includes('valid_')).length !== this.requiredFieldsNumber
         return (
             <Fragment>
                 {Auth.authChild(inputs, 'Se connecter', styles.signIn, this.onSubmit, (e: React.SyntheticEvent) => this.onSubmit(e), this.onChange, isInvalid, this.state.toast)}
@@ -57,10 +57,14 @@ class SignIn extends React.Component<IAuthProps, any> {
         )
     }
 
-    // TODO à remettre sur la home + remonter la vilidité avec test email url ou autre
     protected onChange = (e: React.SyntheticEvent) => {
         const field = e.target as HTMLInputElement
-        this.setState({ [field.id]: field.value, ['valid_' + field.id]: Utils.isValidField(field), toast: null })
+        if (field.required || field.type === EFieldType.email || field.type === EFieldType.url || field.type === EFieldType.password) {
+            this.setState({ ['valid_' + field.id]: Utils.isValidField(field) })
+        } else if (Utils.isStrInParentsClass(e.currentTarget as HTMLElement, 'required')) {
+            this.setState({ ['valid_' + (e.currentTarget.parentElement as HTMLElement).id]: true })
+        }
+        this.setState({ [field.id]: field.value, toast: null })
     }
 
     protected onSubmit = async (e: React.SyntheticEvent) => {

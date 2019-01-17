@@ -45,8 +45,8 @@ class SignUp extends React.Component<IAuthProps, any> {
         super(props)
         inputs.forEach((input) => {
             this.initalStates[input.name] = ''
-            this.initalStates['valid_' + input.name] = !input.required
-            if (input.required) {
+            if (input.required || input.type === EFieldType.email || input.type === EFieldType.url || input.type === EFieldType.password) {
+                this.initalStates['valid_' + input.name] = !input.required
                 this.requiredFieldsNumber++
             }
         })
@@ -54,14 +54,18 @@ class SignUp extends React.Component<IAuthProps, any> {
     }
 
     public render() {
-        const isInvalid = Object.keys(this.state).filter((key) => this.state[key] === true).length !== this.requiredFieldsNumber || this.state.passwordOne !== this.state.passwordTwo && this.state.passwordOne !== ''
+        const isInvalid = Object.keys(this.state).filter((key) => this.state[key] === true && key.includes('valid_')).length !== this.requiredFieldsNumber || this.state.passwordOne !== this.state.passwordTwo && this.state.passwordOne !== ''
         return Auth.authChild(inputs, 'S\'inscrire', styles.signUp, this.onSubmit, (e: React.SyntheticEvent) => this.onSubmit(e), this.onChange, isInvalid, this.state.toast)
     }
 
-    // TODO à remettre sur la home
     protected onChange = (e: React.SyntheticEvent) => {
         const field = e.target as HTMLInputElement
-        this.setState({ [field.id]: field.value, ['valid_' + field.id]: Utils.isValidField(field), toast: null })
+        if (field.required || field.type === EFieldType.email || field.type === EFieldType.url || field.type === EFieldType.password) {
+            this.setState({ ['valid_' + field.id]: Utils.isValidField(field) })
+        } else if (Utils.isStrInParentsClass(e.currentTarget as HTMLElement, 'required')) {
+            this.setState({ ['valid_' + (e.currentTarget.parentElement as HTMLElement).id]: true })
+        }
+        this.setState({ [field.id]: field.value, toast: null })
     }
 
     // TODO : bloquer si c le même displayName voir comment faire ! -> A PRIORI via une database ...
