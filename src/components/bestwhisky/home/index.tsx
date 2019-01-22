@@ -4,18 +4,19 @@ import Utils from '../../../tools/utils'
 import { EFieldType } from '../../speedui/field'
 import { IFormInput } from '../../speedui/form'
 import FormDialog, { EMode } from '../../speedui/form-dialog'
+import Toast, { EToastType } from '../../speedui/toast'
 import Whisky, { IWhiskyProps } from '../whisky'
 // import { addWhiskyInputs } from '../tools/config'
 
 // TODO : A lier avec Firebase
 const whiskiesJSON: IWhiskyProps[] = [
+    // users, whiskies, views, comments
+
     {
         createdBy: 'Nico',
         // comments: [],
         description: 'A tester pour le type !',
-        id: '1',
         image: 'sample',
-        // Pas sur de garder la key
         key: '1',
         name: 'REDBREAST 15 ans Single Pot Still 46%',
         origin: 'Irlande / Cork County',
@@ -40,7 +41,6 @@ const whiskiesJSON: IWhiskyProps[] = [
     {
         createdBy: 'Nico',
         description: 'A tester pour le type !',
-        id: '2',
         image: 'bike',
         key: '2',
         name: 'REDBREAST 12 ans Single Pot Still 40%',
@@ -58,7 +58,6 @@ const whiskiesJSON: IWhiskyProps[] = [
     {
         createdBy: 'Nico',
         description: 'A tester pour le type !',
-        id: '3',
         image: 'elephants',
         key: '3',
         name: 'REDBREAST 12 ans Single Pot Still 40%',
@@ -76,7 +75,6 @@ const whiskiesJSON: IWhiskyProps[] = [
     {
         createdBy: 'Nico',
         description: 'A tester pour le type !',
-        id: '4',
         image: 'sheep',
         key: '4',
         name: 'REDBREAST 12 ans Single Pot Still 40%',
@@ -102,6 +100,21 @@ export const addWhiskyInputs: IFormInput[] = [
         type: EFieldType.text
     },
     {
+        label: 'Origine',
+        name: 'origin',
+        type: EFieldType.text
+    },
+    {
+        label: 'Prix (€)',
+        name: 'price',
+        type: EFieldType.number
+    },
+    {
+        label: 'Contenance (cl)',
+        name: 'size',
+        type: EFieldType.number
+    },
+    {
         label: 'Description',
         name: 'description',
         type: EFieldType.area
@@ -111,6 +124,8 @@ export const addWhiskyInputs: IFormInput[] = [
         name: 'image',
         type: EFieldType.image
     },
+    // TODO : Note à revoir en mettant une nouvelle entrée views par key avec les meme key donc peut etre besoin d'un add différent ou on donne la key. peut etre ajouter une entrée table indiquant la table de la bdd
+    // TODO : revoir la taille des champs pour homogénéiser
     {
         label: 'Note',
         name: 'note',
@@ -143,45 +158,44 @@ class Home extends React.Component<IHomeProps, any> {
 
     public render() {
         const isInvalid = Object.keys(this.state).filter((key) => this.state[key] === true && key.includes('valid_')).length !== this.requiredFieldsNumber
+        const toastAttributes = this.state.toast && { type: this.state.toast.toastType, autoHideDuration: this.state.toast.toastAutoHideDuration, open: this.state.toast.isToastOpen, closeButton: this.state.toast.isToasCloseButton }
         return (
             <Fragment>
                 {this.global.user && <FormDialog isInvalid={isInvalid} inputs={addWhiskyInputs} title='Ajouter un Whisky' mode={EMode.add} onSubmit={this.onSubmit} onChange={this.onChange} />}
                 {/* <Sort /> */}
                 {whiskiesJSON.map((datas: IWhiskyProps) => <Whisky {...datas} />)}
+                <Toast {...toastAttributes}>{this.state.toast && this.state.toast.toastMessage}</Toast>
             </Fragment>
         )
     }
 
     protected onChange = (e: React.SyntheticEvent) => {
-        const field = e.target as HTMLInputElement
-        if (field.required || field.type === EFieldType.email || field.type === EFieldType.url || field.type === EFieldType.password) {
-            this.setState({ ['valid_' + field.id]: Utils.isValidField(field) })
-        } else if (Utils.isStrInParentsClass(e.currentTarget as HTMLElement, 'required')) {
-            this.setState({ ['valid_' + (e.currentTarget.parentElement as HTMLElement).id]: true })
-        }
-        this.setState({ [field.id]: field.value, toast: null })
+        const field = e.currentTarget.tagName !== 'INPUT' && e.currentTarget.tagName !== 'TEXTAREA' ? (e.currentTarget.parentElement as HTMLElement).querySelector('input') : e.currentTarget as HTMLInputElement
+        Utils.formChange(field as HTMLInputElement).then((states: any) => this.setState({ ...states, toast: null }))
     }
 
     protected onSubmit = async (e: React.SyntheticEvent) => {
-        console.log(this.state)
-        // if (this.global.firebase) {
-        //     const { username, email, passwordOne } = this.state
-        //     try {
-        //         const authUser = await this.global.firebase.createUserWithEmailAndPassword(email, passwordOne)
-        //         if (authUser.user) {
-        //             authUser.user.updateProfile({
-        //                 displayName: username,
-        //                 photoURL: null
-        //             })
-        //             authUser.user.sendEmailVerification({ url: website.homepage })
-        //         }
-        //         this.setState({ ...this.initalStates, toast: { isToastOpen: true, toastMessage: 'Un mail de confirmation vous a été envoyé.', toastType: EToastType.success, toastAutoHideDuration: 4 } })
-        //         setTimeout(() => navigate('/'), 4000)
-        //     } catch (error) {
-        //         this.setState({ toast: { isToastOpen: true, toastMessage: 'Erreur : ' + error.message, toastType: EToastType.error, isToasCloseButton: true } })
-        //         console.error(error)
-        //     }
-        // }
+        // TODO : voir si e mets pas ça en utils -> A voir ou alors rendre ce home dans speedui
+        const datas: any = {}
+        for (const key in this.state) {
+            if (this.state.hasOwnProperty(key)) {
+                const value = this.state[key]
+                if (value !== '' && key.indexOf('valid_') === -1 && key.indexOf('toast') === -1) {
+                    // TODO : Il faudrait un data[table][key] et en dessous on boucle sur la première entrée
+                    datas[key] = value
+                }
+            }
+        }
+        // TODO : créer une fonction read
+        console.log(datas)
+        if (this.global.firebase) {
+            this.global.firebase.add('whiskies', datas).then(() => {
+                this.setState({ ...this.initalStates, toast: { isToastOpen: true, toastMessage: 'L\'enregistrement a bien été effectué.', toastType: EToastType.success, toastAutoHideDuration: 3 } })
+            }).catch((error: any) => {
+                this.setState({ toast: { isToastOpen: true, toastMessage: 'Erreur : ' + error.message, toastType: EToastType.error, isToasCloseButton: true } })
+                console.error(error)
+            })
+        }
         e.persist()
     }
 }

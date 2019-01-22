@@ -48,7 +48,7 @@ export default class Field extends React.Component<IFieldProps, IFieldStates> {
         let input = null
         switch (type) {
             case EFieldType.note:
-                input = <Score maxScore={5} onChange={this.onChange} />
+                input = <Score maxScore={5} onChange={this.onChange} required={required} />
                 break
             case EFieldType.image:
             case EFieldType.images:

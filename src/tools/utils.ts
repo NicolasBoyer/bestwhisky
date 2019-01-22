@@ -52,7 +52,7 @@ export default abstract class Utils {
         return false
     }
 
-    public static isStrInParentsClass(node: HTMLElement, str: string) {
+    public static isParentsClassContainsStr(node: HTMLElement, str: string) {
         for (const parent of this.getParents(node)) {
             if (parent.className.indexOf(str) !== -1) {
                 return true
@@ -60,4 +60,19 @@ export default abstract class Utils {
         }
         return false
     }
+
+    public static async formChange(field: HTMLInputElement) {
+        let validStates: any = null
+        if (!field) {
+            return
+        }
+        // Nécessaire pour que state soient passés avant d'arriver sur le onchange dans certains ca (cf Home)
+        await this.delay(50)
+        if (field.required || field.type === EFieldType.email || field.type === EFieldType.url || field.type === EFieldType.password) {
+            validStates = { ['valid_' + field.id]: Utils.isValidField(field) }
+        }
+        return { ...validStates, [field.id]: field.value }
+    }
+
+    public static delay = (milliseconds: number) => new Promise((resolve) => setTimeout(() => resolve(), milliseconds))
 }

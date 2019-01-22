@@ -59,13 +59,8 @@ class SignUp extends React.Component<IAuthProps, any> {
     }
 
     protected onChange = (e: React.SyntheticEvent) => {
-        const field = e.target as HTMLInputElement
-        if (field.required || field.type === EFieldType.email || field.type === EFieldType.url || field.type === EFieldType.password) {
-            this.setState({ ['valid_' + field.id]: Utils.isValidField(field) })
-        } else if (Utils.isStrInParentsClass(e.currentTarget as HTMLElement, 'required')) {
-            this.setState({ ['valid_' + (e.currentTarget.parentElement as HTMLElement).id]: true })
-        }
-        this.setState({ [field.id]: field.value, toast: null })
+        const field = e.currentTarget.tagName !== 'INPUT' && e.currentTarget.tagName !== 'TEXTAREA' ? (e.currentTarget.parentElement as HTMLElement).querySelector('input') : e.currentTarget as HTMLInputElement
+        Utils.formChange(field as HTMLInputElement).then((states: any) => this.setState({ ...states, toast: null }))
     }
 
     // TODO : bloquer si c le même displayName voir comment faire ! -> A PRIORI via une database ...

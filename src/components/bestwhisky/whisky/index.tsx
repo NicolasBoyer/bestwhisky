@@ -8,7 +8,6 @@ import styles from './whisky.module.css'
 export interface IWhiskyProps {
     createdBy: string
     // comments?: []
-    id: string
     key: string
     name: string
     description: any

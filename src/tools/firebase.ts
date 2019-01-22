@@ -1,5 +1,6 @@
 import app from 'firebase/app'
 import 'firebase/auth'
+import 'firebase/database'
 
 const config = {
     apiKey: 'AIzaSyBpIPKl_FHlp_v-A-NoZdiQCGCvFe-ZTKE',
@@ -11,49 +12,58 @@ const config = {
 }
 
 class Firebase {
-    auth: app.auth.Auth
+    // A remettre en protected
+    db: app.database.Database
+    protected auth: app.auth.Auth
 
     constructor() {
         app.initializeApp(config)
         this.auth = app.auth()
+        this.db = app.database()
     }
 
-    sendEmailVerification = () => this.auth.currentUser && this.auth.currentUser.sendEmailVerification()
+    /* AUTH API */
+    public sendEmailVerification = () => this.auth.currentUser && this.auth.currentUser.sendEmailVerification()
 
-    createUserWithEmailAndPassword = (email: string, password: string) => this.auth.createUserWithEmailAndPassword(email, password)
+    public createUserWithEmailAndPassword = (email: string, password: string) => this.auth.createUserWithEmailAndPassword(email, password)
 
-    signInWithEmailAndPassword = (email: string, password: string) => this.auth.signInWithEmailAndPassword(email, password)
+    public signInWithEmailAndPassword = (email: string, password: string) => this.auth.signInWithEmailAndPassword(email, password)
 
-    signOut = () => this.auth.signOut()
+    public signOut = () => this.auth.signOut()
 
-    resetPassword = (email: string) => this.auth.sendPasswordResetEmail(email)
+    public resetPassword = (email: string) => this.auth.sendPasswordResetEmail(email)
 
-    updatePassword = (password: string) => this.auth.currentUser && this.auth.currentUser.updatePassword(password)
+    public updatePassword = (password: string) => this.auth.currentUser && this.auth.currentUser.updatePassword(password)
 
-    updateCurrentUserProfile = (displayName: string, photoURL: string) => {
+    public updateCurrentUserProfile = (displayName: string, photoURL: string) => {
         const user = this.auth.currentUser
         if (user) {
             user.updateProfile({ displayName, photoURL })
         }
     }
 
-    // getCurrentUserProfile() {
-    //     let profile: Array<(app.UserInfo | null)> | null = null
-    //     this.auth.onAuthStateChanged((user) => profile = user && user.providerData)
-    //     return profile
-    // }
+    public getCurrentUser = (pCb: (user: app.User | null) => void) => this.auth.onAuthStateChanged((user) => pCb(user))
 
-    // getCurrentUser() {
-    //     let currentUser: app.User | null = null
-    //     this.auth.onAuthStateChanged((user) => currentUser = user)
-    //     return currentUser
-    // }
+    public getCurrentUserProfile = (pCb: (userProfile: app.UserInfo | null | null) => void) => this.auth.onAuthStateChanged((user) => user && pCb(user.providerData[0]))
 
-    // getUserName() {
-    //     let userName: string | null = ''
-    //     this.auth.onAuthStateChanged((user) => userName = user && user.displayName)
-    //     return userName
-    // }
+    /* DATABASE API */
+    public async add(location: string, datas: any, inLocation: boolean = false) {
+        const refLocation = this.db.ref(location)
+        const key = refLocation.push().key
+        datas.id = key
+        const updates: any = {}
+        updates[key as string] = datas
+        await refLocation.update(!inLocation ? updates : datas)
+        return key
+    }
+
+    public async update(location: string, id: string, datas: any) {
+        await this.db.ref(location + '/' + id).update(datas)
+    }
+
+    public async remove(location: string, id: string) {
+        await this.db.ref(location + '/' + id).remove()
+    }
 }
 
 export default Firebase

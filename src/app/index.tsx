@@ -11,7 +11,7 @@ class App extends React.Component<{}> {
     constructor(props: {}) {
         super(props)
         if (this.global.firebase) {
-            this.global.firebase.auth.onAuthStateChanged((user: firebase.User | null) => user && user.emailVerified && this.setGlobal({ user }))
+            this.global.firebase.getCurrentUser((user: firebase.User | null) => user && user.emailVerified && this.setGlobal({ user }))
         }
     }
 
