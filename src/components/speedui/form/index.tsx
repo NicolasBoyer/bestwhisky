@@ -9,6 +9,7 @@ export interface IFormInput {
     pattern?: string
     required?: boolean
     placeHolder?: string
+    tables?: string
 }
 
 export interface IFormProps {

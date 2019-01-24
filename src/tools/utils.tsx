@@ -1,3 +1,4 @@
+import React from 'react'
 import { EFieldType } from '../components/speedui/field'
 
 export default abstract class Utils {
@@ -75,4 +76,9 @@ export default abstract class Utils {
     }
 
     public static delay = (milliseconds: number) => new Promise((resolve) => setTimeout(() => resolve(), milliseconds))
+
+    // tslint:disable-next-line:variable-name
+    public static createComponent = (Component: any, props: any) => (
+        <Component {...props} />
+    )
 }

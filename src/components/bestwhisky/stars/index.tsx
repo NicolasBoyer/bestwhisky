@@ -9,7 +9,7 @@ interface IStarsProps {
 export default class Stars extends React.Component<IStarsProps> {
     public render() {
         const { views } = this.props
-        if (!views.length) {
+        if (!views || !views.length) {
             return null
         }
         const score = views.map((view) => view.stars).reduce((prev, curr) => prev + curr) / views.length

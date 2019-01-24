@@ -7,7 +7,6 @@ it('renders without crashing', () => {
     const props: IWhiskyProps = {
         createdBy: '',
         description: '',
-        id: '1',
         key: '1',
         name: '',
         views: []

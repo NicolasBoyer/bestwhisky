@@ -1,5 +1,6 @@
 import { Image } from 'cloudinary-react'
 import React from 'react'
+import { cloudinary } from '../../../tools/config'
 import Utils from '../../../tools/utils'
 import Card from '../../speedui/card'
 import Stars from '../stars'
@@ -32,7 +33,7 @@ export default class Whisky extends React.Component<IWhiskyProps> {
         const { name, views, description, image, price, origin, size } = this.props
         return (
             <Card name={name} loadMoreButton={true} clickAction={this.showWhisky}>
-                {image && <Image cloudName='demo' publicId={image} width='180' crop='scale' />}
+                {image && <Image cloudName={cloudinary.cloudName} publicId={image} width='180' crop='scale' />}
                 <div className={styles.infos}>
                     {(origin || size) && <div className={styles.metas}>
                         {origin && <span>{origin}</span>}

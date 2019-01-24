@@ -71,7 +71,6 @@ export default class Field extends React.Component<IFieldProps, IFieldStates> {
             case EFieldType.search:
             case EFieldType.email:
             case EFieldType.url:
-                // TODO : required et regexp à prendre en compte côté bouton de validation quand j'en serais là
                 input = <input tabIndex={0} aria-invalid='false' id={name} type={type} placeholder={placeHolder} onChange={this.onChange} onFocus={this.onFocus} onBlur={this.onBlur} ref={this.refInput} required={required} pattern={pattern} />
                 break
             case EFieldType.select:
@@ -94,7 +93,7 @@ export default class Field extends React.Component<IFieldProps, IFieldStates> {
                 <div className={styles.inputContainer}>
                     {input}
                     {isFileLoading && <div className={styles.fileLoader}><div className={styles.fileLoaderBg}></div><Loader /></div>}
-                    {previewImage && <Image cloudName='elendil' publicId={previewImage} width='140' crop='scale' />}
+                    {previewImage && <Image cloudName={cloudinary.cloudName} publicId={previewImage} width='140' crop='scale' />}
                 </div>
                 <Toast type={toastType} autoHideDuration={toastAutoHideDuration} open={isToastOpen} closeButton={isToasCloseButton}>{toastMessage}</Toast>
             </div>
@@ -135,7 +134,8 @@ export default class Field extends React.Component<IFieldProps, IFieldStates> {
     }
 
     protected uploadFile = (e: React.SyntheticEvent) => {
-        const files = (e.target as HTMLInputElement).files as FileList
+        const input = e.target as HTMLInputElement
+        const files = input.files as FileList
         [].forEach.call(files, async (file: File) => {
             const formData = new FormData()
             this.setState({ isFileLoading: true })
@@ -148,7 +148,9 @@ export default class Field extends React.Component<IFieldProps, IFieldStates> {
                 console.error(success.error)
                 return false
             }
-            this.setState({ previewImage: success.public_id, isFileLoading: false, isToastOpen: true, toastMessage: 'Succès : votre image a bien été envoyée', toastType: EToastType.success, toastAutoHideDuration: 3 })
+            const cloudId = success.public_id
+            input.setAttribute('data-cloudId', cloudId)
+            this.setState({ previewImage: cloudId, isFileLoading: false, isToastOpen: true, toastMessage: 'Succès : votre image a bien été envoyée', toastType: EToastType.success, toastAutoHideDuration: 3 })
         })
         this.props.onChange(e)
     }

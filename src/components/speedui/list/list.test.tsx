@@ -1,9 +1,14 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import SignUp from '.'
+import List, { IListProps } from '.'
 
 it('renders without crashing', () => {
     const div = document.createElement('div')
-    ReactDOM.render(<SignUp />, div)
+    const props: IListProps = {
+        children: [],
+        component: null,
+        inputs: []
+    }
+    ReactDOM.render(<List {...props} />, div)
     ReactDOM.unmountComponentAtNode(div)
 })

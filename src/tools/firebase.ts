@@ -12,8 +12,7 @@ const config = {
 }
 
 class Firebase {
-    // A remettre en protected
-    db: app.database.Database
+    protected db: app.database.Database
     protected auth: app.auth.Auth
 
     constructor() {
@@ -47,13 +46,27 @@ class Firebase {
     public getCurrentUserProfile = (pCb: (userProfile: app.UserInfo | null | null) => void) => this.auth.onAuthStateChanged((user) => user && pCb(user.providerData[0]))
 
     /* DATABASE API */
-    public async add(location: string, datas: any, inLocation: boolean = false) {
+    public getKey = () => this.db.ref().push().key
+
+    public read = (location: string, pCb: (datas: app.database.DataSnapshot | null, returnType: string) => void) => {
+        const ref = this.db.ref(location)
+        ref.on('child_added', (datas) => pCb(datas, 'added'))
+        ref.on('child_changed', (datas) => pCb(datas, 'changed'))
+        ref.on('child_removed', (datas) => pCb(datas, 'removed'))
+    }
+
+    public getEntry = (location: string, entry: string, pCb: (snapshot: app.database.DataSnapshot | null) => void) => {
+        const refLocation = this.db.ref(location + '/' + entry)
+        refLocation.on('value', (snapshot) => pCb(snapshot))
+    }
+
+    public async add(location: string, datas: any, inLocation: boolean = false, existingKey: string | null = null) {
         const refLocation = this.db.ref(location)
-        const key = refLocation.push().key
-        datas.id = key
+        const key = existingKey || refLocation.push().key
+        datas.key = key
         const updates: any = {}
         updates[key as string] = datas
-        await refLocation.update(!inLocation ? updates : datas)
+        await refLocation.update(!inLocation && !location.includes(key as string) ? updates : datas)
         return key
     }
 

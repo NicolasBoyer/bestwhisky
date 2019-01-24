@@ -5,9 +5,6 @@ import { IAuthProps } from '../auth'
 
 it('renders without crashing', () => {
     const div = document.createElement('div')
-    const props: IAuthProps = {
-        firebase: null
-    }
-    ReactDOM.render(<SignIn {...props} />, div)
+    ReactDOM.render(<SignIn />, div)
     ReactDOM.unmountComponentAtNode(div)
 })
