@@ -27,9 +27,7 @@ const inputs: IFormInput[] = [
 ]
 
 class SignIn extends React.Component<IAuthProps, any> {
-    initalStates: any = {
-        toast: null
-    }
+    initalStates: any = {}
     requiredFieldsNumber: number = 0
 
     constructor(props: IAuthProps) {
@@ -48,7 +46,7 @@ class SignIn extends React.Component<IAuthProps, any> {
         const isInvalid = Object.keys(this.state).filter((key) => this.state[key] === true && key.includes('valid_')).length !== this.requiredFieldsNumber
         return (
             <Fragment>
-                {Auth.authChild(inputs, 'Se connecter', styles.signIn, this.onSubmit, (e: React.SyntheticEvent) => this.onSubmit(e), this.onChange, isInvalid, this.state.toast)}
+                {Auth.authChild(inputs, 'Se connecter', styles.signIn, this.onSubmit, (e: React.SyntheticEvent) => this.onSubmit(e), this.onChange, isInvalid)}
                 <div className={styles.extraSignin}>
                     <span>Vous n'avez pas de compte ? </span>
                     <Button label='Inscrivez vous' handleClick={ERoutes.signup} />
@@ -59,7 +57,7 @@ class SignIn extends React.Component<IAuthProps, any> {
 
     protected onChange = (e: React.SyntheticEvent) => {
         const field = e.currentTarget.tagName !== 'INPUT' && e.currentTarget.tagName !== 'TEXTAREA' ? (e.currentTarget.parentElement as HTMLElement).querySelector('input') : e.currentTarget as HTMLInputElement
-        Utils.formChange(field as HTMLInputElement).then((states: any) => this.setState({ ...states, toast: null }))
+        Utils.formChange(field as HTMLInputElement).then((states: any) => this.setState({ ...states }))
     }
 
     protected onSubmit = async (e: React.SyntheticEvent) => {
@@ -72,10 +70,11 @@ class SignIn extends React.Component<IAuthProps, any> {
                     authUser.user.sendEmailVerification({ url: website.homepage })
                     throw error
                 }
-                this.setState({ ...this.initalStates, toast: { isToastOpen: true, toastMessage: 'Vous êtes connecté', toastType: EToastType.success, toastAutoHideDuration: 4 } })
-                setTimeout(() => navigate('/'), 4000)
+                this.setState({ ...this.initalStates })
+                this.setGlobal({ toast: { isToastOpen: true, toastMessage: 'Vous êtes connecté', toastType: EToastType.success, toastAutoHideDuration: 3 } })
+                navigate('/')
             } catch (error) {
-                this.setState({ toast: { isToastOpen: true, toastMessage: 'Erreur : ' + error.message, toastType: EToastType.error, isToasCloseButton: true } })
+                this.setGlobal({ toast: { isToastOpen: true, toastMessage: 'Erreur : ' + error.message, toastType: EToastType.error, isToastCloseButton: true } })
                 console.error(error)
             }
         }

@@ -7,6 +7,7 @@ import Firebase from './tools/firebase'
 
 setGlobal({
     firebase: new Firebase(),
+    toast: {},
     user: null
 })
 

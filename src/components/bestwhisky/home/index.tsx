@@ -1,7 +1,10 @@
+import { Fragment } from 'react'
 import React from 'reactn'
 import { EFieldType } from '../../speedui/field'
 import { IFormInput } from '../../speedui/form'
-import List, { ETableVar } from '../../speedui/list'
+import FormDialog, { EFormDialogMode } from '../../speedui/form-dialog'
+import List from '../../speedui/list'
+import { ETableVar } from '../../speedui/survey'
 import Whisky, { IWhiskyProps } from '../whisky'
 // import { addWhiskyInputs } from '../tools/config'
 
@@ -173,7 +176,10 @@ class Home extends React.Component<IHomeProps, any> {
 
     public render() {
         return (
-            <List inputs={addWhiskyInputs} children={this.state.datas} component={Whisky} />
+            <Fragment>
+                {this.global.firebase && <FormDialog inputs={addWhiskyInputs} title='Ajouter un Whisky' mode={EFormDialogMode.add} />}
+                <List children={this.state.datas} component={Whisky} />
+            </Fragment>
         )
     }
 }

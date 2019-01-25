@@ -3,6 +3,7 @@ import React from 'reactn'
 import Footer from '../components/speedui/footer'
 import Header from '../components/speedui/header'
 import SubHeader from '../components/speedui/sub-header'
+import Toast from '../components/speedui/toast'
 import Routes from '../tools/routes'
 import styles from './app.module.css'
 
@@ -16,6 +17,7 @@ class App extends React.Component<{}> {
     }
 
     public render() {
+        const toastAttributes = this.global.toast && { type: this.global.toast.toastType, autoHideDuration: this.global.toast.toastAutoHideDuration, open: this.global.toast.isToastOpen, closeButton: this.global.toast.isToastCloseButton }
         return (
             <Fragment>
                 {/* Ajouter name a afficher si néecessaire ... */}
@@ -28,6 +30,7 @@ class App extends React.Component<{}> {
                     </section>
                 </main>
                 <Footer />
+                <Toast {...toastAttributes}>{this.global.toast && this.global.toast.toastMessage}</Toast>
             </Fragment>
         )
     }

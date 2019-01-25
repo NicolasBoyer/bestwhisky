@@ -1,18 +1,12 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import FormDialog, { EMode, IFormDialogProps } from '.'
+import FormDialog, { EFormDialogMode, IFormDialogProps } from '.'
 
 it('renders without crashing', () => {
     const div = document.createElement('div')
     const props: IFormDialogProps = {
         inputs: [],
-        mode: EMode.add,
-        onChange: () => {
-            //
-        },
-        onSubmit: () => {
-            //
-        },
+        mode: EFormDialogMode.add,
         title: ''
     }
     ReactDOM.render(<FormDialog {...props} />, div)

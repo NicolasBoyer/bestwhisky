@@ -1,0 +1,7 @@
+.buttons {
+    flex: 0 0 auto;
+    margin: 8px 4px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}

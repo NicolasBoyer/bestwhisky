@@ -48,9 +48,7 @@ export default class Dialog extends React.Component<IDialogProps> {
                         <div className={styles.content}>
                             {children}
                         </div>
-                        <div className={styles.buttons}>
-                            {buttons}
-                        </div>
+                        {buttons && <div className={styles.buttons}>{buttons}</div>}
                     </div>
                 </div>
             </FocusTrap>,

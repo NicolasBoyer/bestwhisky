@@ -36,9 +36,7 @@ export const inputs: IFormInput[] = [
 ]
 
 class SignUp extends React.Component<IAuthProps, any> {
-    initalStates: any = {
-        toast: null
-    }
+    initalStates: any = {}
     requiredFieldsNumber: number = 0
 
     constructor(props: IAuthProps) {
@@ -55,12 +53,12 @@ class SignUp extends React.Component<IAuthProps, any> {
 
     public render() {
         const isInvalid = Object.keys(this.state).filter((key) => this.state[key] === true && key.includes('valid_')).length !== this.requiredFieldsNumber || this.state.passwordOne !== this.state.passwordTwo && this.state.passwordOne !== ''
-        return Auth.authChild(inputs, 'S\'inscrire', styles.signUp, this.onSubmit, (e: React.SyntheticEvent) => this.onSubmit(e), this.onChange, isInvalid, this.state.toast)
+        return Auth.authChild(inputs, 'S\'inscrire', styles.signUp, this.onSubmit, (e: React.SyntheticEvent) => this.onSubmit(e), this.onChange, isInvalid)
     }
 
     protected onChange = (e: React.SyntheticEvent) => {
         const field = e.currentTarget.tagName !== 'INPUT' && e.currentTarget.tagName !== 'TEXTAREA' ? (e.currentTarget.parentElement as HTMLElement).querySelector('input') : e.currentTarget as HTMLInputElement
-        Utils.formChange(field as HTMLInputElement).then((states: any) => this.setState({ ...states, toast: null }))
+        Utils.formChange(field as HTMLInputElement).then((states: any) => this.setState({ ...states }))
     }
 
     // TODO : bloquer si c le même displayName voir comment faire ! -> A PRIORI via une database ...
@@ -77,10 +75,11 @@ class SignUp extends React.Component<IAuthProps, any> {
                     })
                     authUser.user.sendEmailVerification({ url: website.homepage })
                 }
-                this.setState({ ...this.initalStates, toast: { isToastOpen: true, toastMessage: 'Un mail de confirmation vous a été envoyé.', toastType: EToastType.success, toastAutoHideDuration: 4 } })
-                setTimeout(() => navigate('/'), 4000)
+                this.setState({ ...this.initalStates })
+                this.setGlobal({ toast: { isToastOpen: true, toastMessage: 'Un mail de confirmation vous a été envoyé.', toastType: EToastType.success, toastAutoHideDuration: 4 } })
+                navigate('/')
             } catch (error) {
-                this.setState({ toast: { isToastOpen: true, toastMessage: 'Erreur : ' + error.message, toastType: EToastType.error, isToasCloseButton: true } })
+                this.setGlobal({ toast: { isToastOpen: true, toastMessage: 'Erreur : ' + error.message, toastType: EToastType.error, isToastCloseButton: true } })
                 console.error(error)
             }
         }

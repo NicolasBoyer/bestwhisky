@@ -1,12 +1,13 @@
 import { Image } from 'cloudinary-react'
-import React from 'react'
+import { createRef } from 'react'
 import Ink from 'react-ink'
+import React from 'reactn'
 import { cloudinary } from '../../../tools/config'
 import Utils from '../../../tools/utils'
 import Icon from '../icon'
 import Loader from '../loader'
 import Score from '../score'
-import Toast, { EToastType } from '../toast'
+import { EToastType } from '../toast'
 import styles from './field.module.css'
 
 // TODO : Pensez à améliorer password et à finaliser les types non faits
@@ -25,26 +26,21 @@ export interface IFieldProps {
 interface IFieldStates {
     previewImage: string
     isFileLoading: boolean
-    isToastOpen: boolean
-    toastType: EToastType | undefined
-    toastMessage: any
-    toastAutoHideDuration?: number
-    isToasCloseButton?: boolean
 }
 
 export default class Field extends React.Component<IFieldProps, IFieldStates> {
-    protected refInput: React.RefObject<HTMLInputElement> = React.createRef()
-    protected refTextArea: React.RefObject<HTMLTextAreaElement> = React.createRef()
-    protected refRoot: React.RefObject<HTMLDivElement> = React.createRef()
+    protected refInput: React.RefObject<HTMLInputElement> = createRef()
+    protected refTextArea: React.RefObject<HTMLTextAreaElement> = createRef()
+    protected refRoot: React.RefObject<HTMLDivElement> = createRef()
 
     constructor(props: IFieldProps) {
         super(props)
-        this.state = { previewImage: props.type === EFieldType.images || props.type === EFieldType.image ? 'BestWhisky/default' : '', isFileLoading: false, isToastOpen: false, toastMessage: '', toastType: undefined }
+        this.state = { previewImage: props.type === EFieldType.images || props.type === EFieldType.image ? 'BestWhisky/default' : '', isFileLoading: false }
     }
 
     public render() {
         const { label, name, placeHolder, pattern, required, type } = this.props
-        const { isFileLoading, isToasCloseButton, isToastOpen, previewImage, toastAutoHideDuration, toastType, toastMessage } = this.state
+        const { isFileLoading, previewImage } = this.state
         let input = null
         switch (type) {
             case EFieldType.note:
@@ -95,7 +91,6 @@ export default class Field extends React.Component<IFieldProps, IFieldStates> {
                     {isFileLoading && <div className={styles.fileLoader}><div className={styles.fileLoaderBg}></div><Loader /></div>}
                     {previewImage && <Image cloudName={cloudinary.cloudName} publicId={previewImage} width='140' crop='scale' />}
                 </div>
-                <Toast type={toastType} autoHideDuration={toastAutoHideDuration} open={isToastOpen} closeButton={isToasCloseButton}>{toastMessage}</Toast>
             </div>
         )
     }
@@ -144,13 +139,14 @@ export default class Field extends React.Component<IFieldProps, IFieldStates> {
             const response = await fetch(cloudinary.url + cloudinary.cloudName + '/upload', { body: formData, method: 'POST' })
             const success = await response.json()
             if (success.error) {
-                this.setState({ isToastOpen: true, toastMessage: 'Erreur : ' + success.error.message, toastType: EToastType.error, isToasCloseButton: true })
+                this.setGlobal({ toast: { isToastOpen: true, toastMessage: 'Erreur : ' + success.error.message, toastType: EToastType.error, isToastCloseButton: true } })
                 console.error(success.error)
                 return false
             }
             const cloudId = success.public_id
             input.setAttribute('data-cloudId', cloudId)
-            this.setState({ previewImage: cloudId, isFileLoading: false, isToastOpen: true, toastMessage: 'Succès : votre image a bien été envoyée', toastType: EToastType.success, toastAutoHideDuration: 3 })
+            this.setState({ previewImage: cloudId, isFileLoading: false })
+            this.setGlobal({ toast: { isToastOpen: true, toastMessage: 'Succès : votre image a bien été envoyée', toastType: EToastType.success, toastAutoHideDuration: 3 } })
         })
         this.props.onChange(e)
     }
