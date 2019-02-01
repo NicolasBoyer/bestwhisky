@@ -61,6 +61,7 @@ class Survey extends React.Component<ISurveyProps, any> {
         }
     }
 
+    // TODO gestion image par défaut ...
     protected onSubmit = async (e: React.SyntheticEvent) => {
         if (!Object.keys(this.tables).length || !this.props.inputs || !this.global.firebase) {
             return

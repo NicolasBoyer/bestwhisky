@@ -2,19 +2,37 @@ import React from 'react'
 import Button from '../button'
 import styles from './card.module.css'
 
-// tslint:disable-next-line:variable-name
-const Card = (props: { name: string, className?: string, children?: any, loadMoreButton?: boolean, clickAction?: (e: React.SyntheticEvent) => void }) => {
-    return (
-        <article className={(props.className ? (props.className + ' ') : '') + styles.simple}>
-            <h2 className={styles.title}>
-                <span>{props.name}</span>
-            </h2>
-            <div className={styles.content + (props.loadMoreButton ? ' ' + styles.hasButton : '')}>
-                {props.children}
-            </div>
-            {props.loadMoreButton && <Button label='En savoir plus' handleClick={props.clickAction} />}
-        </article>
-    )
+export interface ICardProps {
+    name: string
+    isAuth?: boolean
+    className?: string
+    children?: any
+    click?: (e: React.SyntheticEvent) => void
+    edit?: (e: React.SyntheticEvent) => void
+    remove?: (e: React.SyntheticEvent) => void
 }
 
-export default Card
+export default class Card extends React.Component<ICardProps> {
+
+    public render() {
+        const { name, isAuth, className, children, click, edit, remove } = this.props
+        return (
+            <article className={(className ? (className + ' ') : '') + styles.simple}>
+                {
+                    isAuth && (edit || remove) &&
+                    <div className={styles.buttonsActions}>
+                        {edit && <Button label='Editer' handleClick={edit} />}
+                        {remove && <Button label='Supprimer' handleClick={remove} />}
+                    </div>
+                }
+                <h2 className={styles.title}>
+                    <span>{name}</span>
+                </h2>
+                <div className={styles.content + (click ? ' ' + styles.hasButton : '')}>
+                    {children}
+                </div>
+                {click && <Button label='En savoir plus' handleClick={click} />}
+            </article>
+        )
+    }
+}

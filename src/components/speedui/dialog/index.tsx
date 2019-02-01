@@ -11,6 +11,7 @@ export interface IDialogProps {
     title: string
     open: boolean
     onClose: (e: React.SyntheticEvent) => void
+    preventHideOnMaskTap?: boolean
 }
 
 export default class Dialog extends React.Component<IDialogProps> {
@@ -36,9 +37,8 @@ export default class Dialog extends React.Component<IDialogProps> {
         if (!open) {
             return null
         }
-        const trapOptions: {} = { onDeactivate: this.props.onClose }
         return ReactDOM.createPortal(
-            <FocusTrap tag='aside' className={styles.dialog} aria-modal='true' tabIndex={-1} role={role || 'dialog'} aria-labelledby={ariaLabel} onClick={this.onClickAway} focusTrapOptions={trapOptions}>
+            <FocusTrap tag='aside' className={styles.dialog} aria-modal='true' tabIndex={-1} role={role || 'dialog'} aria-labelledby={ariaLabel} onClick={this.onClickAway}>
                 <div className={styles.background + ' ' + styles.opacityOff} aria-hidden='true' ref={this.refBackground} />
                 <div className={styles.container + ' ' + styles.opacityOff} role='document' tabIndex={-1} ref={this.refContainer}>
                     <div className={styles.dialogWindow} ref={this.refDialogWindow}>
@@ -63,5 +63,5 @@ export default class Dialog extends React.Component<IDialogProps> {
         }
     }
 
-    protected onClickAway = (e: React.SyntheticEvent) => (this.refDialogWindow.current && !this.refDialogWindow.current.contains(e.target as HTMLElement)) && this.props.onClose(e)
+    protected onClickAway = (e: React.SyntheticEvent) => (this.refDialogWindow.current && !this.refDialogWindow.current.contains(e.target as HTMLElement)) && !this.props.preventHideOnMaskTap && this.props.onClose(e)
 }

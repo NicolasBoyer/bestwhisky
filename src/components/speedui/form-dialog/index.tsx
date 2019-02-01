@@ -12,6 +12,7 @@ export interface IFormDialogProps {
     mode: EFormDialogMode
     title: string
     inputs: IFormInput[]
+    datas?: any
 }
 
 interface IFormDialogState {

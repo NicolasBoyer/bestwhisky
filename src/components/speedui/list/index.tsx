@@ -1,5 +1,4 @@
-import { Fragment } from 'react'
-import React from 'reactn'
+import React, { Fragment } from 'react'
 import Utils from '../../../tools/utils'
 
 export interface IListProps {
@@ -13,7 +12,10 @@ class List extends React.Component<IListProps> {
         return (
             <Fragment>
                 {/* <Sort /> */}
-                {children.map((datas: any) => Utils.createComponent(component, datas))}
+                {children.map((datas: any) => {
+                    datas.id = datas.key
+                    return Utils.createComponent(component, datas)
+                })}
             </Fragment>
         )
     }

@@ -24,3 +24,8 @@
 .simple .content.hasButton {
     margin-bottom: 0.5em;
 }
+
+.simple .buttonsActions {
+    margin-left: -0.6em;
+    margin-bottom: 0.1em;
+}

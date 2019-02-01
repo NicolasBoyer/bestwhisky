@@ -5,91 +5,8 @@ import { IFormInput } from '../../speedui/form'
 import FormDialog, { EFormDialogMode } from '../../speedui/form-dialog'
 import List from '../../speedui/list'
 import { ETableVar } from '../../speedui/survey'
-import Whisky, { IWhiskyProps } from '../whisky'
+import Whisky from '../whisky'
 // import { addWhiskyInputs } from '../tools/config'
-
-// TODO : A lier avec Firebase
-const whiskiesJSON: IWhiskyProps[] = [
-    // users, whiskies, views, comments
-
-    {
-        createdBy: 'Nico',
-        // comments: [],
-        description: 'A tester pour le type !',
-        image: 'sample',
-        key: '1',
-        name: 'REDBREAST 15 ans Single Pot Still 46%',
-        origin: 'Irlande / Cork County',
-        price: 87,
-        size: 70,
-        views: [
-            {
-                author: 'Nico',
-                stars: 5,
-                view: 'TextArea'
-            },
-            {
-                author: 'Elendil',
-                stars: 4
-            },
-            {
-                author: 'Sylvain',
-                stars: 4
-            }
-        ]
-    },
-    {
-        createdBy: 'Nico',
-        description: 'A tester pour le type !',
-        image: 'bike',
-        key: '2',
-        name: 'REDBREAST 12 ans Single Pot Still 40%',
-        origin: 'Irlande / Cork County',
-        price: 58,
-        size: 70,
-        views: [
-            {
-                author: 'Nico',
-                stars: 3,
-                view: 'TextArea'
-            }
-        ]
-    },
-    {
-        createdBy: 'Nico',
-        description: 'A tester pour le type !',
-        image: 'elephants',
-        key: '3',
-        name: 'REDBREAST 12 ans Single Pot Still 40%',
-        origin: 'Irlande / Cork County',
-        price: 58,
-        size: 70,
-        views: [
-            {
-                author: 'Nico',
-                stars: 2,
-                view: 'TextArea'
-            }
-        ]
-    },
-    {
-        createdBy: 'Nico',
-        description: 'A tester pour le type !',
-        image: 'sheep',
-        key: '4',
-        name: 'REDBREAST 12 ans Single Pot Still 40%',
-        origin: 'Irlande / Cork County',
-        price: 58,
-        size: 70,
-        views: [
-            {
-                author: 'Nico',
-                stars: 4,
-                view: 'TextArea'
-            }
-        ]
-    }
-]
 
 // TODO : A passer dans config
 export const addWhiskyInputs: IFormInput[] = [
@@ -151,25 +68,32 @@ class Home extends React.Component<IHomeProps, any> {
         super(props)
         this.state = { datas: [] }
         this.datas = this.state.datas
-
         if (this.global.firebase) {
             this.global.firebase.read('whiskies', (datas: firebase.database.DataSnapshot, returnType: string) => {
                 const data = datas.val()
-                data.views = []
-                this.global.firebase.getEntry('views', data.key, (snapshot: firebase.database.DataSnapshot) => {
-                    const view: any = {}
-                    for (const key in snapshot.val()) {
-                        if (snapshot.val().hasOwnProperty(key)) {
-                            view.author = key
-                            view.stars = snapshot.val()[key].note
+                const eltIndex = this.datas.findIndex((obj: any) => obj.key === data.key)
+                if (returnType === 'added') {
+                    data.views = []
+                    this.global.firebase.getEntry('views', data.key, (snapshot: firebase.database.DataSnapshot) => {
+                        const view: any = {}
+                        if (!snapshot.val()) {
+                            return
                         }
-                    }
-                    data.views.push(view)
-                    if (returnType === 'added') {
+                        for (const key in snapshot.val()) {
+                            if (snapshot.val().hasOwnProperty(key)) {
+                                view.author = key
+                                view.stars = snapshot.val()[key].note
+                            }
+                        }
+                        data.views.push(view)
                         this.datas.push(data)
-                    }
+                        this.setState({ datas: this.datas })
+                    })
+                }
+                if (returnType === 'removed') {
+                    this.datas.splice(eltIndex, 1)
                     this.setState({ datas: this.datas })
-                })
+                }
             })
         }
     }
