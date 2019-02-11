@@ -15,6 +15,7 @@ export interface ISurveyProps {
     inputs: IFormInput[]
     onChange?: (e: React.SyntheticEvent) => void
     onSubmit?: (e: React.SyntheticEvent) => void
+    datas?: any
 }
 
 class Survey extends React.Component<ISurveyProps, any> {
@@ -41,10 +42,10 @@ class Survey extends React.Component<ISurveyProps, any> {
 
     public render() {
         const isInvalid = Object.keys(this.state).filter((key) => this.state[key] === true && key.includes('valid_')).length !== this.requiredFieldsNumber
-        const { acceptButtonLabel, buttons, inputs } = this.props
+        const { acceptButtonLabel, buttons, datas, inputs } = this.props
         return (
             <Fragment>
-                {this.global.firebase && <Form inputs={inputs} onSubmit={this.onSubmit} onChange={this.onChange} />}
+                {this.global.firebase && <Form inputs={inputs} datas={datas} onSubmit={this.onSubmit} onLoad={this.onLoad} onChange={this.onChange} />}
                 <div className={styles.buttons}>
                     {buttons}
                     <Button disabled={isInvalid || false} label={acceptButtonLabel} handleClick={this.onSubmit} />
@@ -61,6 +62,12 @@ class Survey extends React.Component<ISurveyProps, any> {
         }
     }
 
+    protected onLoad = async (e: React.SyntheticEvent) => {
+        [].forEach.call(e.currentTarget.querySelectorAll('input, textarea'), (field: HTMLInputElement) => {
+            Utils.formChange(field).then((states: any) => this.setState({ ...states }))
+        })
+    }
+
     // TODO gestion image par défaut ...
     protected onSubmit = async (e: React.SyntheticEvent) => {
         if (!Object.keys(this.tables).length || !this.props.inputs || !this.global.firebase) {
@@ -70,8 +77,10 @@ class Survey extends React.Component<ISurveyProps, any> {
         for (const key in this.state) {
             if (this.state.hasOwnProperty(key)) {
                 let value = this.state[key]
-                if (value && typeof value === 'string' && value.includes('fakepath')) {
-                    value = (document.querySelector('input#' + key) as HTMLElement).getAttribute('data-cloudId')
+                const input = (document.querySelector('input#' + key) as HTMLElement)
+                const cloudId = input && input.getAttribute('data-cloudId')
+                if (cloudId) {
+                    value = cloudId
                 }
                 if (value !== '' && key.indexOf('valid_') === -1) {
                     if (!datas[this.tables[key]]) {
@@ -81,7 +90,7 @@ class Survey extends React.Component<ISurveyProps, any> {
                 }
             }
         }
-        const id = this.global.firebase.getKey()
+        const id = this.props.datas ? this.props.datas.id : this.global.firebase.getKey()
         const username = this.global.user && this.global.user.displayName
         for (let table in datas) {
             if (datas.hasOwnProperty(table)) {
@@ -97,12 +106,23 @@ class Survey extends React.Component<ISurveyProps, any> {
                 if (username) {
                     data.createdBy = this.global.user.displayName
                 }
-                this.global.firebase.add(table, data, false, id).then(() => {
-                    this.setGlobal({ toast: { isToastOpen: true, toastMessage: 'L\'enregistrement a bien été effectué.', toastType: EToastType.success, toastAutoHideDuration: 3 } })
-                }).catch((error: any) => {
-                    this.setGlobal({ toast: { isToastOpen: true, toastMessage: 'Erreur : ' + error.message, toastType: EToastType.error, isToastCloseButton: true } })
-                    console.error(error)
-                })
+                // Edition
+                if (this.props.datas) {
+                    this.global.firebase.update(table, data).then(() => {
+                        this.setGlobal({ toast: { isToastOpen: true, toastMessage: 'L\'édition a bien été effectué.', toastType: EToastType.success, toastAutoHideDuration: 3 } })
+                    }).catch((error: any) => {
+                        this.setGlobal({ toast: { isToastOpen: true, toastMessage: 'Erreur : ' + error.message, toastType: EToastType.error, isToastCloseButton: true } })
+                        console.error(error)
+                    })
+                    // Ajout
+                } else {
+                    this.global.firebase.add(table, data, false, id).then(() => {
+                        this.setGlobal({ toast: { isToastOpen: true, toastMessage: 'L\'enregistrement a bien été effectué.', toastType: EToastType.success, toastAutoHideDuration: 3 } })
+                    }).catch((error: any) => {
+                        this.setGlobal({ toast: { isToastOpen: true, toastMessage: 'Erreur : ' + error.message, toastType: EToastType.error, isToastCloseButton: true } })
+                        console.error(error)
+                    })
+                }
             }
         }
         this.setState({ ...this.initalStates })

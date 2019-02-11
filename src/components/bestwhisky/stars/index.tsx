@@ -12,7 +12,7 @@ export default class Stars extends React.Component<IStarsProps> {
         if (!views || !views.length) {
             return null
         }
-        const score = views.map((view) => view.stars).reduce((prev, curr) => prev + curr) / views.length
+        const score = views.reduce((sum, view) => sum + Number(view.stars), 0) / views.length
         const stars: JSX.Element[] = []
         let counter = 0
         while (counter < Math.ceil(score)) {

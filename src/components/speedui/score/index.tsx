@@ -30,11 +30,13 @@ export default class Score extends React.Component<IScoreProps, IScoreState> {
         }
         return (
             <div className={styles.score} ref={this.refScore}>
-                {scores.reverse().map((value) => <Button className={styles.note} key={value} label={'star_' + (value + 1)} iconName='star-full' handleClick={(e) => this.onChange(value + 1, e)} size={ESize.small} />)}
+                {scores.reverse().map((value) => <Button className={styles.note + (value + 1 <= this.state.value ? ' ' + styles.selected : '')} key={value} label={'star_' + (value + 1)} iconName='star-full' handleClick={(e) => this.onChange(value + 1, e)} size={ESize.small} />)}
                 <input type='hidden' value={this.state.value} id='note' required={required} />
             </div>
         )
     }
+
+    public setValue = (value: string) => this.setState({ value: Number(value) })
 
     protected onChange(index: number, e: React.SyntheticEvent) {
         if (this.refScore.current) {

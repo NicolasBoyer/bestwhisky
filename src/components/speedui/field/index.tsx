@@ -21,6 +21,7 @@ export interface IFieldProps {
     pattern?: string
     required?: boolean
     placeHolder?: string
+    value?: string
 }
 
 interface IFieldStates {
@@ -29,22 +30,23 @@ interface IFieldStates {
 }
 
 export default class Field extends React.Component<IFieldProps, IFieldStates> {
+    protected refScore: React.RefObject<Score> = createRef()
     protected refInput: React.RefObject<HTMLInputElement> = createRef()
     protected refTextArea: React.RefObject<HTMLTextAreaElement> = createRef()
     protected refRoot: React.RefObject<HTMLDivElement> = createRef()
 
     constructor(props: IFieldProps) {
         super(props)
-        this.state = { previewImage: props.type === EFieldType.images || props.type === EFieldType.image ? 'BestWhisky/default' : '', isFileLoading: false }
+        this.state = { previewImage: props.type === EFieldType.images || props.type === EFieldType.image ? props.value || cloudinary.defaultImage : '', isFileLoading: false }
     }
 
     public render() {
-        const { label, name, placeHolder, pattern, required, type } = this.props
+        const { label, name, placeHolder, pattern, required, type, value } = this.props
         const { isFileLoading, previewImage } = this.state
         let input = null
         switch (type) {
             case EFieldType.note:
-                input = <Score maxScore={5} onChange={this.onChange} required={required} />
+                input = <Score maxScore={5} onChange={this.onChange} required={required} ref={this.refScore} />
                 break
             case EFieldType.image:
             case EFieldType.images:
@@ -53,7 +55,7 @@ export default class Field extends React.Component<IFieldProps, IFieldStates> {
                 if (type === EFieldType.images) {
                     attributes.multiple = 'multiple'
                 }
-                input = <input tabIndex={0} aria-invalid='false' accept='image/*' {...attributes} id={name} type='file' onChange={this.uploadFile} required={required} />
+                input = <input tabIndex={0} aria-invalid='false' accept='image/*' {...attributes} id={name} type='file' onChange={this.uploadFile} required={required} ref={this.refInput} />
                 break
             case EFieldType.video:
             case EFieldType.videos:
@@ -80,7 +82,7 @@ export default class Field extends React.Component<IFieldProps, IFieldStates> {
         }
 
         return (
-            <div className={styles[type] + ' ' + styles.field + (required ? ' ' + styles.required : '')} ref={this.refRoot}>
+            <div className={styles[type] + ' ' + styles.field + (required ? ' ' + styles.required : '') + (type !== EFieldType.image && type !== EFieldType.images && value ? ' ' + styles.hasValue : '')} ref={this.refRoot}>
                 <label htmlFor={name}>
                     <span>{label}</span>
                     {type === EFieldType.image || type === EFieldType.images ? <Icon className={styles.fileIcon} name='upload' /> : null}
@@ -93,6 +95,24 @@ export default class Field extends React.Component<IFieldProps, IFieldStates> {
                 </div>
             </div>
         )
+    }
+
+    componentDidMount = () => {
+        if (this.props.value) {
+            if (this.refScore.current) {
+                this.refScore.current.setValue(this.props.value as string)
+            }
+            if (this.refInput.current) {
+                if (this.refInput.current.type === 'file') {
+                    this.refInput.current.setAttribute('data-cloudId', this.props.value as string)
+                } else {
+                    this.refInput.current.value = this.props.value as string
+                }
+            }
+            if (this.refTextArea.current) {
+                this.refTextArea.current.value = this.props.value as string
+            }
+        }
     }
 
     public focus = () => {

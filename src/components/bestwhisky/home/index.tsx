@@ -69,31 +69,38 @@ class Home extends React.Component<IHomeProps, any> {
         this.state = { datas: [] }
         this.datas = this.state.datas
         if (this.global.firebase) {
+            // ? changer pour des callback précis sans return value -> A voir
+            // TODO : en cours passage par deux read et reste le changed du views
             this.global.firebase.read('whiskies', (datas: firebase.database.DataSnapshot, returnType: string) => {
                 const data = datas.val()
-                const eltIndex = this.datas.findIndex((obj: any) => obj.key === data.key)
+                data.views = []
+                const eltIndex = this.datas.findIndex((obj: any) => obj.key === datas.key)
                 if (returnType === 'added') {
-                    data.views = []
-                    this.global.firebase.getEntry('views', data.key, (snapshot: firebase.database.DataSnapshot) => {
-                        const view: any = {}
-                        if (!snapshot.val()) {
-                            return
-                        }
-                        for (const key in snapshot.val()) {
-                            if (snapshot.val().hasOwnProperty(key)) {
-                                view.author = key
-                                view.stars = snapshot.val()[key].note
-                            }
-                        }
-                        data.views.push(view)
-                        this.datas.push(data)
-                        this.setState({ datas: this.datas })
-                    })
+                    this.datas.push(data)
+                }
+                if (returnType === 'changed') {
+                    this.datas[eltIndex] = data
                 }
                 if (returnType === 'removed') {
                     this.datas.splice(eltIndex, 1)
-                    this.setState({ datas: this.datas })
                 }
+                this.setState({ datas: this.datas })
+            })
+            this.global.firebase.read('views', (datas: firebase.database.DataSnapshot, returnType: string) => {
+                const data = datas.val()
+                const eltIndex = this.datas.findIndex((obj: any) => obj.key === datas.key)
+                if (returnType === 'added' || returnType === 'changed') {
+                    this.datas[eltIndex].views = []
+                    for (const key in data) {
+                        if (data.hasOwnProperty(key)) {
+                            const view: any = {}
+                            view.author = key
+                            view.stars = data[key].note
+                            this.datas[eltIndex].views.push(view)
+                        }
+                    }
+                }
+                this.setState({ datas: this.datas })
             })
         }
     }

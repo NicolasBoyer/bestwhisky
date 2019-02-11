@@ -29,14 +29,15 @@ export default class FormDialog extends React.Component<IFormDialogProps, IFormD
 
     public render() {
         const { isModalOpen } = this.state
-        const { inputs, mode, title } = this.props
+        const { datas, inputs, mode, title } = this.props
         const cancelButton = <Button label='Annuler' handleClick={this.closeForm} />
-        const openButton = mode === EFormDialogMode.add ? <Button ref={this.refOpenButton} className={styles.addButton} variant={EVariant.fab} label='Ajouter' iconName='add' handleClick={this.openForm} /> : ''
+        // TODO : renvoyer des styles pour les boutons sur les props
+        const openButton = mode === EFormDialogMode.add ? <Button ref={this.refOpenButton} className={styles.addButton} variant={EVariant.fab} label='Ajouter' iconName='add' handleClick={this.openForm} /> : <Button ref={this.refOpenButton} className={styles.editButton} label='Editer' handleClick={this.openForm} />
         return (
             <Fragment>
                 {openButton}
                 <Dialog title={title} open={isModalOpen} ariaLabel='This is a form dialog' onClose={this.closeForm}>
-                    <Survey inputs={inputs} onSubmit={this.accept} buttons={cancelButton} acceptButtonLabel={EFormDialogMode.add ? 'Ajouter' : 'Modifier'} />
+                    <Survey inputs={inputs} datas={datas} onSubmit={this.accept} buttons={cancelButton} acceptButtonLabel={mode === EFormDialogMode.add ? 'Ajouter' : 'Modifier'} />
                 </Dialog>
             </Fragment>
         )

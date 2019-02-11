@@ -70,8 +70,8 @@ class Firebase {
         return key
     }
 
-    public async update(location: string, id: string, datas: any) {
-        await this.db.ref(location + '/' + id).update(datas)
+    public async update(location: string, datas: any, id: string = '') {
+        await this.db.ref(id ? location + '/' + id : location).update(datas)
     }
 
     public async remove(location: string, id: string) {

@@ -10,19 +10,21 @@ export interface ICardProps {
     click?: (e: React.SyntheticEvent) => void
     edit?: (e: React.SyntheticEvent) => void
     remove?: (e: React.SyntheticEvent) => void
+    editButton?: any
+    removeButton?: any
 }
 
 export default class Card extends React.Component<ICardProps> {
 
     public render() {
-        const { name, isAuth, className, children, click, edit, remove } = this.props
+        const { editButton, removeButton, name, isAuth, className, children, click, edit, remove } = this.props
         return (
             <article className={(className ? (className + ' ') : '') + styles.simple}>
                 {
                     isAuth && (edit || remove) &&
                     <div className={styles.buttonsActions}>
-                        {edit && <Button label='Editer' handleClick={edit} />}
-                        {remove && <Button label='Supprimer' handleClick={remove} />}
+                        {(edit || editButton) && (editButton || <Button label='Editer' handleClick={edit} />)}
+                        {(remove || removeButton) && (removeButton || <Button label='Supprimer' handleClick={remove} />)}
                     </div>
                 }
                 <h2 className={styles.title}>

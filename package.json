@@ -6,7 +6,7 @@
     "@reach/router": "^1.2.1",
     "@types/reach__router": "^1.2.3",
     "cloudinary-react": "^1.1.0",
-    "firebase": "^5.8.1",
+    "firebase": "^5.8.2",
     "focus-trap-react": "^4.0.1",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
@@ -32,10 +32,10 @@
   ],
   "devDependencies": {
     "@types/jest": "^23.3.13",
-    "@types/node": "^10.12.19",
-    "@types/react": "^16.7.22",
+    "@types/node": "^10.12.21",
+    "@types/react": "^16.8.1",
     "@types/react-dom": "^16.0.11",
     "tslint": "^5.12.1",
-    "typescript": "^3.2.4"
+    "typescript": "^3.3.1"
   }
 }
