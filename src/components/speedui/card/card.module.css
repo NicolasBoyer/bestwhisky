@@ -10,19 +10,11 @@
     font-family: 'CardTitle', Arial, Helvetica, sans-serif;
     margin: 0;
     padding: 0;
+    margin-bottom: 0.2em;
 }
 
-.simple .content {
-    display: flex;
-    margin-top: 0.3em;
-}
-
-.simple .content>* {
-    align-self: flex-start;
-}
-
-.simple .content.hasButton {
-    margin-bottom: 0.5em;
+.more {
+    margin-top: 0.5em;
 }
 
 .simple .buttonsActions {
