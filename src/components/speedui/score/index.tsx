@@ -40,7 +40,6 @@ export default class Score extends React.Component<IScoreProps, IScoreState> {
 
     protected onChange(index: number, e: React.SyntheticEvent) {
         if (this.refScore.current) {
-            // TODO : a transformer en fonction pour l'edit
             const buttons = this.refScore.current.querySelectorAll('button')
             buttons.forEach((button, position) => {
                 if (index <= buttons.length - position - 1) {

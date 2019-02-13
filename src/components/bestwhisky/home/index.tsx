@@ -69,8 +69,6 @@ class Home extends React.Component<IHomeProps, any> {
         this.state = { datas: [] }
         this.datas = this.state.datas
         if (this.global.firebase) {
-            // ? changer pour des callback précis sans return value -> A voir
-            // TODO : en cours passage par deux read et reste le changed du views
             this.global.firebase.read('whiskies', (datas: firebase.database.DataSnapshot, returnType: string) => {
                 const data = datas.val()
                 data.views = []
