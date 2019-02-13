@@ -2,8 +2,10 @@ import { Image } from 'cloudinary-react'
 import { Fragment } from 'react'
 import React from 'reactn'
 import { cloudinary } from '../../../tools/config'
+import { ERoutes } from '../../../tools/routes'
 import Utils from '../../../tools/utils'
 import AlertDialog, { EDialogAlertType } from '../../speedui/alert-dialog'
+import Box, { EBoxType } from '../../speedui/box'
 import Card from '../../speedui/card'
 import FormDialog, { EFormDialogMode } from '../../speedui/form-dialog'
 import { addWhiskyInputs } from '../home'
@@ -35,18 +37,16 @@ export default class Whisky extends React.Component<IWhiskyProps, IWhiskyState> 
     }
 
     public render() {
-        const { createdBy, name, views, description, image, price, origin, size } = this.props
+        const { id, createdBy, name, views, description, image, price, origin, size } = this.props
         const note = this.props.views.reduce((sum, view) => sum + Number(view.stars), 0) / this.props.views.length
-        // TODO : Ajouter des icones sur les boutons ?
-        // TODO : Eiter : en mettant le formdialog dur card et en passant les inputs this.props dan un attr
         // TODO : bug on reco
         const editButton = <FormDialog datas={{ note, ...this.props }} inputs={addWhiskyInputs} title='Editer un Whisky' mode={EFormDialogMode.edit} />
         return (
             <Fragment>
                 <AlertDialog message='Etes vous sur de vouloir supprimer ?' open={this.state.isAlertOpen} title='Attention !' accept={this.remove} type={EDialogAlertType.confirm} onClose={this.close} />
-                <Card name={name} click={this.showWhisky} editButton={editButton} remove={() => this.setState({ isAlertOpen: true })} isAuth={this.global.user && this.global.user.displayName === createdBy}>
-                    {image && <Image cloudName={cloudinary.cloudName} publicId={image} width='180' crop='scale' />}
-                    <div className={styles.infos}>
+                <Card name={name} click={ERoutes.whisky + Utils.slugify(this.props.name)} routeParams={{ id }} editButton={editButton} remove={() => this.setState({ isAlertOpen: true })} isAuth={this.global.user && this.global.user.displayName === createdBy}>
+                    <Box type={EBoxType.aroundFirstLeft}>
+                        {image && <Image cloudName={cloudinary.cloudName} publicId={image} width='180' crop='scale' />}
                         {(origin || size) && <div className={styles.metas}>
                             {origin && <span>{origin}</span>}
                             {(origin && size) && <span>, </span>}
@@ -54,15 +54,11 @@ export default class Whisky extends React.Component<IWhiskyProps, IWhiskyState> 
                         </div>}
                         {price && <div className={styles.price}>Prix : {price} €</div>}
                         <Stars views={views} />
-                        <div className={styles.description}>{description}</div>
-                    </div>
+                        {description && <div className={styles.description}>{Utils.toParagraph(description, 200)}</div>}
+                    </Box>
                 </Card>
             </Fragment>
         )
-    }
-
-    protected showWhisky = (e: React.SyntheticEvent) => {
-        console.log(Utils.slugify(this.props.name))
     }
 
     protected remove = () => {
@@ -72,11 +68,4 @@ export default class Whisky extends React.Component<IWhiskyProps, IWhiskyState> 
     }
 
     protected close = () => this.setState({ isAlertOpen: false })
-
-    protected edit = () => {
-        // TODO : Le formdialog doit etre utiliser ici ou à supprimer
-        // TODO probablement sur le survey le edit !!!
-        // this.global.firebase.remove('whiskies', this.props.id)
-        // this.global.firebase.remove('views', this.props.id)
-    }
 }

@@ -77,6 +77,15 @@ export default abstract class Utils {
 
     public static delay = (milliseconds: number) => new Promise((resolve) => setTimeout(() => resolve(), milliseconds))
 
+    public static toParagraph(text: string, reduceTo: number = 0, separator: string = '\n') {
+        text = reduceTo && text.length > reduceTo ? text.substring(0, reduceTo) + ' ...' : text
+        return text.split(separator).map((txt) => <p key={Utils.generateId()}>{txt}</p>)
+    }
+
+    public static generateId() {
+        return (Date.now().toString(36) + Math.random().toString(36).substr(2, 5)).toUpperCase()
+    }
+
     // tslint:disable-next-line:variable-name
     public static createComponent = (Component: any, props: any) => (
         <Component {...props} />
