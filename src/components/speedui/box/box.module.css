@@ -11,12 +11,12 @@
 
 .aroundFirstLeft>*:first-child {
     float: left;
-    margin: 0 1em 1em 0;
+    margin: 0 1em 0.5em 0;
 }
 
 .aroundFirstRight>*:first-child {
     float: right;
-    margin: 0 0 1em 1em;
+    margin: 0 0 0.5em 1em;
 }
 
 .horizontal {
@@ -41,6 +41,7 @@
 
 .spaceBetween {
     justify-content: space-between;
+    align-items: center;
 }
 
 .spaceAround {
