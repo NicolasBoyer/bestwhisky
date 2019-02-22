@@ -62,43 +62,45 @@ export interface IHomeProps {
 }
 
 class Home extends React.Component<IHomeProps, any> {
-    datas: any
-
     constructor(props: IHomeProps) {
         super(props)
         this.state = { datas: [] }
-        this.datas = this.state.datas
+        const states = this.state.datas
         if (this.global.firebase) {
             this.global.firebase.read('whiskies', (datas: firebase.database.DataSnapshot, returnType: string) => {
                 const data = datas.val()
                 data.views = []
-                const eltIndex = this.datas.findIndex((obj: any) => obj.key === datas.key)
+                const eltIndex = states.findIndex((obj: any) => obj.key === datas.key)
                 if (returnType === 'added') {
-                    this.datas.push(data)
+                    states.push(data)
                 }
                 if (returnType === 'changed') {
-                    this.datas[eltIndex] = data
+                    for (const key in data) {
+                        if (data.hasOwnProperty(key) && data[key] && typeof data[key] === 'string') {
+                            states[eltIndex][key] = data[key]
+                        }
+                    }
                 }
                 if (returnType === 'removed') {
-                    this.datas.splice(eltIndex, 1)
+                    states.splice(eltIndex, 1)
                 }
-                this.setState({ datas: this.datas })
+                this.setState({ datas: states })
             })
             this.global.firebase.read('views', (datas: firebase.database.DataSnapshot, returnType: string) => {
                 const data = datas.val()
-                const eltIndex = this.datas.findIndex((obj: any) => obj.key === datas.key)
+                const eltIndex = states.findIndex((obj: any) => obj.key === datas.key)
                 if (returnType === 'added' || returnType === 'changed') {
-                    this.datas[eltIndex].views = []
+                    states[eltIndex].views = []
                     for (const key in data) {
                         if (data.hasOwnProperty(key)) {
                             const view: any = {}
                             view.author = key
                             view.stars = data[key].note
-                            this.datas[eltIndex].views.push(view)
+                            states[eltIndex].views.push(view)
                         }
                     }
                 }
-                this.setState({ datas: this.datas })
+                this.setState({ datas: states })
             })
         }
     }
@@ -106,7 +108,7 @@ class Home extends React.Component<IHomeProps, any> {
     public render() {
         return (
             <Fragment>
-                {this.global.firebase && <FormDialog inputs={addWhiskyInputs} title='Ajouter un Whisky' mode={EFormDialogMode.add} />}
+                {this.global.user && <FormDialog inputs={addWhiskyInputs} title='Ajouter un Whisky' mode={EFormDialogMode.add} />}
                 <List children={this.state.datas} component={Whisky} />
             </Fragment>
         )
