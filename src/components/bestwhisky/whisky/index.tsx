@@ -23,7 +23,7 @@ export interface IWhiskyProps {
     origin?: string
     size?: number
     image?: string
-    views: Array<{ author: string, stars: number, view?: string }>
+    views: Array<{ author: string, stars: number }>
 }
 
 interface IWhiskyState {
@@ -38,13 +38,13 @@ export default class Whisky extends React.Component<IWhiskyProps, IWhiskyState> 
 
     public render() {
         const { id, createdBy, name, views, description, image, price, origin, size } = this.props
-        const note = this.props.views.reduce((sum, view) => sum + Number(view.stars), 0) / this.props.views.length
+        const note = views.reduce((sum, view) => sum + Number(view.stars), 0) / views.length
         // TODO : bug on reco
         const editButton = <FormDialog datas={{ note, ...this.props }} inputs={addWhiskyInputs} title='Editer un Whisky' mode={EFormDialogMode.edit} />
         return (
             <Fragment>
                 <AlertDialog message='Etes vous sur de vouloir supprimer ?' open={this.state.isAlertOpen} title='Attention !' accept={this.remove} type={EDialogAlertType.confirm} onClose={this.close} />
-                <Card name={name} click={ERoutes.whisky + Utils.slugify(this.props.name)} routeParams={{ id }} editButton={editButton} remove={() => this.setState({ isAlertOpen: true })} isAuth={this.global.user && this.global.user.displayName === createdBy}>
+                <Card name={name} click={ERoutes.whisky + Utils.slugify(name)} historyState={{ note, ...this.props }} editButton={editButton} remove={() => this.setState({ isAlertOpen: true })} isAuth={this.global.user && this.global.user.displayName === createdBy}>
                     <Box type={EBoxType.aroundFirstLeft}>
                         {image && <Image cloudName={cloudinary.cloudName} publicId={image} width='180' crop='scale' />}
                         {(origin || size) && <div className={styles.metas}>
