@@ -6,7 +6,6 @@ export interface IScoreProps {
     maxScore: number
     onChange: (e: React.SyntheticEvent) => void
     minScore?: number
-    saveOnClick?: boolean
     required?: boolean
 }
 
@@ -38,6 +37,8 @@ export default class Score extends React.Component<IScoreProps, IScoreState> {
 
     public setValue = (value: string) => this.setState({ value: Number(value) })
 
+    public getValue = () => this.state.value
+
     protected onChange(index: number, e: React.SyntheticEvent) {
         if (this.refScore.current) {
             const buttons = this.refScore.current.querySelectorAll('button')
@@ -48,8 +49,7 @@ export default class Score extends React.Component<IScoreProps, IScoreState> {
                     (button as HTMLElement).classList.add(styles.selected)
                 }
             })
-            this.setState({ value: index })
-            this.props.onChange(e)
         }
+        this.setState({ value: index }, () => this.props.onChange(e))
     }
 }

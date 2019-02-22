@@ -21,7 +21,7 @@ export interface IButtonProps {
     className?: string
     size?: ESize
     disabled?: boolean
-    routeParams?: any
+    historyState?: any
 }
 
 // TODO : étudier la possibilité d'avoir des children et dans ce cas le lael serait sur aria-label
@@ -30,7 +30,7 @@ export default class Button extends React.Component<IButtonProps> {
     protected refButton: React.RefObject<HTMLButtonElement> = React.createRef()
 
     public render() {
-        const { className, disabled, handleClick, iconName, iconPosition, label, routeParams, size, variant } = this.props
+        const { className, disabled, handleClick, iconName, iconPosition, label, historyState, size, variant } = this.props
         const icon = iconName && <Icon className={styles[iconPosition || ''] + ' ' + styles.icon} name={iconName} />
         const attributes: any = {
             className: (size ? styles[size] : '') + ' ' + (variant ? styles[variant] : '') + ' ' + (!icon && !iconPosition ? styles.textButton : styles.iconButton) + ' ' + styles.light + ' ' + (className ? className : ''),
@@ -50,7 +50,7 @@ export default class Button extends React.Component<IButtonProps> {
         }
         return typeof handleClick === 'string' ?
             (
-                <Link {...attributes} to={handleClick} state={routeParams}>
+                <Link {...attributes} to={handleClick} state={historyState}>
                     {children}
                 </Link>
             ) :

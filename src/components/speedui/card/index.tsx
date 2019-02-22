@@ -7,19 +7,18 @@ export interface ICardProps {
     name: string
     isAuth?: boolean
     className?: string
-    children?: any
     click?: ((e: React.SyntheticEvent) => void) | ERoutes | string
     edit?: (e: React.SyntheticEvent) => void
     remove?: (e: React.SyntheticEvent) => void
     editButton?: any
     removeButton?: any
-    routeParams?: any
+    historyState?: any
 }
 
 export default class Card extends React.Component<ICardProps> {
 
     public render() {
-        const { editButton, removeButton, name, isAuth, className, children, click, edit, remove, routeParams } = this.props
+        const { editButton, removeButton, name, isAuth, className, children, click, edit, remove, historyState } = this.props
         return (
             <article className={(className ? (className + ' ') : '') + styles.simple}>
                 {
@@ -33,7 +32,7 @@ export default class Card extends React.Component<ICardProps> {
                     <span>{name}</span>
                 </h2>
                 {children}
-                {click && <Button className={styles.more} label='En savoir plus' handleClick={click} routeParams={routeParams} />}
+                {click && <Button className={styles.more} label='En savoir plus' handleClick={click} historyState={historyState} />}
             </article>
         )
     }
