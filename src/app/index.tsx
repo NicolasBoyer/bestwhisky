@@ -29,7 +29,7 @@ class App extends React.Component<{}> {
                         <Routes />
                     </section>
                 </main>
-                <Footer />
+                <Footer createdBy='Nicolas Boyer' credit='Best Whisky' />
                 <Toast {...toastAttributes}>{this.global.toast && this.global.toast.toastMessage}</Toast>
             </Fragment>
         )
