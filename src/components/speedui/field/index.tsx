@@ -100,7 +100,7 @@ export default class Field extends React.Component<IFieldProps, IFieldStates> {
     componentDidMount = () => {
         if (this.props.value) {
             if (this.refScore.current) {
-                this.refScore.current.setValue(this.props.value as string)
+                this.refScore.current.setValue(Number(this.props.value))
             }
             if (this.refInput.current) {
                 if (this.refInput.current.type === 'file') {

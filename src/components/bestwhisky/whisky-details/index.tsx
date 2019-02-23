@@ -20,7 +20,7 @@ interface IWhiskyDetailsState {
     id: string
     createdBy: string
     name: string
-    note: string
+    note: number
     description: any
     image: string
     price: number
@@ -81,13 +81,15 @@ export default class WhiskyDetails extends React.Component<IWhiskyDetailsProps, 
 
     protected onChange = () => {
         // TODO : rgpd
+        // TODO : bouton mask + alert
+        // Todo : Finir l'édition car aujourd'hui n'enregistre pas
         const user = this.global.user.displayName
         const id = this.state.id
         const data = { createdBy: user, key: id, note: this.refScore.current && this.refScore.current.getValue() }
         this.global.firebase.update('views/' + id + '/' + user, data).then(() => {
             const views = this.state.views as any
             views.find((view: any) => view.author === user).stars = this.refScore.current && this.refScore.current.getValue()
-            const note = String(views.reduce((sum: any, view: any) => sum + Number(view.stars), 0) / views.length)
+            const note = views.reduce((sum: any, view: any) => sum + Number(view.stars), 0) / views.length
             this.setState({ note })
             // TODO : voir comment améliorer l'utilisation de cet historique
             window.history.replaceState(this.state, '')

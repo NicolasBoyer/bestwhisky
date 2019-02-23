@@ -35,7 +35,7 @@ export default class Score extends React.Component<IScoreProps, IScoreState> {
         )
     }
 
-    public setValue = (value: string) => this.setState({ value: Number(value) })
+    public setValue = (value: number) => this.setState({ value })
 
     public getValue = () => this.state.value
 
@@ -50,6 +50,7 @@ export default class Score extends React.Component<IScoreProps, IScoreState> {
                 }
             })
         }
-        this.setState({ value: index }, () => this.props.onChange(e))
+        this.setState({ value: index })
+        this.props.onChange(e)
     }
 }
