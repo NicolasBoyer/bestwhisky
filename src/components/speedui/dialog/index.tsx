@@ -38,19 +38,21 @@ export default class Dialog extends React.Component<IDialogProps> {
             return null
         }
         return ReactDOM.createPortal(
-            <FocusTrap tag='aside' className={styles.dialog} aria-modal='true' tabIndex={-1} role={role || 'dialog'} aria-labelledby={ariaLabel} onClick={this.onClickAway}>
-                <div className={styles.background + ' ' + styles.opacityOff} aria-hidden='true' ref={this.refBackground} />
-                <div className={styles.container + ' ' + styles.opacityOff} role='document' tabIndex={-1} ref={this.refContainer}>
-                    <div className={styles.dialogWindow} ref={this.refDialogWindow}>
-                        <h2 className={styles.title}>
-                            <span>{title}</span>
-                        </h2>
-                        <div className={styles.content}>
-                            {children}
+            <FocusTrap>
+                <aside className={styles.dialog} aria-modal='true' tabIndex={-1} role={role || 'dialog'} aria-labelledby={ariaLabel} onClick={this.onClickAway}>
+                    <div className={styles.background + ' ' + styles.opacityOff} aria-hidden='true' ref={this.refBackground} />
+                    <div className={styles.container + ' ' + styles.opacityOff} role='document' tabIndex={-1} ref={this.refContainer}>
+                        <div className={styles.dialogWindow} ref={this.refDialogWindow}>
+                            <h2 className={styles.title}>
+                                <span>{title}</span>
+                            </h2>
+                            <div className={styles.content}>
+                                {children}
+                            </div>
+                            {buttons && <div className={styles.buttons}>{buttons}</div>}
                         </div>
-                        {buttons && <div className={styles.buttons}>{buttons}</div>}
                     </div>
-                </div>
+                </aside>
             </FocusTrap>,
             document.body
         )
