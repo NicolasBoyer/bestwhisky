@@ -49,7 +49,7 @@ export const addWhiskyInputs: IFormInput[] = [
     },
     // TODO : revoir la taille des champs pour homogénéiser
     {
-        label: 'Note',
+        label: 'Votre note',
         name: 'note',
         required: true,
         tables: 'views/' + ETableVar.key + '/' + ETableVar.user,
@@ -62,6 +62,8 @@ export interface IHomeProps {
 }
 
 class Home extends React.Component<IHomeProps, any> {
+    _isMounted = false
+
     constructor(props: IHomeProps) {
         super(props)
         this.state = { datas: [] }
@@ -84,7 +86,9 @@ class Home extends React.Component<IHomeProps, any> {
                 if (returnType === 'removed') {
                     states.splice(eltIndex, 1)
                 }
-                this.setState({ datas: states })
+                if (this._isMounted) {
+                    this.setState({ datas: states })
+                }
             })
             this.global.firebase.read('views', (datas: firebase.database.DataSnapshot, returnType: string) => {
                 const data = datas.val()
@@ -100,10 +104,14 @@ class Home extends React.Component<IHomeProps, any> {
                         }
                     }
                 }
-                this.setState({ datas: states })
+                if (this._isMounted) {
+                    this.setState({ datas: states })
+                }
             })
         }
     }
+
+    public componentDidMount = () => this._isMounted = true
 
     public render() {
         return (
@@ -113,6 +121,8 @@ class Home extends React.Component<IHomeProps, any> {
             </Fragment>
         )
     }
+
+    public componentWillUnmount = () => this._isMounted = false
 }
 
 export default Home

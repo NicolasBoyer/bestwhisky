@@ -13,8 +13,8 @@ export interface ISurveyProps {
     acceptButtonLabel: string
     buttons?: any
     inputs: IFormInput[]
-    onChange?: (e: React.SyntheticEvent) => void
-    onSubmit?: (e: React.SyntheticEvent) => void
+    onChange?: (e: React.SyntheticEvent, datas?: any) => void
+    onSubmit?: (e: React.SyntheticEvent, datas?: any) => void
     datas?: any
 }
 
@@ -56,10 +56,12 @@ class Survey extends React.Component<ISurveyProps, any> {
 
     protected onChange = async (e: React.SyntheticEvent) => {
         const field = e.currentTarget.tagName !== 'INPUT' && e.currentTarget.tagName !== 'TEXTAREA' ? (e.currentTarget.parentElement as HTMLElement).querySelector('input') : e.currentTarget as HTMLInputElement
-        Utils.formChange(field as HTMLInputElement).then((states: any) => this.setState({ ...states }))
-        if (this.props.onChange) {
-            this.props.onChange(e)
-        }
+        Utils.formChange(field as HTMLInputElement).then((states: any) => {
+            this.setState({ ...states })
+            if (this.props.onChange) {
+                this.props.onChange(e, states)
+            }
+        })
     }
 
     protected onLoad = async (e: React.SyntheticEvent) => {
@@ -127,7 +129,13 @@ class Survey extends React.Component<ISurveyProps, any> {
         }
         this.setState({ ...this.initalStates })
         if (this.props.onSubmit) {
-            this.props.onSubmit(e)
+            let states: any = {}
+            for (const table in datas) {
+                if (datas.hasOwnProperty(table)) {
+                    states = { ...states, ...datas[table] }
+                }
+            }
+            this.props.onSubmit(e, states)
         }
         e.persist()
     }

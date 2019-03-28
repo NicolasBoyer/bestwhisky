@@ -38,13 +38,15 @@ export default class Whisky extends React.Component<IWhiskyProps, IWhiskyState> 
 
     public render() {
         const { id, createdBy, name, views, description, image, price, origin, size } = this.props
-        const note = views.reduce((sum, view) => sum + Number(view.stars), 0) / views.length
+        const usersNote = views.reduce((sum, view) => sum + view.stars, 0) / views.length
+        const userView = views.find((view) => this.global.user && this.global.user.displayName === view.author)
+        const note = userView && userView.stars
         // TODO : bug on reco
-        const editButton = <FormDialog datas={{ note, ...this.props }} inputs={addWhiskyInputs} title='Editer un Whisky' mode={EFormDialogMode.edit} />
+        const editButton = <FormDialog datas={{ usersNote, note, ...this.props }} inputs={addWhiskyInputs} title='Editer un Whisky' mode={EFormDialogMode.edit} />
         return (
             <Fragment>
-                <AlertDialog message='Etes vous sur de vouloir supprimer ?' open={this.state.isAlertOpen} title='Attention !' accept={this.remove} type={EDialogAlertType.confirm} onClose={this.close} />
-                <Card name={name} click={ERoutes.whisky + Utils.slugify(name)} historyState={{ note, ...this.props }} editButton={editButton} remove={() => this.setState({ isAlertOpen: true })} isAuth={this.global.user && this.global.user.displayName === createdBy}>
+                <AlertDialog message='Etes vous sur de vouloir supprimer ?' open={this.state.isAlertOpen} title='Attention !' accept={this.remove} type={EDialogAlertType.confirm} onClose={this.alertClose} />
+                <Card name={name} click={ERoutes.whisky + Utils.slugify(name)} historyState={{ usersNote, note, ...this.props }} editButton={editButton} remove={this.alertOpen} isAuth={this.global.user && this.global.user.displayName === createdBy}>
                     <Box type={EBoxType.aroundFirstLeft}>
                         {image && <Image cloudName={cloudinary.cloudName} publicId={image} width='180' crop='scale' />}
                         {(origin || size) && <div className={styles.metas}>
@@ -67,5 +69,7 @@ export default class Whisky extends React.Component<IWhiskyProps, IWhiskyState> 
         this.global.firebase.remove('views', this.props.id)
     }
 
-    protected close = () => this.setState({ isAlertOpen: false })
+    protected alertOpen = () => this.setState({ isAlertOpen: true })
+
+    protected alertClose = () => this.setState({ isAlertOpen: false })
 }

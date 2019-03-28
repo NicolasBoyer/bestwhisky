@@ -72,7 +72,7 @@ export default abstract class Utils {
         if (field.required || field.type === EFieldType.email || field.type === EFieldType.url || field.type === EFieldType.password) {
             validStates = { ['valid_' + field.id]: Utils.isValidField(field) }
         }
-        return { ...validStates, [field.id]: field.value }
+        return { ...validStates, [field.id]: Number(field.value) || field.value }
     }
 
     public static delay = (milliseconds: number) => new Promise((resolve) => setTimeout(() => resolve(), milliseconds))

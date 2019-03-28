@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { Fragment } from 'react'
+import Helmet from 'react-helmet'
 import Button, { ESize } from '../../speedui/button'
 import styles from './score.module.css'
 
 export interface IScoreProps {
     maxScore: number
-    onChange: (e: React.SyntheticEvent) => void
+    onChange: (e: React.SyntheticEvent, value: number) => void
     minScore?: number
     required?: boolean
 }
@@ -29,7 +30,23 @@ export default class Score extends React.Component<IScoreProps, IScoreState> {
         }
         return (
             <div className={styles.score} ref={this.refScore}>
-                {scores.reverse().map((value) => <Button className={styles.note + (value + 1 <= this.state.value ? ' ' + styles.selected : '')} key={value} label={'star_' + (value + 1)} iconName='star-full' handleClick={(e) => this.onChange(value + 1, e)} size={ESize.small} />)}
+                {scores.reverse().map((value) =>
+                    <Fragment key={value}>
+                        {
+                            this.state.value - value < 1 && this.state.value - value > 0 &&
+                            <Helmet>
+                                <style>
+                                    {`
+                                        :root {
+                                            --note: ${(this.state.value - value) * 100}%;
+                                        }
+                                    `}
+                                </style>
+                            </Helmet>
+                        }
+                        <Button className={styles.note + (value + 1 <= this.state.value ? ' ' + styles.selected : this.state.value - value < 1 && this.state.value - value > 0 ? ' ' + styles.float : '')} label={'star_' + (value + 1)} iconName='star-full' handleClick={(e) => this.onChange(e, value + 1)} size={ESize.small} />
+                    </Fragment>
+                )}
                 <input type='hidden' value={this.state.value} id='note' required={required} />
             </div>
         )
@@ -39,7 +56,7 @@ export default class Score extends React.Component<IScoreProps, IScoreState> {
 
     public getValue = () => this.state.value
 
-    protected onChange(index: number, e: React.SyntheticEvent) {
+    protected onChange(e: React.SyntheticEvent, index: number) {
         if (this.refScore.current) {
             const buttons = this.refScore.current.querySelectorAll('button')
             buttons.forEach((button, position) => {
@@ -51,6 +68,6 @@ export default class Score extends React.Component<IScoreProps, IScoreState> {
             })
         }
         this.setState({ value: index })
-        this.props.onChange(e)
+        this.props.onChange(e, index)
     }
 }

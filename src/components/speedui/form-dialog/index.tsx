@@ -13,6 +13,8 @@ export interface IFormDialogProps {
     title: string
     inputs: IFormInput[]
     datas?: any
+    onClose?: (e: React.SyntheticEvent, datas?: any) => void
+    onChange?: (e: React.SyntheticEvent, datas?: any) => void
 }
 
 interface IFormDialogState {
@@ -37,7 +39,7 @@ export default class FormDialog extends React.Component<IFormDialogProps, IFormD
             <Fragment>
                 {openButton}
                 <Dialog title={title} open={isModalOpen} ariaLabel='This is a form dialog' onClose={this.closeForm}>
-                    <Survey inputs={inputs} datas={datas} onSubmit={this.accept} buttons={cancelButton} acceptButtonLabel={mode === EFormDialogMode.add ? 'Ajouter' : 'Modifier'} />
+                    <Survey inputs={inputs} datas={datas} onSubmit={this.accept} onChange={this.props.onChange} buttons={cancelButton} acceptButtonLabel={mode === EFormDialogMode.add ? 'Ajouter' : 'Modifier'} />
                 </Dialog>
             </Fragment>
         )
@@ -45,12 +47,15 @@ export default class FormDialog extends React.Component<IFormDialogProps, IFormD
 
     protected openForm = () => this.setState({ isModalOpen: true })
 
-    protected closeForm = () => {
+    protected closeForm = (e: React.SyntheticEvent, datas?: any) => {
         this.setState({ isModalOpen: false })
         if (this.refOpenButton.current) {
             this.refOpenButton.current.focus()
         }
+        if (this.props.onClose) {
+            this.props.onClose(e, datas)
+        }
     }
 
-    protected accept = () => this.closeForm()
+    protected accept = (e: React.SyntheticEvent, datas: any) => this.closeForm(e, datas)
 }
