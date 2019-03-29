@@ -7,7 +7,7 @@
 }
 
 .footer>*:first-child {
-    min-height: 12vh;
+    min-height: 10em;
 }
 
 .legal {
