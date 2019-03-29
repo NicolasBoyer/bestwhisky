@@ -10,3 +10,7 @@
     margin-right: auto;
     padding-top: 20px;
 }
+
+.noSubHeader {
+    max-width: 800px;
+}

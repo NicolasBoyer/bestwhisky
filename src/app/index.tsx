@@ -24,8 +24,8 @@ class App extends React.Component<{}> {
                 <Header />
                 <main className={styles.main}>
                     {/* Disparait sur petits écrans */}
-                    <SubHeader name='Best Whisky' />
-                    <section className={styles.content}>
+                    <SubHeader name='Best Whisky' isVisible={this.global.isSubHeader} />
+                    <section className={styles.content + (!this.global.isSubHeader ? ' ' + styles.noSubHeader : '')}>
                         <Routes />
                     </section>
                 </main>

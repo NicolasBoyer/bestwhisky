@@ -66,6 +66,7 @@ class Home extends React.Component<IHomeProps, any> {
 
     constructor(props: IHomeProps) {
         super(props)
+        this.setGlobal({ isSubHeader: true })
         this.state = { datas: [] }
         const states = this.state.datas
         if (this.global.firebase) {
@@ -122,7 +123,10 @@ class Home extends React.Component<IHomeProps, any> {
         )
     }
 
-    public componentWillUnmount = () => this._isMounted = false
+    public componentWillUnmount = () => {
+        this._isMounted = false
+        this.setGlobal({ isSubHeader: false })
+    }
 }
 
 export default Home
