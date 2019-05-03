@@ -18,6 +18,7 @@ class App extends React.Component<{}> {
         if (this.global.firebase) {
             this.global.firebase.getCurrentUser((user: firebase.User | null) => user && user.emailVerified && this.setGlobal({ user }))
         }
+        this.setGlobal({ isSubHeader: location.href === this.global.homeUrl })
     }
 
     public render() {
@@ -30,13 +31,14 @@ class App extends React.Component<{}> {
                     {/* Disparait sur petits écrans */}
                     <SubHeader name='Best Whisky' isVisible={this.global.isSubHeader} />
                     <section className={styles.content + (!this.global.isSubHeader ? ' ' + styles.noSubHeader : '')}>
-                        <Pages>
-                            {/* <NotFound default /> */}
-                            <Home path='/' />
-                            <SignIn path={ERoutes.signin} />
-                            {/* <SignUp path={ERoutes.signup} /> */}
-                            <WhiskyDetails path={ERoutes.whisky + ':name'} />
-                        </Pages>
+                        <Routes />
+                        {/* <Pages> */}
+                        {/* <NotFound default /> */}
+                        {/* <Home path='/' /> */}
+                        {/* <SignIn path={ERoutes.signin} /> */}
+                        {/* <SignUp path={ERoutes.signup} /> */}
+                        {/* <WhiskyDetails path={ERoutes.whisky + ':name'} /> */}
+                        {/* </Pages> */}
                     </section>
                 </main>
                 <Footer createdBy='Nicolas Boyer' credit='Best Whisky' />

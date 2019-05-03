@@ -6,7 +6,8 @@
     min-width: 0;
     flex-direction: column;
     vertical-align: top;
-    width: 200px;
+    /* width: 200px; */
+    width: 100%;
     margin-bottom: 8px;
 }
 

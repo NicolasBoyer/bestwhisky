@@ -7,8 +7,9 @@ import styles from './header.module.css'
 class Header extends React.Component {
     public render() {
         return (
-            <header className={styles.header}>
+            <header className={styles.header + (location.href !== this.global.homeUrl ? ' ' + styles.isBack : '')}>
                 <nav>
+                    {location.href !== this.global.homeUrl && <Button className={styles.back} iconName='back' label='back' handleClick='../' />}
                     {!this.global.user && <Button className={styles.log} iconName='enter' iconPosition={EIconPosition.beforeLabel} label='login' handleClick={ERoutes.signin} />}
                     {this.global.user && <Button className={styles.log} iconName='exit' iconPosition={EIconPosition.beforeLabel} label={this.global.user.displayName + ' - logout'} handleClick={this.signOut} />}
                 </nav>

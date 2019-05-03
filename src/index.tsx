@@ -7,6 +7,7 @@ import Firebase from './tools/firebase'
 
 setGlobal({
     firebase: new Firebase(),
+    homeUrl: location.href.includes('localhost') ? 'http://localhost:3000/' : 'https://best-whisky.firebaseapp.com',
     isSubHeader: true,
     toast: {},
     user: null
