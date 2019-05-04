@@ -5,3 +5,16 @@
     color: #555;
     min-height: 10em;
 }
+
+.footer>*:first-child {
+    min-height: 10em;
+}
+
+.legal {
+    margin-top: auto;
+}
+
+.emphase {
+    font-weight: bold;
+    text-transform: uppercase;
+}

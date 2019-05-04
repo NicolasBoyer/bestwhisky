@@ -1,12 +1,13 @@
 import { Image } from 'cloudinary-react'
-import React from 'react'
+import { createRef } from 'react'
 import Ink from 'react-ink'
+import React from 'reactn'
 import { cloudinary } from '../../../tools/config'
 import Utils from '../../../tools/utils'
 import Icon from '../icon'
 import Loader from '../loader'
 import Score from '../score'
-import Toast, { EToastType } from '../toast'
+import { EToastType } from '../toast'
 import styles from './field.module.css'
 
 // TODO : Pensez à améliorer password et à finaliser les types non faits
@@ -20,35 +21,32 @@ export interface IFieldProps {
     pattern?: string
     required?: boolean
     placeHolder?: string
+    value?: string
 }
 
 interface IFieldStates {
     previewImage: string
     isFileLoading: boolean
-    isToastOpen: boolean
-    toastType: EToastType | undefined
-    toastMessage: any
-    toastAutoHideDuration?: number
-    isToasCloseButton?: boolean
 }
 
 export default class Field extends React.Component<IFieldProps, IFieldStates> {
-    protected refInput: React.RefObject<HTMLInputElement> = React.createRef()
-    protected refTextArea: React.RefObject<HTMLTextAreaElement> = React.createRef()
-    protected refRoot: React.RefObject<HTMLDivElement> = React.createRef()
+    protected refScore: React.RefObject<Score> = createRef()
+    protected refInput: React.RefObject<HTMLInputElement> = createRef()
+    protected refTextArea: React.RefObject<HTMLTextAreaElement> = createRef()
+    protected refRoot: React.RefObject<HTMLDivElement> = createRef()
 
     constructor(props: IFieldProps) {
         super(props)
-        this.state = { previewImage: props.type === EFieldType.images || props.type === EFieldType.image ? 'BestWhisky/default' : '', isFileLoading: false, isToastOpen: false, toastMessage: '', toastType: undefined }
+        this.state = { previewImage: props.type === EFieldType.images || props.type === EFieldType.image ? props.value || cloudinary.defaultImage : '', isFileLoading: false }
     }
 
     public render() {
-        const { label, name, placeHolder, pattern, required, type } = this.props
-        const { isFileLoading, isToasCloseButton, isToastOpen, previewImage, toastAutoHideDuration, toastType, toastMessage } = this.state
+        const { label, name, placeHolder, pattern, required, type, value } = this.props
+        const { isFileLoading, previewImage } = this.state
         let input = null
         switch (type) {
             case EFieldType.note:
-                input = <Score maxScore={5} />
+                input = <Score maxScore={5} onChange={this.onChange} required={required} ref={this.refScore} />
                 break
             case EFieldType.image:
             case EFieldType.images:
@@ -57,7 +55,7 @@ export default class Field extends React.Component<IFieldProps, IFieldStates> {
                 if (type === EFieldType.images) {
                     attributes.multiple = 'multiple'
                 }
-                input = <input tabIndex={0} aria-invalid='false' accept='image/*' {...attributes} id={name} type='file' onChange={this.uploadFile} required={required} />
+                input = <input tabIndex={0} aria-invalid='false' accept='image/*' {...attributes} id={name} type='file' onChange={this.uploadFile} required={required} ref={this.refInput} />
                 break
             case EFieldType.video:
             case EFieldType.videos:
@@ -71,7 +69,6 @@ export default class Field extends React.Component<IFieldProps, IFieldStates> {
             case EFieldType.search:
             case EFieldType.email:
             case EFieldType.url:
-                // TODO : required et regexp à prendre en compte côté bouton de validation quand j'en serais là
                 input = <input tabIndex={0} aria-invalid='false' id={name} type={type} placeholder={placeHolder} onChange={this.onChange} onFocus={this.onFocus} onBlur={this.onBlur} ref={this.refInput} required={required} pattern={pattern} />
                 break
             case EFieldType.select:
@@ -85,7 +82,7 @@ export default class Field extends React.Component<IFieldProps, IFieldStates> {
         }
 
         return (
-            <div className={styles[type] + ' ' + styles.field + (required ? ' ' + styles.required : '')} ref={this.refRoot}>
+            <div className={styles[type] + ' ' + styles.field + (required ? ' ' + styles.required : '') + (type !== EFieldType.image && type !== EFieldType.images && value ? ' ' + styles.hasValue : '')} ref={this.refRoot}>
                 <label htmlFor={name}>
                     <span>{label}</span>
                     {type === EFieldType.image || type === EFieldType.images ? <Icon className={styles.fileIcon} name='upload' /> : null}
@@ -94,11 +91,28 @@ export default class Field extends React.Component<IFieldProps, IFieldStates> {
                 <div className={styles.inputContainer}>
                     {input}
                     {isFileLoading && <div className={styles.fileLoader}><div className={styles.fileLoaderBg}></div><Loader /></div>}
-                    {previewImage && <Image cloudName='elendil' publicId={previewImage} width='140' crop='scale' />}
+                    {previewImage && <Image cloudName={cloudinary.cloudName} publicId={previewImage} width='140' crop='scale' />}
                 </div>
-                <Toast type={toastType} autoHideDuration={toastAutoHideDuration} open={isToastOpen} closeButton={isToasCloseButton}>{toastMessage}</Toast>
             </div>
         )
+    }
+
+    componentDidMount = () => {
+        if (this.props.value) {
+            if (this.refScore.current) {
+                this.refScore.current.setValue(Number(this.props.value))
+            }
+            if (this.refInput.current) {
+                if (this.refInput.current.type === 'file') {
+                    this.refInput.current.setAttribute('data-cloudId', this.props.value as string)
+                } else {
+                    this.refInput.current.value = this.props.value as string
+                }
+            }
+            if (this.refTextArea.current) {
+                this.refTextArea.current.value = this.props.value as string
+            }
+        }
     }
 
     public focus = () => {
@@ -118,7 +132,7 @@ export default class Field extends React.Component<IFieldProps, IFieldStates> {
         if (this.refRoot.current) {
             if (this.refInput.current && this.refInput.current.value !== '') {
                 this.refRoot.current.classList.add(styles.hasValue)
-                // Email / pattern / url validation
+                // Email / pattern / url / password validation
                 if (!Utils.isValidField(this.refInput.current)) {
                     this.refRoot.current.classList.add(styles.error)
                 } else {
@@ -135,7 +149,8 @@ export default class Field extends React.Component<IFieldProps, IFieldStates> {
     }
 
     protected uploadFile = (e: React.SyntheticEvent) => {
-        const files = (e.target as HTMLInputElement).files as FileList
+        const input = e.target as HTMLInputElement
+        const files = input.files as FileList
         [].forEach.call(files, async (file: File) => {
             const formData = new FormData()
             this.setState({ isFileLoading: true })
@@ -144,11 +159,14 @@ export default class Field extends React.Component<IFieldProps, IFieldStates> {
             const response = await fetch(cloudinary.url + cloudinary.cloudName + '/upload', { body: formData, method: 'POST' })
             const success = await response.json()
             if (success.error) {
-                this.setState({ isToastOpen: true, toastMessage: 'Erreur : ' + success.error.message, toastType: EToastType.error, isToasCloseButton: true })
+                this.setGlobal({ toast: { isToastOpen: true, toastMessage: 'Erreur : ' + success.error.message, toastType: EToastType.error, isToastCloseButton: true } })
                 console.error(success.error)
                 return false
             }
-            this.setState({ previewImage: success.public_id, isFileLoading: false, isToastOpen: true, toastMessage: 'Succès : votre image a bien été envoyée', toastType: EToastType.success, toastAutoHideDuration: 3 })
+            const cloudId = success.public_id
+            input.setAttribute('data-cloudId', cloudId)
+            this.setState({ previewImage: cloudId, isFileLoading: false })
+            this.setGlobal({ toast: { isToastOpen: true, toastMessage: 'Succès : votre image a bien été envoyée', toastType: EToastType.success, toastAutoHideDuration: 3 } })
         })
         this.props.onChange(e)
     }

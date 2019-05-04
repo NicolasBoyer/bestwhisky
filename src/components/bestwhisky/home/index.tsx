@@ -1,95 +1,12 @@
-import React, { Fragment } from 'react'
+import { Fragment } from 'react'
+import React from 'reactn'
 import { EFieldType } from '../../speedui/field'
 import { IFormInput } from '../../speedui/form'
-import FormDialog, { EMode } from '../../speedui/form-dialog'
-import Whisky, { IWhiskyProps } from '../whisky'
+import FormDialog, { EFormDialogMode } from '../../speedui/form-dialog'
+import List from '../../speedui/list'
+import { ETableVar } from '../../speedui/survey'
+import Whisky from '../whisky'
 // import { addWhiskyInputs } from '../tools/config'
-
-// TODO : A lier avec Firebase
-const whiskiesJSON: IWhiskyProps[] = [
-    {
-        createdBy: 'Nico',
-        // comments: [],
-        description: 'A tester pour le type !',
-        id: '1',
-        image: 'sample',
-        // Pas sur de garder la key
-        key: '1',
-        name: 'REDBREAST 15 ans Single Pot Still 46%',
-        origin: 'Irlande / Cork County',
-        price: 87,
-        size: 70,
-        views: [
-            {
-                author: 'Nico',
-                stars: 5,
-                view: 'TextArea'
-            },
-            {
-                author: 'Elendil',
-                stars: 4
-            },
-            {
-                author: 'Sylvain',
-                stars: 4
-            }
-        ]
-    },
-    {
-        createdBy: 'Nico',
-        description: 'A tester pour le type !',
-        id: '2',
-        image: 'bike',
-        key: '2',
-        name: 'REDBREAST 12 ans Single Pot Still 40%',
-        origin: 'Irlande / Cork County',
-        price: 58,
-        size: 70,
-        views: [
-            {
-                author: 'Nico',
-                stars: 3,
-                view: 'TextArea'
-            }
-        ]
-    },
-    {
-        createdBy: 'Nico',
-        description: 'A tester pour le type !',
-        id: '3',
-        image: 'elephants',
-        key: '3',
-        name: 'REDBREAST 12 ans Single Pot Still 40%',
-        origin: 'Irlande / Cork County',
-        price: 58,
-        size: 70,
-        views: [
-            {
-                author: 'Nico',
-                stars: 2,
-                view: 'TextArea'
-            }
-        ]
-    },
-    {
-        createdBy: 'Nico',
-        description: 'A tester pour le type !',
-        id: '4',
-        image: 'sheep',
-        key: '4',
-        name: 'REDBREAST 12 ans Single Pot Still 40%',
-        origin: 'Irlande / Cork County',
-        price: 58,
-        size: 70,
-        views: [
-            {
-                author: 'Nico',
-                stars: 4,
-                view: 'TextArea'
-            }
-        ]
-    }
-]
 
 // TODO : A passer dans config
 export const addWhiskyInputs: IFormInput[] = [
@@ -97,21 +14,45 @@ export const addWhiskyInputs: IFormInput[] = [
         label: 'Nom',
         name: 'name',
         required: true,
+        tables: 'whiskies/' + ETableVar.key,
         type: EFieldType.text
+    },
+    {
+        label: 'Origine',
+        name: 'origin',
+        tables: 'whiskies/' + ETableVar.key,
+        type: EFieldType.text
+    },
+    {
+        label: 'Prix (€)',
+        name: 'price',
+        tables: 'whiskies/' + ETableVar.key,
+        type: EFieldType.number
+    },
+    {
+        label: 'Contenance (cl)',
+        name: 'size',
+        tables: 'whiskies/' + ETableVar.key,
+        type: EFieldType.number
     },
     {
         label: 'Description',
         name: 'description',
+        tables: 'whiskies/' + ETableVar.key,
         type: EFieldType.area
     },
     {
         label: 'Choisir une image',
         name: 'image',
+        tables: 'whiskies/' + ETableVar.key,
         type: EFieldType.image
     },
+    // TODO : revoir la taille des champs pour homogénéiser
     {
-        label: 'Note',
+        label: 'Votre note',
         name: 'note',
+        required: true,
+        tables: 'views/' + ETableVar.key + '/' + ETableVar.user,
         type: EFieldType.note
     }
 ]
@@ -120,32 +61,72 @@ export interface IHomeProps {
     path: string
 }
 
-interface IHomeState {
-    value: string
-}
+class Home extends React.Component<IHomeProps, any> {
+    _isMounted = false
 
-export default class Home extends React.Component<IHomeProps, IHomeState> {
     constructor(props: IHomeProps) {
         super(props)
-        this.state = { value: '' }
+        this.setGlobal({ isSubHeader: true })
+        this.state = { datas: [] }
+        const states = this.state.datas
+        if (this.global.firebase) {
+            this.global.firebase.read('whiskies', (datas: firebase.database.DataSnapshot, returnType: string) => {
+                const data = datas.val()
+                data.views = []
+                const eltIndex = states.findIndex((obj: any) => obj.key === datas.key)
+                if (returnType === 'added') {
+                    states.push(data)
+                }
+                if (returnType === 'changed') {
+                    for (const key in data) {
+                        if (data.hasOwnProperty(key) && data[key] && typeof data[key] === 'string') {
+                            states[eltIndex][key] = data[key]
+                        }
+                    }
+                }
+                if (returnType === 'removed') {
+                    states.splice(eltIndex, 1)
+                }
+                if (this._isMounted) {
+                    this.setState({ datas: states })
+                }
+            })
+            this.global.firebase.read('views', (datas: firebase.database.DataSnapshot, returnType: string) => {
+                const data = datas.val()
+                const eltIndex = states.findIndex((obj: any) => obj.key === datas.key)
+                if (returnType === 'added' || returnType === 'changed') {
+                    states[eltIndex].views = []
+                    for (const key in data) {
+                        if (data.hasOwnProperty(key)) {
+                            const view: any = {}
+                            view.author = key
+                            view.stars = data[key].note
+                            states[eltIndex].views.push(view)
+                        }
+                    }
+                }
+                if (this._isMounted) {
+                    this.setState({ datas: states })
+                }
+            })
+        }
     }
+
+    public componentDidMount = () => this._isMounted = true
 
     public render() {
         return (
             <Fragment>
-                <FormDialog inputs={addWhiskyInputs} title='Ajouter un Whisky' mode={EMode.add} onSubmit={this.handleSubmit} onChange={this.handleChange} />
-                {/* <Sort /> */}
-                {whiskiesJSON.map((datas: IWhiskyProps) => <Whisky {...datas} />)}
+                {this.global.user && <FormDialog inputs={addWhiskyInputs} title='Ajouter un Whisky' mode={EFormDialogMode.add} />}
+                <List children={this.state.datas} component={Whisky} />
             </Fragment>
         )
     }
 
-    protected handleSubmit = (e: React.SyntheticEvent) => {
-        alert('A name was submitted: ' + this.state.value)
-        e.preventDefault()
-    }
-
-    protected handleChange = (e: React.SyntheticEvent) => {
-        this.setState({ value: (e.target as HTMLInputElement).value })
+    public componentWillUnmount = () => {
+        this._isMounted = false
+        this.setGlobal({ isSubHeader: false })
     }
 }
+
+export default Home

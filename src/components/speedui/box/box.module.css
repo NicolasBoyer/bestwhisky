@@ -1,0 +1,53 @@
+.horizontal,
+.vertical {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.aroundFirstLeft,
+.aroundFirstRight {
+    overflow: auto;
+}
+
+.aroundFirstLeft>*:first-child {
+    float: left;
+    margin: 0 1em 0.5em 0;
+}
+
+.aroundFirstRight>*:first-child {
+    float: right;
+    margin: 0 0 0.5em 1em;
+}
+
+.horizontal {
+    flex-direction: row;
+}
+
+.vertical {
+    flex-direction: column;
+}
+
+.start {
+    justify-content: start;
+}
+
+.end {
+    justify-content: end;
+}
+
+.center {
+    justify-content: center;
+}
+
+.spaceBetween {
+    justify-content: space-between;
+    align-items: center;
+}
+
+.spaceAround {
+    justify-content: space-around;
+}
+
+.spaceEvenly {
+    justify-content: space-evenly;
+}

@@ -1,8 +1,11 @@
-import React from 'react'
+import { navigate } from '@reach/router'
+import React from 'reactn'
+import { website } from '../../../../tools/config'
 import Utils from '../../../../tools/utils'
 import { EFieldType } from '../../field'
 import { IFormInput } from '../../form'
-import Auth, { IAuthProps } from '../auth-config'
+import { EToastType } from '../../toast'
+import Auth, { IAuthProps } from '../auth'
 import styles from '../auth.module.css'
 
 export const inputs: IFormInput[] = [
@@ -19,7 +22,7 @@ export const inputs: IFormInput[] = [
         type: EFieldType.email
     },
     {
-        label: 'Password',
+        label: 'Password (au moins 8  caractères)',
         name: 'passwordOne',
         required: true,
         type: EFieldType.password
@@ -32,7 +35,7 @@ export const inputs: IFormInput[] = [
     }
 ]
 
-export default class SignUp extends React.Component<IAuthProps, any> {
+class SignUp extends React.Component<IAuthProps, any> {
     initalStates: any = {}
     requiredFieldsNumber: number = 0
 
@@ -40,8 +43,8 @@ export default class SignUp extends React.Component<IAuthProps, any> {
         super(props)
         inputs.forEach((input) => {
             this.initalStates[input.name] = ''
-            this.initalStates['valid_' + input.name] = !input.required
-            if (input.required) {
+            if (input.required || input.type === EFieldType.email || input.type === EFieldType.url || input.type === EFieldType.password) {
+                this.initalStates['valid_' + input.name] = !input.required
                 this.requiredFieldsNumber++
             }
         })
@@ -49,38 +52,39 @@ export default class SignUp extends React.Component<IAuthProps, any> {
     }
 
     public render() {
-        const isInvalid = Object.keys(this.state).filter((key) => this.state[key] === true).length !== this.requiredFieldsNumber || this.state.passwordOne !== this.state.passwordTwo && this.state.passwordOne !== ''
+        const isInvalid = Object.keys(this.state).filter((key) => this.state[key] === true && key.includes('valid_')).length !== this.requiredFieldsNumber || this.state.passwordOne !== this.state.passwordTwo && this.state.passwordOne !== ''
         return Auth.authChild(inputs, 'S\'inscrire', styles.signUp, this.onSubmit, (e: React.SyntheticEvent) => this.onSubmit(e), this.onChange, isInvalid)
     }
 
-    // TODO à remettre sur la home
     protected onChange = (e: React.SyntheticEvent) => {
-        const field = e.target as HTMLInputElement
-        this.setState({ [field.id]: field.value, ['valid_' + field.id]: Utils.isValidField(field) })
+        const field = e.currentTarget.tagName !== 'INPUT' && e.currentTarget.tagName !== 'TEXTAREA' ? (e.currentTarget.parentElement as HTMLElement).querySelector('input') : e.currentTarget as HTMLInputElement
+        Utils.formChange(field as HTMLInputElement).then((states: any) => this.setState({ ...states }))
     }
 
-    protected onSubmit = (e: React.SyntheticEvent) => {
-        console.log(this.state)
-        // const { username, email, passwordOne } = this.state;
-
-        // this.props.firebase
-        // .doCreateUserWithEmailAndPassword(email, passwordOne)
-        // .then(authUser => {
-        //     this.setState({ ...INITIAL_STATE });
-        // })
-        // .catch(error => {
-        //     this.setState({ error });
-        // });
-
-        e.preventDefault()
+    // TODO : bloquer si c le même displayName voir comment faire ! -> A PRIORI via une database ...
+    // TODO : Voire si possible de mettre en rouge si c le pas le même password
+    protected onSubmit = async (e: React.SyntheticEvent) => {
+        if (this.global.firebase) {
+            const { username, email, passwordOne } = this.state
+            try {
+                const authUser = await this.global.firebase.createUserWithEmailAndPassword(email, passwordOne)
+                if (authUser.user) {
+                    authUser.user.updateProfile({
+                        displayName: username,
+                        photoURL: null
+                    })
+                    authUser.user.sendEmailVerification({ url: website.homepage })
+                }
+                this.setState({ ...this.initalStates })
+                this.setGlobal({ toast: { isToastOpen: true, toastMessage: 'Un mail de confirmation vous a été envoyé.', toastType: EToastType.success, toastAutoHideDuration: 4 } })
+                navigate('/')
+            } catch (error) {
+                this.setGlobal({ toast: { isToastOpen: true, toastMessage: 'Erreur : ' + error.message, toastType: EToastType.error, isToastCloseButton: true } })
+                console.error(error)
+            }
+        }
+        e.persist()
     }
-
-    // protected handleSubmit = (e: React.SyntheticEvent) => {
-    //     alert('A name was submitted: ' + this.state.value)
-    //     e.preventDefault()
-    // }
-
-    // protected handleChange = (e: React.SyntheticEvent) => {
-    //     this.setState({ value: (e.target as HTMLInputElement).value })
-    // }
 }
+
+export default SignUp

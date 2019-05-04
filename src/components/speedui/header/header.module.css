@@ -8,7 +8,8 @@
     top: 0;
     padding: 0;
     z-index: 500;
-    text-align: center;
+    display: flex;
+    justify-content: center;
     /* transition: all .25s ease;
     transform: translateZ(0); */
 }
@@ -19,13 +20,20 @@
 
 .header nav {
     position: relative;
-    display: inline-block;
     font-size: 100%;
     user-select: none;
-    font-family: 'HeaderFont', Arial, Helvetica, sans-serif;
+    display: flex;
+    justify-content: center;
+    width: 800px;
 }
 
-.header nav a {
+.header.isBack nav {
+    justify-content: space-between;
+}
+
+.header nav a,
+.header nav button {
+    font-family: 'HeaderFont', Arial, Helvetica, sans-serif;
     display: inline-flex;
     position: relative;
     height: 56px;
@@ -43,11 +51,12 @@
     border-radius: 0;
 }
 
-.header nav a:hover {
+.header nav a:hover,
+.header nav button:hover {
     background-color: hsla(0, 0%, 100%, .3);
 }
 
-.login svg {
+.log svg {
     width: 2.5em !important;
     height: 2.5em !important;
     margin-right: 1.2em;
