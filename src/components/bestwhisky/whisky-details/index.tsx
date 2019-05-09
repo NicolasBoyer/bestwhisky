@@ -52,13 +52,13 @@ export default class WhiskyDetails extends React.Component<IWhiskyDetailsProps, 
                 {isAuth && <Button label='Supprimer' handleClick={this.alertOpen} />}
                 <AlertDialog message='Etes vous sur de vouloir supprimer ?' open={this.state.isAlertOpen} title='Attention !' accept={this.remove} type={EDialogAlertType.confirm} onClose={this.alertClose} />
                 <h2 className={styles.title}>
-                    <span>{name}</span>
+                    <span>{Utils.displaySearchTerm(name)}</span>
                 </h2>
                 <Box type={EBoxType.horizontal} position={EBoxPosition.spaceBetween}>
                     <div>
                         {(origin || size) &&
                             <div className={styles.metas}>
-                                {origin && <span>{origin}</span>}
+                                {origin && <span>{Utils.displaySearchTerm(origin)}</span>}
                                 {(origin && size) && <span>, </span>}
                                 {size && <span>{size}cl</span>}
                             </div>
@@ -74,7 +74,7 @@ export default class WhiskyDetails extends React.Component<IWhiskyDetailsProps, 
                     {image && <Image cloudName={cloudinary.cloudName} publicId={image} width='300' crop='scale' />}
                     {description && <div className={styles.description}>{Utils.toParagraph(description)}</div>}
                 </Box>
-                {createdBy && <div className={styles.createdBy}>Créé par : {createdBy}</div>}
+                {createdBy && <div className={styles.createdBy}>Créé par : {Utils.displaySearchTerm(createdBy)}</div>}
             </Fragment>
         )
     }

@@ -46,11 +46,11 @@ export default class Whisky extends React.Component<IWhiskyProps, IWhiskyState> 
         return (
             <Fragment>
                 <AlertDialog message='Etes vous sur de vouloir supprimer ?' open={this.state.isAlertOpen} title='Attention !' accept={this.remove} type={EDialogAlertType.confirm} onClose={this.alertClose} />
-                <Card name={name} click={ERoutes.whisky + Utils.slugify(name)} historyState={{ usersNote, note, ...this.props }} editButton={editButton} remove={this.alertOpen} isAuth={this.global.user && this.global.user.displayName === createdBy}>
+                <Card name={Utils.displaySearchTerm(name)} click={ERoutes.whisky + Utils.slugify(name)} historyState={{ usersNote, note, ...this.props }} editButton={editButton} remove={this.alertOpen} isAuth={this.global.user && this.global.user.displayName === createdBy}>
                     <Box type={EBoxType.aroundFirstLeft}>
                         {image && <Image cloudName={cloudinary.cloudName} publicId={image} width='180' crop='scale' />}
                         {(origin || size) && <div className={styles.metas}>
-                            {origin && <span>{origin}</span>}
+                            {origin && <span>{Utils.displaySearchTerm(origin)}</span>}
                             {(origin && size) && <span>, </span>}
                             {size && <span>{size}cl</span>}
                         </div>}

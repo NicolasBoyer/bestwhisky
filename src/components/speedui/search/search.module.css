@@ -1,0 +1,49 @@
+.form {
+    display: block;
+    position: relative;
+}
+
+.form input {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    padding: .3rem 1.7rem;
+    width: 100%;
+    position: relative;
+    background-color: #fff;
+    border: 1px solid #c4c8d8;
+    border-radius: 5px;
+}
+
+.searchIcon {
+    position: absolute;
+    z-index: 1;
+    width: 1em;
+    height: 1em;
+    top: 50%;
+    transform: translateY(-50%);
+    left: .3rem;
+    fill: #c4c8d8;
+}
+
+.reset {
+    position: absolute;
+    min-height: 15px;
+    min-width: 15px;
+    top: 50%;
+    right: .3rem;
+    transform: translateY(-50%);
+    display: none;
+    color: #AAA;
+}
+
+.isVisible {
+    display: flex;
+}
+
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration {
+    -webkit-appearance: none;
+}

@@ -50,14 +50,36 @@ class Firebase {
 
     public read = (location: string, pCb: (datas: app.database.DataSnapshot | null, returnType: string) => void) => {
         const ref = this.db.ref(location)
-        ref.on('child_added', (datas) => pCb(datas, 'added'))
-        ref.on('child_changed', (datas) => pCb(datas, 'changed'))
-        ref.on('child_removed', (datas) => pCb(datas, 'removed'))
+        // TODO pour filtrer
+        // const query = ref.orderByChild('name')
+        const query = ref.orderByValue()
+        query.on('child_added', (datas) => pCb(datas, 'added'))
+        query.on('child_changed', (datas) => pCb(datas, 'changed'))
+        query.on('child_removed', (datas) => pCb(datas, 'removed'))
     }
 
     public getEntry = (location: string, entry: string, pCb: (snapshot: app.database.DataSnapshot | null) => void) => {
         const refLocation = this.db.ref(location + '/' + entry)
         refLocation.on('value', (snapshot) => pCb(snapshot))
+    }
+
+    // Permet la mise en place de requete de recherche sur une location via les champs qui composent les entrées pour un texte donné
+    public searchEntries = (location: string, fields: string[], searchText: string, pCb: (datas: any[]) => void) => {
+        const ref = this.db.ref(location)
+        const results: any = {}
+        fields.forEach((field, index) => {
+            const query = ref.orderByChild(field)
+            query.once('value', (datas) => {
+                datas.forEach((child) => {
+                    if (String(child.val()[field]).toLowerCase().includes(searchText.toLowerCase()) && child.key) {
+                        results[child.key] = child.val()
+                    }
+                })
+                if (index === fields.length - 1) {
+                    pCb(Object.keys(results).map((key) => results[key]))
+                }
+            })
+        })
     }
 
     public async add(location: string, datas: any, inLocation: boolean = false, existingKey: string | null = null) {

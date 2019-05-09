@@ -1,11 +1,14 @@
 import { Fragment } from 'react'
 import React from 'reactn'
+import Box, { EBoxPosition, EBoxType } from '../../speedui/box'
 import { EFieldType } from '../../speedui/field'
 import { IFormInput } from '../../speedui/form'
 import FormDialog, { EFormDialogMode } from '../../speedui/form-dialog'
 import List from '../../speedui/list'
+import Search from '../../speedui/search'
 import { ETableVar } from '../../speedui/survey'
 import Whisky from '../whisky'
+import styles from './home.module.css'
 // import { addWhiskyInputs } from '../tools/config'
 
 // TODO : A passer dans config
@@ -57,12 +60,14 @@ export const addWhiskyInputs: IFormInput[] = [
     }
 ]
 
+const searchFields = ['name', 'description', 'createdBy', 'origin']
+
 export interface IHomeProps {
     path: string
 }
 
 class Home extends React.Component<IHomeProps, any> {
-    _isMounted = false
+    protected _isMounted = false
 
     constructor(props: IHomeProps) {
         super(props)
@@ -117,6 +122,11 @@ class Home extends React.Component<IHomeProps, any> {
     public render() {
         return (
             <Fragment>
+                <Box type={EBoxType.horizontal} position={EBoxPosition.end}>
+                    <div className={styles.searchWrapper}>
+                        <Search placeHolder='Rechercher ...' onChange={this.search} />
+                    </div>
+                </Box>
                 {this.global.user && <FormDialog inputs={addWhiskyInputs} title='Ajouter un Whisky' mode={EFormDialogMode.add} />}
                 <List children={this.state.datas} component={Whisky} />
             </Fragment>
@@ -127,6 +137,36 @@ class Home extends React.Component<IHomeProps, any> {
         this._isMounted = false
         this.setGlobal({ isSubHeader: false })
     }
+
+    protected search = (e: React.SyntheticEvent, currentValue: string) => this.global.firebase.searchEntries('whiskies', searchFields, currentValue, (datas: any) => {
+        // TODO lister alpha
+        // TODO filter
+        // TODO presentation avec attente de chargement comme youtube
+        // TODO facettes prix / origin / size ?
+        // TODO field box image ?
+        // TODO sauvegarder recherche ?
+        datas.forEach((data: any) => {
+            data.views = []
+            // Surround term for highlight
+            if (currentValue !== '') {
+                searchFields.forEach((field) => data[field] = data[field].replace(new RegExp('(' + currentValue + ')', 'gi'), '~s§s§$1~s'))
+            }
+            this.global.firebase.getEntry('views', data.key, (entry: firebase.database.DataSnapshot | null) => {
+                if (entry) {
+                    const dataView = entry.val()
+                    for (const key in dataView) {
+                        if (dataView.hasOwnProperty(key)) {
+                            const view: any = {}
+                            view.author = key
+                            view.stars = dataView[key].note
+                            data.views.push(view)
+                        }
+                    }
+                }
+            })
+        })
+        this.setState({ datas })
+    })
 }
 
 export default Home
