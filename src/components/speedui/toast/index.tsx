@@ -1,5 +1,6 @@
 import React from 'react'
 import Utils from '../../../tools/utils'
+import Box, { EBoxType } from '../box'
 import Button, { EVariant } from '../button'
 import Icon from '../icon'
 import styles from './toast.module.css'
@@ -49,11 +50,11 @@ export default class Toast extends React.Component<IToastProps, IToastState> {
         }
         return (
             <div className={styles.wrapper + ' ' + styles.visibilityOff} ref={this.refToaster}>
-                <div className={styles.toast + (type ? ' ' + styles[type] : '')} role='alertDialog' aria-describedby='toaster'>
+                <Box className={styles.toast + (type ? ' ' + styles[type] : '')} role='alertDialog' aria-describedby='toaster' type={EBoxType.horizontal}>
                     {type && <Icon name={type} className={styles['icon_' + type]} />}
                     <span>{children}</span>
                     {closeButton && <Button className={styles.close} iconName='cross' label='fermer' handleClick={this.onClose} variant={EVariant.rounded} />}
-                </div>
+                </Box>
             </div>
         )
     }

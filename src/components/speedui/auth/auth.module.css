@@ -1,12 +1,10 @@
-.auth>div {
-    display: flex;
-    flex-direction: column;
+article {
     margin-top: 0.6em !important;
 }
 
-.auth>div>form>div,
-.auth>div>form,
-.auth>div>button {
+article>form>div,
+article>form,
+article>button {
     width: 100%;
     margin-bottom: 1em;
     margin-top: 0.5em;

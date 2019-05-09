@@ -1,5 +1,6 @@
 import React from 'reactn'
 import { ERoutes } from '../../../tools/routes'
+import Box, { EBoxPosition, EBoxType } from '../box'
 import Button, { EIconPosition } from '../button'
 import styles from './header.module.css'
 
@@ -8,11 +9,11 @@ class Header extends React.Component {
     public render() {
         return (
             <header className={styles.header + (location.href !== this.global.homeUrl ? ' ' + styles.isBack : '')}>
-                <nav>
-                    {location.href !== this.global.homeUrl && <Button className={styles.back} iconName='back' label='back' handleClick='../' />}
+                <Box type={EBoxType.horizontal} position={EBoxPosition.spaceBetween} tag='nav'>
+                    {location.href !== this.global.homeUrl && <Button className={styles.back} iconName='back' label='Retour' handleClick='../' />}
                     {!this.global.user && <Button className={styles.log} iconName='enter' iconPosition={EIconPosition.beforeLabel} label='login' handleClick={ERoutes.signin} />}
                     {this.global.user && <Button className={styles.log} iconName='exit' iconPosition={EIconPosition.beforeLabel} label={this.global.user.displayName + ' - logout'} handleClick={this.signOut} />}
-                </nav>
+                </Box>
             </header>
         )
     }

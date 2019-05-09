@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react'
 import Helmet from 'react-helmet'
 import Button, { ESize } from '../../speedui/button'
+import Box, { EBoxType } from '../box'
 import styles from './score.module.css'
 
 export interface IScoreProps {
@@ -15,7 +16,7 @@ interface IScoreState {
 }
 
 export default class Score extends React.Component<IScoreProps, IScoreState> {
-    protected refScore: React.RefObject<HTMLDivElement> = React.createRef()
+    protected refScore: React.RefObject<Box> = React.createRef()
 
     constructor(props: IScoreProps) {
         super(props)
@@ -29,7 +30,7 @@ export default class Score extends React.Component<IScoreProps, IScoreState> {
             scores.push(i)
         }
         return (
-            <div className={styles.score} ref={this.refScore}>
+            <Box type={EBoxType.reverseHorizontal} className={styles.score} ref={this.refScore}>
                 {scores.reverse().map((value) =>
                     <Fragment key={value}>
                         {
@@ -48,7 +49,7 @@ export default class Score extends React.Component<IScoreProps, IScoreState> {
                     </Fragment>
                 )}
                 <input type='hidden' value={this.state.value} id='note' required={required} />
-            </div>
+            </Box>
         )
     }
 
@@ -58,8 +59,8 @@ export default class Score extends React.Component<IScoreProps, IScoreState> {
 
     protected onChange(e: React.SyntheticEvent, index: number) {
         if (this.refScore.current) {
-            const buttons = this.refScore.current.querySelectorAll('button')
-            buttons.forEach((button, position) => {
+            const buttons = (this.refScore.current as any).querySelectorAll('button')
+            buttons.forEach((button: any, position: number) => {
                 if (index <= buttons.length - position - 1) {
                     (button as HTMLElement).classList.remove(styles.selected)
                 } else {

@@ -2,6 +2,7 @@ import FocusTrap from 'focus-trap-react'
 import React from 'react'
 import ReactDOM from 'react-dom'
 import Utils from '../../../tools/utils'
+import Box, { EBoxPosition, EBoxType } from '../box'
 import styles from './dialog.module.css'
 
 export interface IDialogProps {
@@ -49,7 +50,7 @@ export default class Dialog extends React.Component<IDialogProps> {
                             <div className={styles.content}>
                                 {children}
                             </div>
-                            {buttons && <div className={styles.buttons}>{buttons}</div>}
+                            {buttons && <Box className={styles.buttons} type={EBoxType.horizontal} position={EBoxPosition.end}>{buttons}</Box>}
                         </div>
                     </div>
                 </aside>

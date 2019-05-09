@@ -4,6 +4,7 @@ import Utils from '../../../tools/utils'
 import { EFieldType } from '../../speedui/field'
 import Form, { IFormInput } from '../../speedui/form'
 import { EToastType } from '../../speedui/toast'
+import Box, { EBoxPosition, EBoxType } from '../box'
 import Button from '../button'
 import styles from './survey.module.css'
 
@@ -46,10 +47,10 @@ class Survey extends React.Component<ISurveyProps, any> {
         return (
             <Fragment>
                 {this.global.firebase && <Form inputs={inputs} datas={datas} onSubmit={this.onSubmit} onLoad={this.onLoad} onChange={this.onChange} />}
-                <div className={styles.buttons}>
+                <Box className={styles.buttons} type={EBoxType.horizontal} position={EBoxPosition.end}>
                     {buttons}
                     <Button disabled={isInvalid || false} label={acceptButtonLabel} handleClick={this.onSubmit} />
-                </div>
+                </Box>
             </Fragment>
         )
     }

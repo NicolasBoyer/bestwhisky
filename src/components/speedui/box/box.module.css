@@ -1,7 +1,13 @@
 .horizontal,
-.vertical {
+.vertical,
+.reverseHorizontal,
+.reverseVertical {
     display: flex;
     justify-content: space-evenly;
+}
+
+.inline {
+    display: inline-flex;
 }
 
 .aroundFirstLeft,
@@ -27,12 +33,20 @@
     flex-direction: column;
 }
 
+.reverseHorizontal {
+    flex-direction: row-reverse;
+}
+
+.reverseVertical {
+    flex-direction: column-reverse;
+}
+
 .start {
-    justify-content: start;
+    justify-content: flex-start;
 }
 
 .end {
-    justify-content: end;
+    justify-content: flex-end;
 }
 
 .center {

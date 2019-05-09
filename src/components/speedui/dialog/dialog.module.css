@@ -47,7 +47,6 @@
 
 .dialogWindow {
     max-width: 600px;
-    flex: 0 1 auto;
     max-height: calc(100% - 96px);
     margin: 48px;
     display: flex;
@@ -80,7 +79,4 @@
 .buttons {
     flex: 0 0 auto;
     margin: 8px 4px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
 }

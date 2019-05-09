@@ -19,11 +19,8 @@
 }
 
 .header nav {
-    position: relative;
-    font-size: 100%;
-    user-select: none;
-    display: flex;
     justify-content: center;
+    position: relative;
     width: 800px;
 }
 

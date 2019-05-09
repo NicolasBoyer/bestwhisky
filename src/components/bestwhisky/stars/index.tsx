@@ -1,4 +1,5 @@
 import React from 'react'
+import Box, { EBoxPosition, EBoxType } from '../../speedui/box'
 import Icon from '../../speedui/icon'
 import styles from './stars.module.css'
 
@@ -25,10 +26,10 @@ export default class Stars extends React.Component<IStarsProps> {
             counter++
         }
         return (
-            <div className={styles.stars}>
+            <Box className={styles.stars} type={EBoxType.horizontal} position={EBoxPosition.start}>
                 <span>{stars}</span>
                 <span className={styles.views}>{views.length + ' avis'}</span>
-            </div>
+            </Box>
         )
     }
 }

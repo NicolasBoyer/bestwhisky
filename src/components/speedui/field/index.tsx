@@ -4,6 +4,7 @@ import Ink from 'react-ink'
 import React from 'reactn'
 import { cloudinary } from '../../../tools/config'
 import Utils from '../../../tools/utils'
+import Box, { EBoxPosition, EBoxType } from '../box'
 import Icon from '../icon'
 import Loader from '../loader'
 import Score from '../score'
@@ -88,11 +89,11 @@ export default class Field extends React.Component<IFieldProps, IFieldStates> {
                     {type === EFieldType.image || type === EFieldType.images ? <Icon className={styles.fileIcon} name='upload' /> : null}
                     <Ink />
                 </label>
-                <div className={styles.inputContainer}>
+                <Box type={EBoxType.inline} className={styles.inputContainer}>
                     {input}
-                    {isFileLoading && <div className={styles.fileLoader}><div className={styles.fileLoaderBg}></div><Loader /></div>}
+                    {isFileLoading && <Box type={EBoxType.horizontal} position={EBoxPosition.center} className={styles.fileLoader}><div className={styles.fileLoaderBg}></div><Loader /></Box>}
                     {previewImage && <Image cloudName={cloudinary.cloudName} publicId={previewImage} width='140' crop='scale' />}
-                </div>
+                </Box>
             </div>
         )
     }
