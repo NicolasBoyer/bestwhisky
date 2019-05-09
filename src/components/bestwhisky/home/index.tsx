@@ -124,7 +124,7 @@ class Home extends React.Component<IHomeProps, any> {
             <Fragment>
                 <Box type={EBoxType.horizontal} position={EBoxPosition.end}>
                     <div className={styles.searchWrapper}>
-                        <Search placeHolder='Rechercher ...' onChange={this.search} />
+                        <Search onChange={this.search} />
                     </div>
                 </Box>
                 {this.global.user && <FormDialog inputs={addWhiskyInputs} title='Ajouter un Whisky' mode={EFormDialogMode.add} />}

@@ -7,8 +7,7 @@ it('renders without crashing', () => {
     const props: ISearchProps = {
         onChange: () => {
             //
-        },
-        placeHolder: ''
+        }
     }
     ReactDOM.render(<Search {...props} />, div)
     ReactDOM.unmountComponentAtNode(div)
