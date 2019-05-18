@@ -7,8 +7,8 @@ export enum EBoxType { horizontal = 'horizontal', vertical = 'vertical', reverse
 export enum EBoxPosition { start = 'start', end = 'end', center = 'center', spaceBetween = 'spaceBetween', spaceAround = 'spaceAround', spaceEvenly = 'spaceEvenly' }
 
 export interface IBoxProps {
-    type: string
-    position?: string
+    type: EBoxType
+    position?: EBoxPosition
     children: any
     className?: string
     id?: string
