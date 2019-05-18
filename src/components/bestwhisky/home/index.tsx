@@ -1,11 +1,13 @@
 import { Fragment } from 'react'
 import React from 'reactn'
+import Utils from '../../../tools/utils'
 import Box, { EBoxPosition, EBoxType } from '../../speedui/box'
 import { EFieldType } from '../../speedui/field'
 import { IFormInput } from '../../speedui/form'
 import FormDialog, { EFormDialogMode } from '../../speedui/form-dialog'
 import List from '../../speedui/list'
-import Search from '../../speedui/search'
+import Search, { ESearchKeyOrder } from '../../speedui/search'
+import Sort from '../../speedui/sort'
 import { ETableVar } from '../../speedui/survey'
 import Whisky from '../whisky'
 import styles from './home.module.css'
@@ -50,7 +52,6 @@ export const addWhiskyInputs: IFormInput[] = [
         tables: 'whiskies/' + ETableVar.key,
         type: EFieldType.image
     },
-    // TODO : revoir la taille des champs pour homogénéiser
     {
         label: 'Votre note',
         name: 'note',
@@ -62,12 +63,37 @@ export const addWhiskyInputs: IFormInput[] = [
 
 const searchFields = ['name', 'description', 'createdBy', 'origin']
 
+const sortEntries = [
+    {
+        name: 'Ordre alphabétique : ordre croissant',
+        value: 'name-asc'
+    },
+    {
+        name: 'Ordre alphabétique : ordre décroissant',
+        value: 'name-desc'
+    },
+    {
+        name: 'Note',
+        value: 'note-desc'
+    },
+    {
+        name: 'Du moins cher au plus cher',
+        value: 'price-asc'
+    },
+    {
+        name: 'Du plus cher au moins cher',
+        value: 'price-desc'
+    }
+]
+
 export interface IHomeProps {
     path: string
 }
 
 class Home extends React.Component<IHomeProps, any> {
     protected _isMounted = false
+    protected sortKey = 'name'
+    protected sortKeyOrder = ESearchKeyOrder.asc
 
     constructor(props: IHomeProps) {
         super(props)
@@ -109,6 +135,8 @@ class Home extends React.Component<IHomeProps, any> {
                             states[eltIndex].views.push(view)
                         }
                     }
+                    const userView = states[eltIndex].views.find((view: any) => this.global.user && this.global.user.displayName === view.author)
+                    states[eltIndex].note = userView && userView.stars
                 }
                 if (this._isMounted) {
                     this.setState({ datas: states })
@@ -124,8 +152,11 @@ class Home extends React.Component<IHomeProps, any> {
             <Fragment>
                 <Box type={EBoxType.horizontal} position={EBoxPosition.end}>
                     <div className={styles.searchWrapper}>
-                        <Search onChange={this.search} />
+                        <Search datas={this.state.datas} facets={[]} fields={searchFields} sortKey={this.sortKey} sortKeyOrder={this.sortKeyOrder} onChange={this.search} />
                     </div>
+                </Box>
+                <Box type={EBoxType.horizontal} position={EBoxPosition.end}>
+                    <Sort entries={sortEntries} defaultValue={this.sortKey + '-' + this.sortKeyOrder} datas={this.state.datas} onChange={this.sort} />
                 </Box>
                 {this.global.user && <FormDialog inputs={addWhiskyInputs} title='Ajouter un Whisky' mode={EFormDialogMode.add} />}
                 <List children={this.state.datas} component={Whisky} />
@@ -138,35 +169,22 @@ class Home extends React.Component<IHomeProps, any> {
         this.setGlobal({ isSubHeader: false })
     }
 
-    protected search = (e: React.SyntheticEvent, currentValue: string) => this.global.firebase.searchEntries('whiskies', searchFields, currentValue, (datas: any) => {
-        // TODO lister alpha
+    protected search = (datas: any) => {
+        console.log(datas)
         // TODO filter
         // TODO presentation avec attente de chargement comme youtube
         // TODO facettes prix / origin / size ?
+        // TODO manque pertinence ?
         // TODO field box image ?
-        // TODO sauvegarder recherche ?
-        datas.forEach((data: any) => {
-            data.views = []
-            // Surround term for highlight
-            if (currentValue !== '') {
-                searchFields.forEach((field) => data[field] = data[field].replace(new RegExp('(' + currentValue + ')', 'gi'), '~s§s§$1~s'))
-            }
-            this.global.firebase.getEntry('views', data.key, (entry: firebase.database.DataSnapshot | null) => {
-                if (entry) {
-                    const dataView = entry.val()
-                    for (const key in dataView) {
-                        if (dataView.hasOwnProperty(key)) {
-                            const view: any = {}
-                            view.author = key
-                            view.stars = dataView[key].note
-                            data.views.push(view)
-                        }
-                    }
-                }
-            })
-        })
+        // TODO sauvegarder recherche sortKey ?
         this.setState({ datas })
-    })
+    }
+
+    protected sort = (datas: any, sortKey: string, sortKeyOrder: string) => {
+        this.sortKey = sortKey
+        this.sortKeyOrder = sortKeyOrder as ESearchKeyOrder
+        this.setState({ datas })
+    }
 }
 
 export default Home

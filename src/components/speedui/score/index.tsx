@@ -58,16 +58,6 @@ export default class Score extends React.Component<IScoreProps, IScoreState> {
     public getValue = () => this.state.value
 
     protected onChange(e: React.SyntheticEvent, index: number) {
-        if (this.refScore.current) {
-            const buttons = (this.refScore.current as any).querySelectorAll('button')
-            buttons.forEach((button: any, position: number) => {
-                if (index <= buttons.length - position - 1) {
-                    (button as HTMLElement).classList.remove(styles.selected)
-                } else {
-                    (button as HTMLElement).classList.add(styles.selected)
-                }
-            })
-        }
         this.setState({ value: index })
         this.props.onChange(e, index)
     }
