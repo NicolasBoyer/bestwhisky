@@ -20,7 +20,7 @@ export interface ISurveyProps {
 }
 
 class Survey extends React.Component<ISurveyProps, any> {
-    initalStates: any = {}
+    initialStates: any = {}
     requiredFieldsNumber: number = 0
     tables: { [str: string]: string } = {}
 
@@ -31,14 +31,14 @@ class Survey extends React.Component<ISurveyProps, any> {
                 if (input.tables) {
                     this.tables[input.name] = input.tables
                 }
-                this.initalStates[input.name] = ''
+                this.initialStates[input.name] = ''
                 if (input.required || input.type === EFieldType.email || input.type === EFieldType.url || input.type === EFieldType.password) {
-                    this.initalStates['valid_' + input.name] = !input.required
+                    this.initialStates['valid_' + input.name] = !input.required
                     this.requiredFieldsNumber++
                 }
             })
         }
-        this.state = { ...this.initalStates }
+        this.state = { ...this.initialStates }
     }
 
     public render() {
@@ -128,7 +128,7 @@ class Survey extends React.Component<ISurveyProps, any> {
                 }
             }
         }
-        this.setState({ ...this.initalStates })
+        this.setState({ ...this.initialStates })
         if (this.props.onSubmit) {
             let states: any = {}
             for (const table in datas) {
