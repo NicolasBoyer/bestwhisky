@@ -3,6 +3,7 @@ import Utils from '../../../tools/utils'
 import Box, { EBoxPosition, EBoxType } from '../box'
 import Button from '../button'
 import Icon from '../icon'
+import Popup, { EPopupAnchorPosition } from '../popup'
 import styles from './search.module.css'
 
 export enum ESearchKeyOrder { asc = 'asc', desc = 'desc' }
@@ -20,6 +21,9 @@ export interface ISearchProps {
 interface ISearchState {
     isResetButtonVisible: boolean
     isActive: boolean
+    isFacetsOpen: boolean
+    facetsTop: number
+    facetsLeft: number
 }
 
 export default class Search extends React.Component<ISearchProps, ISearchState> {
@@ -31,7 +35,7 @@ export default class Search extends React.Component<ISearchProps, ISearchState> 
 
     constructor(props: ISearchProps) {
         super(props)
-        this.state = { isResetButtonVisible: false, isActive: false }
+        this.state = { isResetButtonVisible: false, isActive: false, isFacetsOpen: false, facetsLeft: 0, facetsTop: 0 }
     }
 
     public render() {
@@ -42,7 +46,20 @@ export default class Search extends React.Component<ISearchProps, ISearchState> 
                     <Icon name='search' className={styles.searchIcon} />
                     <Button className={styles.reset + (this.state.isResetButtonVisible ? ' ' + styles.isVisible : '')} iconName='cross' label='Reset' handleClick={this.reset} />
                 </form>
-                {this.props.facets && <Button className={styles.facetsButton} label='Facettes' iconName='sliders' handleClick={() => { }} />}
+                {this.props.facets &&
+                    <div>
+                        <Button className={styles.facetsButton} label='Facettes' iconName='sliders' tooltipPosition={EPopupAnchorPosition.right} tooltip='Texte de tooltip un peu plus long' handleClick={(e) => {
+                            this.setState({ isFacetsOpen: true })
+                            // TODO a améliorer
+                            const buttonSize = e.currentTarget.getBoundingClientRect()
+                            this.setState({ facetsTop: buttonSize.top + buttonSize.height })
+                            this.setState({ facetsLeft: buttonSize.left })
+                        }} />
+                        <Popup onClose={() => this.setState({ isFacetsOpen: false })} open={this.state.isFacetsOpen} anchor={{ left: this.state.facetsLeft, top: this.state.facetsTop }}>
+                            test
+                        </Popup>
+                    </div>
+                }
             </Box>
         )
     }
