@@ -3,7 +3,7 @@ import Utils from '../../../tools/utils'
 import Box, { EBoxPosition, EBoxType } from '../box'
 import Button from '../button'
 import Icon from '../icon'
-import Popup, { EPopupAnchorPosition } from '../popup'
+import PopupButton from '../popup-button'
 import styles from './search.module.css'
 
 export enum ESearchKeyOrder { asc = 'asc', desc = 'desc' }
@@ -47,18 +47,9 @@ export default class Search extends React.Component<ISearchProps, ISearchState> 
                     <Button className={styles.reset + (this.state.isResetButtonVisible ? ' ' + styles.isVisible : '')} iconName='cross' label='Reset' handleClick={this.reset} />
                 </form>
                 {this.props.facets &&
-                    <div>
-                        <Button className={styles.facetsButton} label='Facettes' iconName='sliders' tooltipPosition={EPopupAnchorPosition.right} tooltip='Texte de tooltip un peu plus long' handleClick={(e) => {
-                            this.setState({ isFacetsOpen: true })
-                            // TODO a améliorer
-                            const buttonSize = e.currentTarget.getBoundingClientRect()
-                            this.setState({ facetsTop: buttonSize.top + buttonSize.height })
-                            this.setState({ facetsLeft: buttonSize.left })
-                        }} />
-                        <Popup onClose={() => this.setState({ isFacetsOpen: false })} open={this.state.isFacetsOpen} anchor={{ left: this.state.facetsLeft, top: this.state.facetsTop }}>
-                            test
-                        </Popup>
-                    </div>
+                    <PopupButton className={styles.facetsButton} label='Facettes' iconName='sliders'>
+                        test à la con {this.props.facets}
+                    </PopupButton>
                 }
             </Box>
         )

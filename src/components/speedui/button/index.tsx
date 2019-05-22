@@ -92,6 +92,8 @@ export default class Button extends React.Component<IButtonProps, IButtonState> 
 
     public focus = () => this.refButton.current && this.refButton.current.focus()
 
+    public getHTMLElement = () => this.refButton.current
+
     private onBlur = () => this.refButton.current && this.refButton.current.classList.remove(styles.hideFocus)
 
     private action = (e: React.SyntheticEvent) => {
