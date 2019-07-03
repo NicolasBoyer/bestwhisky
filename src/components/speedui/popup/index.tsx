@@ -17,6 +17,7 @@ export interface IPopupProps {
     anchor: IAnchorPosition | IAbsolutePosition
     isTooltip?: boolean
     className?: string
+    allowScroll?: boolean
 }
 
 export default class Popup extends React.Component<IPopupProps> {
@@ -24,7 +25,9 @@ export default class Popup extends React.Component<IPopupProps> {
 
     public shouldComponentUpdate(props: Readonly<IPopupProps>) {
         if (props.open !== this.props.open && !this.props.isTooltip) {
-            (document.querySelector('html') as HTMLElement).classList.toggle(styles.scrollLock)
+            if (!props.allowScroll) {
+                (document.querySelector('html') as HTMLElement).classList.toggle(styles.scrollLock)
+            }
             const domPopup = document.querySelector('aside')
             if (domPopup) {
                 domPopup.childNodes.forEach((child) => Utils.toggleClass(child as HTMLElement, styles.opacityOn, styles.opacityOff))
@@ -40,7 +43,6 @@ export default class Popup extends React.Component<IPopupProps> {
         if (!open) {
             return null
         }
-        // TODO créer un Portal qui retourne juste ça + ou popup est juste une fenetre en popup à laquelle on donne top et left et tooltip contient bouton et popup ou change nom popup en tooltip
         return ReactDOM.createPortal(
             this.props.isTooltip ?
                 <div className={(this.props.className ? this.props.className + ' ' : '') + styles.tooltip + ' ' + styles.opacityOff} role={'tooltip'} tabIndex={-1} ref={this.refContainer}>
@@ -91,5 +93,5 @@ export default class Popup extends React.Component<IPopupProps> {
         }
     }
 
-    protected onClickAway = (e: React.SyntheticEvent) => !this.props.preventHideOnMaskTap && this.props.onClose(e)
+    protected onClickAway = (e: React.SyntheticEvent) => (this.refContainer.current && !this.refContainer.current.contains(e.target as HTMLElement)) && !this.props.preventHideOnMaskTap && this.props.onClose(e)
 }

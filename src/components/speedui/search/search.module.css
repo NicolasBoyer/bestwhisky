@@ -57,3 +57,144 @@ input[type="search"]::-webkit-search-results-decoration {
     font-size: 0.7em;
     color: #AAA;
 }
+
+.facet {
+    display: flex;
+    font-family: 'RobotoRegular', Arial, Helvetica, sans-serif;
+    border: 1px solid #dddddd;
+    margin: 1em 0.2em;
+    padding: 0.5em;
+}
+
+.facet:first-child {
+    margin-top: 0.2em;
+}
+
+.facet:last-child {
+    margin-bottom: 0.2em;
+}
+
+.facet legend {
+    font-family: 'RobotoBold', Arial, Helvetica, sans-serif;
+}
+
+.facet label {
+    display: block;
+    cursor: pointer;
+    margin: 0.2em 0;
+    position: relative;
+    padding-left: 1.4em;
+    font-size: .8em;
+}
+
+.facet label input[type="checkbox"]:checked+span {
+    font-weight: bold;
+}
+
+.facet label input[type="checkbox"] {
+    position: absolute;
+    left: -9999px;
+}
+
+.facet label input[type="checkbox"]+span::before {
+    font-family: "search";
+    content: "\f096";
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-size: 1.2em;
+    font-weight: normal;
+}
+
+.facet label input[type="checkbox"]:checked+span::before {
+    font-family: "search";
+    content: "\e800";
+    font-weight: normal;
+    color: #2b7a77;
+}
+
+.aggCount::before {
+    content: "(";
+}
+
+.aggCount::after {
+    content: ")";
+}
+
+.aggCount {
+    margin: 0 0.5em;
+    color: #999;
+}
+
+.inBetweenFacet {
+    display: flex;
+    align-items: center;
+}
+
+.inBetweenPart {
+    display: block;
+    position: relative;
+    padding: 0 0 0 7px;
+    color: #3b3b3b;
+    border-radius: 3px;
+    border: 1px solid #c7c6c7;
+    background-color: #f4f4f4;
+    flex: 1 1 0%;
+}
+
+.inBetweenContainer {
+    display: table;
+    width: 100%;
+    height: 100%;
+}
+
+.inBetweenInput {
+    height: 34px;
+    display: table-cell;
+    width: inherit;
+    height: 34px;
+    display: table-cell;
+    width: inherit;
+    vertical-align: middle;
+    box-sizing: inherit;
+}
+
+.inBetweenInput input {
+    text-align: right;
+    width: inherit;
+    border: 0;
+    color: #3b3b3b;
+    line-height: 22px;
+    background: transparent;
+    outline: none;
+    font-family: 'Open Sans', Verdana, Tahoma, Arial, Helvetica, sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    transition: color .25s cubic-bezier(.25, .8, .25, 1);
+    padding: 0;
+    margin: 0;
+}
+
+.inBetweenInput input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.inBetweenInput input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+.divider {
+    position: relative;
+    top: -1px;
+    margin: 0px 8px;
+}
+
+.unit {
+    display: table-cell;
+    padding-left: 8px;
+    padding-right: 7px;
+    vertical-align: middle;
+    color: rgb(120, 120, 120);
+}

@@ -6,7 +6,7 @@ import { EFieldType } from '../../speedui/field'
 import { IFormInput } from '../../speedui/form'
 import FormDialog, { EFormDialogMode } from '../../speedui/form-dialog'
 import List from '../../speedui/list'
-import Search, { ESearchKeyOrder } from '../../speedui/search'
+import Search, { EFacetsType, ESearchKeyOrder } from '../../speedui/search'
 import Sort from '../../speedui/sort'
 import { ETableVar } from '../../speedui/survey'
 import Whisky from '../whisky'
@@ -86,6 +86,26 @@ const sortEntries = [
     }
 ]
 
+const facets = [
+    {
+        name: 'Prix',
+        type: EFacetsType.checkbox,
+        unit: '€',
+        value: 'price'
+    },
+    {
+        name: 'Contenance',
+        type: EFacetsType.checkbox,
+        unit: 'cl',
+        value: 'size'
+    },
+    {
+        name: 'Pays',
+        type: EFacetsType.checkbox,
+        value: 'origin'
+    }
+]
+
 export interface IHomeProps {
     path: string
 }
@@ -152,7 +172,7 @@ class Home extends React.Component<IHomeProps, any> {
             <Fragment>
                 <Box type={EBoxType.horizontal} position={EBoxPosition.end}>
                     <div className={styles.searchWrapper}>
-                        <Search datas={this.state.datas} facets={[]} fields={searchFields} sortKey={this.sortKey} sortKeyOrder={this.sortKeyOrder} onChange={this.search} />
+                        <Search datas={this.state.datas} facets={facets} fields={searchFields} sortKey={this.sortKey} sortKeyOrder={this.sortKeyOrder} onChange={this.search} />
                     </div>
                 </Box>
                 <Box type={EBoxType.horizontal} position={EBoxPosition.end}>

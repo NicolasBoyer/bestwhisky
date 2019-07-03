@@ -13,6 +13,8 @@ export interface IPopupButtonProps {
     disabled?: boolean
     tooltip?: string
     tooltipPosition?: EPopupAnchorPosition
+    onBeforeOpen: ((e: React.SyntheticEvent) => void)
+    allowScroll?: boolean
 }
 
 interface IPopupButtonState {
@@ -33,14 +35,17 @@ export default class PopupButton extends React.Component<IPopupButtonProps, IPop
         return (
             <Fragment>
                 <Button {...attributes} handleClick={this.showPopup} ref={this.refButton} />
-                <Popup onClose={this.hidePopup} open={this.state.isPopupOpen} anchor={{ element: this.refButton.current && this.refButton.current.getHTMLElement(), position: popupPosition as EPopupAnchorPosition }}>
+                <Popup allowScroll={this.props.allowScroll} onClose={this.hidePopup} open={this.state.isPopupOpen} anchor={{ element: this.refButton.current && this.refButton.current.getHTMLElement(), position: popupPosition as EPopupAnchorPosition }}>
                     {children}
                 </Popup>
             </Fragment>
         )
     }
 
-    private showPopup = () => this.setState({ isPopupOpen: true })
+    private showPopup = (e: React.SyntheticEvent) => {
+        this.props.onBeforeOpen(e)
+        this.setState({ isPopupOpen: true })
+    }
 
     private hidePopup = () => this.setState({ isPopupOpen: false })
 }

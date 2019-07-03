@@ -53,3 +53,15 @@
     font-weight: normal;
     font-style: normal;
 }
+
+@font-face {
+    font-family: 'Search';
+    src: url('./search.eot?14882036');
+    src: url('./search.eot?14882036#iefix') format('embedded-opentype'),
+        url('./search.woff2?14882036') format('woff2'),
+        url('./search.woff?14882036') format('woff'),
+        url('./search.ttf?14882036') format('truetype'),
+        url('./search.svg?14882036#search') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}

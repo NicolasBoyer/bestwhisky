@@ -13,6 +13,7 @@ setGlobal({
     user: null
 })
 
+// TODO : test litelement pour voir si utilisable anec Wapitis sinon lithtml avec Wapitis
 ReactDOM.render(
     <App />,
     document.getElementById('root')

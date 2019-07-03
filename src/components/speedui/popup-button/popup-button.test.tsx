@@ -5,7 +5,10 @@ import PopupButton, { IPopupButtonProps } from '.'
 it('renders without crashing', () => {
     const div = document.createElement('div')
     const props: IPopupButtonProps = {
-        label: ''
+        label: '',
+        onBeforeOpen: () => {
+            //
+        }
     }
     ReactDOM.render(<PopupButton {...props} />, div)
     ReactDOM.unmountComponentAtNode(div)
