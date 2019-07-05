@@ -68,26 +68,24 @@ export default class Search extends React.Component<ISearchProps, ISearchState> 
         this.currentFacetValue = event.currentTarget.getAttribute('data-facet-value')
         // console.log(this.currentFacetValue)
         const facets: any = []
-        console.log(this.state.facets as HTMLInputElement)
-        this.state.facets.forEach((item: any) => console.log((item as HTMLInputElement)))
 
         this.props.facets.forEach((facet: any) => {
             // Aggreagation FILTER
             //  TODO finir l'écriture et simplifier les var etc + filtre pas au clic + affichage filtre en cours
             // TODO Marche pas avec filtre inbetween ni si plus de 3 filtres pour régler ça test sur le state.facets pour prendre filter si cheched
-            // TODO IMPORTANT SANS DOUTE A REVOIR LE CODE DE AGGS
             if (this.currentFacetValue && this.currentFacetValue !== facet.value) {
                 // this.facetsDatas[facet.value] = (event.currentTarget as HTMLInputElement).checked || (event.currentTarget as HTMLInputElement).type !== 'checkbox' ? this.filteredDatas : this.datas
-                this.facetsDatas[facet.value] = (event.currentTarget as HTMLInputElement).checked ? this.filteredDatas : this.datas
+                // TODO A tester mais ç'a l'air de marcher pour checkbox !!! ICI voir si besoin de facetsDatas ICI
+                this.facetsDatas[facet.value] = (event.currentTarget as HTMLInputElement).checked || this.filter.length > 1 || !(event.currentTarget as HTMLInputElement).checked && this.filter.length === 1 && !this.filter.some((filter) => filter.hasOwnProperty(facet.value)) ? this.filteredDatas : this.datas
             }
-            console.log(this.filter)
-            console.log(facet)
+            // console.log(this.filter)
+            // console.log(facet)
             if (this.currentFacetValue && this.currentFacetValue === facet.value) {
                 this.facetsDatas[facet.value] = Object.keys(this.filter.reduce((acc: any, filter: any) => (acc[Object.keys(filter)[0]] = true, acc), {})).length > 1 && (event.currentTarget as HTMLInputElement).checked || !(event.currentTarget as HTMLInputElement).checked ? this.filteredDatas : this.datas
             }
             // const datas = !this.currentFacetValue || this.currentFacetValue && this.currentFacetValue === facet.value ? this.facetsDatas[facet.value] || this.datas : this.currentFacetValue && this.currentFacetValue !== facet.value ? this.filteredDatas : this.datas
-            console.log(this.facetsDatas[facet.value])
-            console.log(this.filter.findIndex((val: any) => val[facet.value] === this.currentFacetValue))
+            // console.log(this.facetsDatas[facet.value])
+            // console.log(this.filter.findIndex((val: any) => val[facet.value] === this.currentFacetValue))
             // const datas = this.filter.findIndex((val: any) => val[facet.value] === this.currentFacetValue) === -1 && Object.keys(this.filter.reduce((acc: any, filter: any) => (acc[Object.keys(filter)[0]] = true, acc), {})).length > 1 ? this.datas : Object.keys(this.filter.reduce((acc: any, filter: any) => (acc[Object.keys(filter)[0]] = true, acc), {})).length === 1 && (!this.currentFacetValue || this.currentFacetValue && this.currentFacetValue === facet.value) ? this.facetsDatas[facet.value] || this.datas : this.filteredDatas
             const datas = this.facetsDatas[facet.value] || this.datas
             // console.log(datas)

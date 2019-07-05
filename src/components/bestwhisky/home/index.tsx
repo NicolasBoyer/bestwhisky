@@ -89,7 +89,7 @@ const sortEntries = [
 const facets = [
     {
         name: 'Prix',
-        type: EFacetsType.checkbox,
+        type: EFacetsType.inBetween,
         unit: '€',
         value: 'price'
     },
@@ -103,6 +103,11 @@ const facets = [
         name: 'Pays',
         type: EFacetsType.checkbox,
         value: 'origin'
+    },
+    {
+        name: 'Nom',
+        type: EFacetsType.checkbox,
+        value: 'name'
     }
 ]
 
