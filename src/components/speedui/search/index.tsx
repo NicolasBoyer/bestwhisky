@@ -37,9 +37,9 @@ export default class Search extends React.Component<ISearchProps, ISearchState> 
     protected filter: string[] = []
     protected facetsDatas: any = {}
     protected initialDatas: any
+    protected initialInBetweenFacetTargetValue: any = {}
     protected sortKey: any
     protected sortKeyOrder: any
-    protected currentFacetValue: string | null = ''
 
     constructor(props: ISearchProps) {
         super(props)
@@ -64,36 +64,25 @@ export default class Search extends React.Component<ISearchProps, ISearchState> 
     }
 
     protected buildFacets = (event: React.SyntheticEvent) => {
-        // TODO à remettre en var normale
-        this.currentFacetValue = event.currentTarget.getAttribute('data-facet-value')
-        // console.log(this.currentFacetValue)
+        const currentFacetValue = event.currentTarget.getAttribute('data-facet-value')
         const facets: any = []
-
+        const usedFacets = Object.keys(this.filter.reduce((acc: any, filter: any) => (acc[Object.keys(filter)[0]] = true, acc), {}))
+        const isCurrentTargetChecked = (event.currentTarget as HTMLInputElement).checked
+        const currentTargetValue = Number((event.currentTarget as HTMLInputElement).value)
         this.props.facets.forEach((facet: any) => {
             // Aggreagation FILTER
-            //  TODO finir l'écriture et simplifier les var etc + filtre pas au clic + affichage filtre en cours
-            // TODO Marche pas avec filtre inbetween ni si plus de 3 filtres pour régler ça test sur le state.facets pour prendre filter si cheched
-            if (this.currentFacetValue && this.currentFacetValue !== facet.value) {
-                // this.facetsDatas[facet.value] = (event.currentTarget as HTMLInputElement).checked || (event.currentTarget as HTMLInputElement).type !== 'checkbox' ? this.filteredDatas : this.datas
-                // TODO A tester mais ç'a l'air de marcher pour checkbox !!! ICI voir si besoin de facetsDatas ICI
-                this.facetsDatas[facet.value] = (event.currentTarget as HTMLInputElement).checked || this.filter.length > 1 || !(event.currentTarget as HTMLInputElement).checked && this.filter.length === 1 && !this.filter.some((filter) => filter.hasOwnProperty(facet.value)) ? this.filteredDatas : this.datas
+            //  TODO filtre pas au clic + affichage filtre en cours + relire pour etre sur que tous les tests sont utiles
+            // TODO ICI SEMBLE BON
+            const isInBetweenFacet = facet.type === 'inBetween'
+            const initialInBetweenFacetTargetValue = this.initialInBetweenFacetTargetValue[facet.value]
+            if (currentFacetValue && currentFacetValue !== facet.value) {
+                this.facetsDatas[facet.value] = isInBetweenFacet || isCurrentTargetChecked || this.filter.length > 1 && !usedFacets.includes(facet.value) || !isCurrentTargetChecked && (this.filter.length === 1 && !this.filter.some((filter) => filter.hasOwnProperty(facet.value)) || usedFacets.length > 1) ? this.filteredDatas : this.datas
             }
-            // console.log(this.filter)
-            // console.log(facet)
-            if (this.currentFacetValue && this.currentFacetValue === facet.value) {
-                this.facetsDatas[facet.value] = Object.keys(this.filter.reduce((acc: any, filter: any) => (acc[Object.keys(filter)[0]] = true, acc), {})).length > 1 && (event.currentTarget as HTMLInputElement).checked || !(event.currentTarget as HTMLInputElement).checked ? this.filteredDatas : this.datas
+            if (currentFacetValue && currentFacetValue === facet.value) {
+                // TODO PB quand je décheck si j'ai checké avant puis mis un inbetween car se met en this.datas + même pb avec checkbox
+                this.facetsDatas[facet.value] = initialInBetweenFacetTargetValue && (currentTargetValue > initialInBetweenFacetTargetValue.min || currentTargetValue < initialInBetweenFacetTargetValue.max) || usedFacets.length > 1 && isCurrentTargetChecked || !isCurrentTargetChecked && (!usedFacets.includes(facet.value) || usedFacets.length > 1) ? this.filteredDatas : this.datas
             }
-            // const datas = !this.currentFacetValue || this.currentFacetValue && this.currentFacetValue === facet.value ? this.facetsDatas[facet.value] || this.datas : this.currentFacetValue && this.currentFacetValue !== facet.value ? this.filteredDatas : this.datas
-            // console.log(this.facetsDatas[facet.value])
-            // console.log(this.filter.findIndex((val: any) => val[facet.value] === this.currentFacetValue))
-            // const datas = this.filter.findIndex((val: any) => val[facet.value] === this.currentFacetValue) === -1 && Object.keys(this.filter.reduce((acc: any, filter: any) => (acc[Object.keys(filter)[0]] = true, acc), {})).length > 1 ? this.datas : Object.keys(this.filter.reduce((acc: any, filter: any) => (acc[Object.keys(filter)[0]] = true, acc), {})).length === 1 && (!this.currentFacetValue || this.currentFacetValue && this.currentFacetValue === facet.value) ? this.facetsDatas[facet.value] || this.datas : this.filteredDatas
             const datas = this.facetsDatas[facet.value] || this.datas
-            // console.log(datas)
-            // if (this.currentFacetValue) {
-            //     this.facetsDatas[facet.value] = datas
-            // }
-
-            // TODO pb sur inbetween car les values remonter 27.5 alors qu'elle devrait pas + pb car max reprend la valeur max des dfatas alors qu'elle a déja été filtré idem si on utilise un autre filtre ICI ! Peut etre créé un aggs et on utilise les filtrés si pas vide pas sur
             const values: { [key: string]: number } = {}
             datas.forEach((data: any) => {
                 const addValue = (value: string) => values[value] = values[value] ? values[value] + 1 : 1
@@ -142,16 +131,14 @@ export default class Search extends React.Component<ISearchProps, ISearchState> 
                     )
                     break
                 case EFacetsType.inBetween:
-                    // TODO RENDU ICI mettre en place le inbetween avec le code du dessous ICI !!!
                     // TODO bug notation ajout tourbé / pas tourbé + facet notation
                     // TODO si plus d'un certain nombre afficher un +
-
-                    // TODO ICI Il faut revoir le min et max value quand event currenttarget.value et quand this.currentFacetValue === facet.value Presque bon mais pas build sur le on change mais sur le on blur et le on enterkey enter !!! +pb quand on relance et que c coché !! comme sur checkbox !!! ICI ! + pb de pas de copncatenation des results dans filter
-
-                    // TODO IMPORTANT dèsque je change une entrée l'autre change aussi !
                     const numberValue = Object.keys(values).filter((value) => !isNaN(Number(value))).map(Number)
                     const min = Math.min(...numberValue)
                     const max = Math.max(...numberValue)
+                    if (!this.initialInBetweenFacetTargetValue[facet.value]) {
+                        this.initialInBetweenFacetTargetValue[facet.value] = { min, max }
+                    }
                     facets.push(
                         <fieldset className={styles.facet + ' ' + facet.value} key={Utils.generateId()}>
                             <legend>{facet.name}</legend>
@@ -160,7 +147,7 @@ export default class Search extends React.Component<ISearchProps, ISearchState> 
                                     <div className={styles.inBetweenContainer}>
                                         <div className={styles.inBetweenInput}>
                                             {/* onBlur={(e: React.SyntheticEvent) => this.inBetweenChange(e, facet)} delete */}
-                                            <input id={facet.value + '_min'} step='1' name={facet.value + '-first'} type='number' max={String(max)} min={String(min)} defaultValue={event.currentTarget && event.currentTarget.id.includes('min') && this.currentFacetValue === facet.value ? (event.currentTarget as HTMLInputElement).value : String(min)} data-facet-value={facet.value} onKeyUp={(e: React.KeyboardEvent) => {
+                                            <input id={facet.value + '_min'} step='1' name={facet.value + '-first'} type='number' max={String(max)} min={String(min)} defaultValue={event.currentTarget && event.currentTarget.id.includes('min') && currentFacetValue === facet.value ? (event.currentTarget as HTMLInputElement).value : String(min)} data-facet-value={facet.value} onKeyUp={(e: React.KeyboardEvent) => {
                                                 if (e.key === 'Enter') {
                                                     this.inBetweenChange(e, facet)
                                                 }
@@ -173,7 +160,7 @@ export default class Search extends React.Component<ISearchProps, ISearchState> 
                                 <div className={styles.inBetweenPart}>
                                     <div className={styles.inBetweenContainer}>
                                         <div className={styles.inBetweenInput}>
-                                            <input id={facet.value + '_max'} step='1' name={facet.value + '-last'} type='number' max={String(max)} min={String(min)} defaultValue={event.currentTarget && event.currentTarget.id.includes('max') && this.currentFacetValue === facet.value ? (event.currentTarget as HTMLInputElement).value : String(max)} data-facet-value={facet.value} onKeyUp={(e: React.KeyboardEvent) => {
+                                            <input id={facet.value + '_max'} step='1' name={facet.value + '-last'} type='number' max={String(max)} min={String(min)} defaultValue={event.currentTarget && event.currentTarget.id.includes('max') && currentFacetValue === facet.value ? (event.currentTarget as HTMLInputElement).value : String(max)} data-facet-value={facet.value} onKeyUp={(e: React.KeyboardEvent) => {
                                                 if (e.key === 'Enter') {
                                                     this.inBetweenChange(e, facet)
                                                 }
@@ -201,7 +188,9 @@ export default class Search extends React.Component<ISearchProps, ISearchState> 
         if (index !== -1) {
             this.filter.splice(index, 1)
         }
-        this.filter.push(inBetween)
+        if (minValue > this.initialInBetweenFacetTargetValue[facet.value].min || maxValue < this.initialInBetweenFacetTargetValue[facet.value].max) {
+            this.filter.push(inBetween)
+        }
         this.onChange(e)
     }
 
