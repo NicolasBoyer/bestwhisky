@@ -19,6 +19,7 @@ export interface ISearchProps {
     placeHolder?: string
     sortKeyOrder?: ESearchKeyOrder
     facets?: any
+    facetsAlwaysVisible?: boolean
 }
 
 interface ISearchState {
@@ -46,6 +47,8 @@ export default class Search extends React.Component<ISearchProps, ISearchState> 
         this.state = { isResetButtonVisible: false, isActive: false, isFacetsOpen: false, facetsLeft: 0, facetsTop: 0, facets: [] }
     }
 
+    public componentDidMount = () => document.body.addEventListener('databaseReady', () => this.buildFacets())
+
     public render() {
         return (
             <Box type={EBoxType.horizontal} position={EBoxPosition.end} className={styles.searchBox}>
@@ -54,7 +57,12 @@ export default class Search extends React.Component<ISearchProps, ISearchState> 
                     <Icon name='search' className={styles.searchIcon} />
                     <Button className={styles.reset + (this.state.isResetButtonVisible ? ' ' + styles.isVisible : '')} iconName='cross' label='Reset' handleClick={this.reset} />
                 </form>
-                {this.props.facets &&
+                {this.props.facetsAlwaysVisible &&
+                    <Box type={EBoxType.vertical}>
+                        {this.state.facets}
+                    </Box>
+                }
+                {this.props.facets && !this.props.facetsAlwaysVisible &&
                     <PopupButton allowScroll={true} className={styles.facetsButton} label='Facettes' iconName='sliders' onBeforeOpen={this.buildFacets}>
                         {this.state.facets}
                     </PopupButton>
@@ -63,23 +71,24 @@ export default class Search extends React.Component<ISearchProps, ISearchState> 
         )
     }
 
-    protected buildFacets = (event: React.SyntheticEvent) => {
-        const currentFacetValue = event.currentTarget.getAttribute('data-facet-value')
+    protected buildFacets = (event: React.SyntheticEvent | null = null) => {
+        console.log(this.filter)
+        console.log(this.props.facets)
+        const currentTarget = event && event.currentTarget as HTMLInputElement
+        const currentFacetValue = currentTarget && currentTarget.getAttribute('data-facet-value')
         const facets: any = []
         const usedFacets = Object.keys(this.filter.reduce((acc: any, filter: any) => (acc[Object.keys(filter)[0]] = true, acc), {}))
-        const isCurrentTargetChecked = (event.currentTarget as HTMLInputElement).checked
-        const currentTargetValue = Number((event.currentTarget as HTMLInputElement).value)
+        const isCurrentTargetChecked = currentTarget && currentTarget.checked
+        const currentTargetValue = currentTarget && Number(currentTarget.value)
         this.props.facets.forEach((facet: any) => {
             // Aggreagation FILTER
-            //  TODO filtre pas au clic + affichage filtre en cours + relire pour etre sur que tous les tests sont utiles
-            // TODO ICI SEMBLE BON
+            //  TODO filtre pas au clic + affichage filtre en cours
             const isInBetweenFacet = facet.type === 'inBetween'
             const initialInBetweenFacetTargetValue = this.initialInBetweenFacetTargetValue[facet.value]
             if (currentFacetValue && currentFacetValue !== facet.value) {
                 this.facetsDatas[facet.value] = isInBetweenFacet || isCurrentTargetChecked || this.filter.length > 1 && !usedFacets.includes(facet.value) || !isCurrentTargetChecked && (this.filter.length === 1 && !this.filter.some((filter) => filter.hasOwnProperty(facet.value)) || usedFacets.length > 1) ? this.filteredDatas : this.datas
             }
-            if (currentFacetValue && currentFacetValue === facet.value) {
-                // TODO PB quand je décheck si j'ai checké avant puis mis un inbetween car se met en this.datas + même pb avec checkbox
+            if (currentFacetValue && currentFacetValue === facet.value && currentTargetValue) {
                 this.facetsDatas[facet.value] = initialInBetweenFacetTargetValue && (currentTargetValue > initialInBetweenFacetTargetValue.min || currentTargetValue < initialInBetweenFacetTargetValue.max) || usedFacets.length > 1 && isCurrentTargetChecked || !isCurrentTargetChecked && (!usedFacets.includes(facet.value) || usedFacets.length > 1) ? this.filteredDatas : this.datas
             }
             const datas = this.facetsDatas[facet.value] || this.datas
@@ -147,7 +156,7 @@ export default class Search extends React.Component<ISearchProps, ISearchState> 
                                     <div className={styles.inBetweenContainer}>
                                         <div className={styles.inBetweenInput}>
                                             {/* onBlur={(e: React.SyntheticEvent) => this.inBetweenChange(e, facet)} delete */}
-                                            <input id={facet.value + '_min'} step='1' name={facet.value + '-first'} type='number' max={String(max)} min={String(min)} defaultValue={event.currentTarget && event.currentTarget.id.includes('min') && currentFacetValue === facet.value ? (event.currentTarget as HTMLInputElement).value : String(min)} data-facet-value={facet.value} onKeyUp={(e: React.KeyboardEvent) => {
+                                            <input id={facet.value + '_min'} step='1' name={facet.value + '-first'} type='number' max={String(max)} min={String(min)} defaultValue={currentTarget && currentTarget.id.includes('min') && currentFacetValue === facet.value ? currentTarget.value : String(min)} data-facet-value={facet.value} onKeyUp={(e: React.KeyboardEvent) => {
                                                 if (e.key === 'Enter') {
                                                     this.inBetweenChange(e, facet)
                                                 }
@@ -160,7 +169,7 @@ export default class Search extends React.Component<ISearchProps, ISearchState> 
                                 <div className={styles.inBetweenPart}>
                                     <div className={styles.inBetweenContainer}>
                                         <div className={styles.inBetweenInput}>
-                                            <input id={facet.value + '_max'} step='1' name={facet.value + '-last'} type='number' max={String(max)} min={String(min)} defaultValue={event.currentTarget && event.currentTarget.id.includes('max') && currentFacetValue === facet.value ? (event.currentTarget as HTMLInputElement).value : String(max)} data-facet-value={facet.value} onKeyUp={(e: React.KeyboardEvent) => {
+                                            <input id={facet.value + '_max'} step='1' name={facet.value + '-last'} type='number' max={String(max)} min={String(min)} defaultValue={currentTarget && currentTarget.id.includes('max') && currentFacetValue === facet.value ? currentTarget.value : String(max)} data-facet-value={facet.value} onKeyUp={(e: React.KeyboardEvent) => {
                                                 if (e.key === 'Enter') {
                                                     this.inBetweenChange(e, facet)
                                                 }
