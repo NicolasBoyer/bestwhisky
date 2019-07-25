@@ -116,68 +116,70 @@ export interface IHomeProps {
 }
 
 class Home extends React.Component<IHomeProps, any> {
-    protected _isMounted = false
     protected sortKey = 'name'
     protected sortKeyOrder = ESearchKeyOrder.asc
+    protected states: any
 
     constructor(props: IHomeProps) {
         super(props)
         this.setGlobal({ isSubHeader: true })
         this.state = { datas: [] }
-        const states = this.state.datas
+        this.states = this.state.datas
         if (this.global.firebase) {
             this.global.firebase.read('whiskies', (datas: firebase.database.DataSnapshot, returnType: string) => {
                 const data = datas.val()
                 data.views = []
-                const eltIndex = states.findIndex((obj: any) => obj.key === datas.key)
+                const eltIndex = this.states.findIndex((obj: any) => obj.key === datas.key)
                 if (returnType === 'added') {
-                    states.push(data)
+                    this.states.push(data)
                 }
                 if (returnType === 'changed') {
                     for (const key in data) {
                         if (data.hasOwnProperty(key) && data[key] && typeof data[key] === 'string') {
-                            states[eltIndex][key] = data[key]
+                            this.states[eltIndex][key] = data[key]
                         }
                     }
                 }
                 if (returnType === 'removed') {
-                    states.splice(eltIndex, 1)
-                }
-                if (this._isMounted) {
-                    this.setState({ datas: states })
+                    this.states.splice(eltIndex, 1)
+                    this.setState({ datas: this.states })
                 }
             })
             this.global.firebase.read('views', (datas: firebase.database.DataSnapshot, returnType: string) => {
                 const data = datas.val()
-                const eltIndex = states.findIndex((obj: any) => obj.key === datas.key)
+                const eltIndex = this.states.findIndex((obj: any) => obj.key === datas.key)
                 if (returnType === 'added' || returnType === 'changed') {
-                    states[eltIndex].views = []
+                    this.states[eltIndex].views = []
                     for (const key in data) {
                         if (data.hasOwnProperty(key)) {
                             const view: any = {}
                             view.author = key
                             view.stars = data[key].note
-                            states[eltIndex].views.push(view)
+                            this.states[eltIndex].views.push(view)
                         }
                     }
-                    const userView = states[eltIndex].views.find((view: any) => this.global.user && this.global.user.displayName === view.author)
-                    states[eltIndex].note = userView && userView.stars
+                    const userView = this.states[eltIndex].views.find((view: any) => this.global.user && this.global.user.displayName === view.author)
+                    this.states[eltIndex].note = userView && userView.stars
                 }
-                if (this._isMounted) {
-                    this.setState({ datas: states })
-                }
-            })
+            }, true)
         }
     }
 
-    public componentDidMount = () => this._isMounted = true
+    public shouldComponentUpdate(nextProps: IHomeProps, nextStates: any) {
+        if (Object(nextStates.datas).length) {
+            return true
+        }
+        return false
+    }
+
+    public componentDidMount = () => document.body.addEventListener('databaseReady', () => this.setState({ datas: this.states }))
 
     public render() {
         return (
             <Fragment>
                 <Box type={EBoxType.horizontal} position={EBoxPosition.end}>
                     <div className={styles.searchWrapper}>
-                        <Search datas={this.state.datas} facets={facets} fields={searchFields} sortKey={this.sortKey} sortKeyOrder={this.sortKeyOrder} onChange={this.search} />
+                        <Search datas={this.state.datas} facetsAlwaysVisible={true} facets={facets} fields={searchFields} sortKey={this.sortKey} sortKeyOrder={this.sortKeyOrder} onChange={this.search} />
                     </div>
                 </Box>
                 <Box type={EBoxType.horizontal} position={EBoxPosition.end}>
@@ -189,10 +191,7 @@ class Home extends React.Component<IHomeProps, any> {
         )
     }
 
-    public componentWillUnmount = () => {
-        this._isMounted = false
-        this.setGlobal({ isSubHeader: false })
-    }
+    public componentWillUnmount = () => this.setGlobal({ isSubHeader: false })
 
     protected search = (datas: any) => {
         console.log(datas)
