@@ -109,4 +109,9 @@ export default abstract class Utils {
             {children}
         </Component>
     )
+
+    public static dispatchEvent = (name: string, property: object, parent: HTMLElement = document.body) => {
+        const event = new CustomEvent(name, { detail: property })
+        parent.dispatchEvent(event)
+    }
 }
