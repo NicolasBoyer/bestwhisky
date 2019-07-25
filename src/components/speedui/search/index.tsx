@@ -1,4 +1,4 @@
-import React, { createRef } from 'react'
+import React, { createRef, Fragment } from 'react'
 import Utils from '../../../tools/utils'
 import Box, { EBoxPosition, EBoxType } from '../box'
 import Button from '../button'
@@ -47,7 +47,7 @@ export default class Search extends React.Component<ISearchProps, ISearchState> 
         this.state = { isResetButtonVisible: false, isActive: false, isFacetsOpen: false, facetsLeft: 0, facetsTop: 0, facets: [] }
     }
 
-    public componentDidMount = () => document.body.addEventListener('databaseReady', () => this.buildFacets())
+    public componentDidMount = () => document.body.addEventListener('dispatchDatabaseEndAccess', () => this.buildFacets())
 
     public render() {
         return (
@@ -63,17 +63,22 @@ export default class Search extends React.Component<ISearchProps, ISearchState> 
                     </Box>
                 }
                 {this.props.facets && !this.props.facetsAlwaysVisible &&
-                    <PopupButton allowScroll={true} className={styles.facetsButton} label='Facettes' iconName='sliders' onBeforeOpen={this.buildFacets}>
-                        {this.state.facets}
-                    </PopupButton>
+                    <Fragment>
+                        <PopupButton allowScroll={true} className={styles.facetsButton} label='Facettes' iconName='sliders' onBeforeOpen={this.buildFacets}>
+                            {this.state.facets}
+                        </PopupButton>
+                        {this.filter.length !== 0 &&
+                            <Box type={EBoxType.horizontal}>
+                                {this.displayCurrentFacets()}
+                            </Box>
+                        }
+                    </Fragment>
                 }
             </Box>
         )
     }
 
     protected buildFacets = (event: React.SyntheticEvent | null = null) => {
-        console.log(this.filter)
-        console.log(this.props.facets)
         const currentTarget = event && event.currentTarget as HTMLInputElement
         const currentFacetValue = currentTarget && currentTarget.getAttribute('data-facet-value')
         const facets: any = []
@@ -82,7 +87,7 @@ export default class Search extends React.Component<ISearchProps, ISearchState> 
         const currentTargetValue = currentTarget && Number(currentTarget.value)
         this.props.facets.forEach((facet: any) => {
             // Aggreagation FILTER
-            //  TODO filtre pas au clic + affichage filtre en cours
+            //  TODO affichage filtre en cours
             const isInBetweenFacet = facet.type === 'inBetween'
             const initialInBetweenFacetTargetValue = this.initialInBetweenFacetTargetValue[facet.value]
             if (currentFacetValue && currentFacetValue !== facet.value) {
@@ -301,5 +306,11 @@ export default class Search extends React.Component<ISearchProps, ISearchState> 
             this.props.onChange(this.datas)
         }
         this.setState({ isResetButtonVisible: false })
+    }
+
+    protected displayCurrentFacets() {
+        console.log(this.filter)
+        console.log(this.props.facets)
+        return '10'
     }
 }

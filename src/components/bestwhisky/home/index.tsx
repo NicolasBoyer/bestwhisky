@@ -172,14 +172,14 @@ class Home extends React.Component<IHomeProps, any> {
         return false
     }
 
-    public componentDidMount = () => document.body.addEventListener('databaseReady', () => this.setState({ datas: this.states }))
+    public componentDidMount = () => document.body.addEventListener('dispatchDatabaseEndAccess', () => this.setState({ datas: this.states }))
 
     public render() {
         return (
             <Fragment>
                 <Box type={EBoxType.horizontal} position={EBoxPosition.end}>
                     <div className={styles.searchWrapper}>
-                        <Search datas={this.state.datas} facetsAlwaysVisible={true} facets={facets} fields={searchFields} sortKey={this.sortKey} sortKeyOrder={this.sortKeyOrder} onChange={this.search} />
+                        <Search datas={this.state.datas} facets={facets} fields={searchFields} sortKey={this.sortKey} sortKeyOrder={this.sortKeyOrder} onChange={this.search} />
                     </div>
                 </Box>
                 <Box type={EBoxType.horizontal} position={EBoxPosition.end}>

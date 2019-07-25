@@ -49,21 +49,21 @@ class Firebase {
     /* DATABASE API */
     public getKey = () => this.db.ref().push().key
 
-    public read = (location: string, pCb: (datas: app.database.DataSnapshot | null, returnType: string) => void, dispatchDatabaseReadyEvent: boolean = false) => {
+    public read = (location: string, pCb: (datas: app.database.DataSnapshot | null, returnType: string) => void, dispatchDatabaseEndAccessEvent: boolean = false) => {
         const counter: { [key: string]: number } = {}
         const ref = this.db.ref(location)
         const query = ref.orderByValue()
         query.on('child_added', (datas) => {
             pCb(datas, 'added')
-            this.dispatchDatabaseEndAccess(location, counter, dispatchDatabaseReadyEvent)
+            this.dispatchDatabaseEndAccess(location, counter, dispatchDatabaseEndAccessEvent)
         })
         query.on('child_changed', (datas) => {
             pCb(datas, 'changed')
-            this.dispatchDatabaseEndAccess(location, counter, dispatchDatabaseReadyEvent)
+            this.dispatchDatabaseEndAccess(location, counter, dispatchDatabaseEndAccessEvent)
         })
         query.on('child_removed', (datas) => {
             pCb(datas, 'removed')
-            this.dispatchDatabaseEndAccess(location, counter, dispatchDatabaseReadyEvent)
+            this.dispatchDatabaseEndAccess(location, counter, dispatchDatabaseEndAccessEvent)
         })
     }
 
@@ -97,12 +97,12 @@ class Firebase {
         return count
     }
 
-    private async dispatchDatabaseEndAccess(location: string, counter: { [key: string]: number }, dispatchDatabaseReadyEvent: boolean) {
-        if (dispatchDatabaseReadyEvent) {
+    private async dispatchDatabaseEndAccess(location: string, counter: { [key: string]: number }, dispatchDatabaseEndAccessEvent: boolean) {
+        if (dispatchDatabaseEndAccessEvent) {
             counter[location] = counter[location] === undefined ? 1 : counter[location] + 1
             const count = await this.getCount(location)
             if (counter[location] === count) {
-                Utils.dispatchEvent('databaseReady', {})
+                Utils.dispatchEvent('dispatchDatabaseEndAccess', {})
                 counter[location] = 1
             }
         }
