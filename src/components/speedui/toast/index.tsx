@@ -7,12 +7,14 @@ import styles from './toast.module.css'
 
 export enum EToastType { error = 'error', warning = 'warning', info = 'info', success = 'success' }
 
-// TODO gérer les Positions left right et bottom !
+export enum EToastPosition { top = 'top', topLeft = 'topLeft', topRight = 'topRight', bottom = 'bottom', bottomLeft = 'bottomLeft', bottomRight = 'bottomRight', left = 'left', right = 'right' }
 
 export interface IToastProps {
     type?: EToastType
     autoHideDuration?: number
     closeButton?: boolean
+    position?: EToastPosition
+    offset?: { x: number, y: number }
     open: boolean
 }
 
@@ -49,10 +51,10 @@ export default class Toast extends React.Component<IToastProps, IToastState> {
             return null
         }
         return (
-            <div className={styles.wrapper + ' ' + styles.visibilityOff} ref={this.refToaster}>
+            <div className={styles.wrapper + ' ' + styles.visibilityOff + ' ' + (this.props.position ? styles[this.props.position] : styles.top)} ref={this.refToaster}>
                 <Box className={styles.toast + (type ? ' ' + styles[type] : '')} role='alertDialog' aria-describedby='toaster' type={EBoxType.horizontal}>
                     {type && <Icon name={type} className={styles['icon_' + type]} />}
-                    <span>{children}</span>
+                    <div>{children}</div>
                     {closeButton && <Button className={styles.close} iconName='cross' label='fermer' handleClick={this.onClose} variant={EVariant.rounded} />}
                 </Box>
             </div>
@@ -60,6 +62,13 @@ export default class Toast extends React.Component<IToastProps, IToastState> {
     }
 
     public componentDidUpdate() {
+        if (this.refToaster && this.refToaster.current) {
+            const currentToaster = (this.refToaster.current as HTMLElement)
+            if (!currentToaster.style.getPropertyValue('--translate-offsetX') && !currentToaster.style.getPropertyValue('--translate-offsetY')) {
+                currentToaster.style.setProperty('--translate-offsetX', (this.props.offset && this.props.offset.x || 0) + 'px')
+                currentToaster.style.setProperty('--translate-offsetY', (this.props.offset && this.props.offset.y || 0) + 'px')
+            }
+        }
         setTimeout(() => {
             Utils.toggleClass(this.refToaster.current as HTMLElement, styles.visibilityOff, styles.visibilityOn)
         }, 225)

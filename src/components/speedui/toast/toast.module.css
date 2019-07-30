@@ -1,20 +1,116 @@
 .wrapper {
     position: fixed;
-    top: 0;
     z-index: 2000;
     transition: transform 225ms cubic-bezier(0, 0, 0.2, 1) 0ms;
-    width: 100%;
     display: flex;
-    justify-content: center;
-    left: 0;
 }
 
-.visibilityOff {
+.wrapper.top {
+    justify-content: center;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+
+.top.visibilityOff {
     transform: translate(0px, -100px);
 }
 
-.visibilityOn {
-    transform: translate(0px, 10px);
+.top.visibilityOn {
+    transform: translate(calc(0px + var(--translate-offsetX)), calc(10px + var(--translate-offsetY)));
+}
+
+.wrapper.topLeft {
+    top: 0;
+    left: 0;
+}
+
+.topLeft.visibilityOff {
+    transform: translate(4%, -100px);
+}
+
+.topLeft.visibilityOn {
+    transform: translate(calc(4% + var(--translate-offsetX)), calc(10px + var(--translate-offsetY)));
+}
+
+.wrapper.topRight {
+    top: 0;
+    right: 0;
+}
+
+.topRight.visibilityOff {
+    transform: translate(-4%, -100px);
+}
+
+.topRight.visibilityOn {
+    transform: translate(calc(-4% + var(--translate-offsetX)), calc(10px + var(--translate-offsetY)));
+}
+
+.wrapper.right {
+    right: 0;
+    top: 50%;
+}
+
+.right.visibilityOff {
+    transform: translate(120%, -50%);
+}
+
+.right.visibilityOn {
+    transform: translate(calc(-4% + var(--translate-offsetX)), calc(-50% + var(--translate-offsetY)));
+}
+
+.wrapper.left {
+    left: 0;
+    top: 50%;
+}
+
+.left.visibilityOff {
+    transform: translate(-120%, -50%);
+}
+
+.left.visibilityOn {
+    transform: translate(calc(4% + var(--translate-offsetX)), calc(-50% + var(--translate-offsetY)));
+}
+
+.wrapper.bottom {
+    bottom: 0;
+    justify-content: center;
+    left: 0;
+    width: 100%;
+}
+
+.bottom.visibilityOff {
+    transform: translate(0px, 100px);
+}
+
+.bottom.visibilityOn {
+    transform: translate(calc(0px + var(--translate-offsetX)), calc(-10px + var(--translate-offsetY)));
+}
+
+.wrapper.bottomLeft {
+    bottom: 0;
+    left: 0;
+}
+
+.bottomLeft.visibilityOff {
+    transform: translate(4%, 100px);
+}
+
+.bottomLeft.visibilityOn {
+    transform: translate(calc(4% + var(--translate-offsetX)), calc(-10px + var(--translate-offsetY)));
+}
+
+.wrapper.bottomRight {
+    bottom: 0;
+    right: 0;
+}
+
+.bottomRight.visibilityOff {
+    transform: translate(-4%, 100px);
+}
+
+.bottomRight.visibilityOn {
+    transform: translate(calc(-4% + var(--translate-offsetX)), calc(-10px + var(--translate-offsetY)));
 }
 
 .toast {
@@ -61,8 +157,9 @@
     top: -2px;
 }
 
-.toast span {
+.toast>div {
     padding: 8px 0;
+    display: inline-block;
 }
 
 button.close {
