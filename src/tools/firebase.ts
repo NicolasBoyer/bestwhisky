@@ -102,7 +102,7 @@ class Firebase {
             counter[location] = counter[location] === undefined ? 1 : counter[location] + 1
             const count = await this.getCount(location)
             if (counter[location] === count) {
-                Utils.dispatchEvent('dispatchDatabaseEndAccess', {})
+                Utils.dispatchEvent('databaseEndAccess', {})
                 counter[location] = 1
             }
         }
