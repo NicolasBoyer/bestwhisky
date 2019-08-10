@@ -36,3 +36,20 @@
 .searchWrapper svg {
     fill: #2b7a77;
 }
+
+.noResult {
+    font-size: 1.5em;
+    font-family: "NoResult", "Helvetica", "Arial", sans-serif;
+}
+
+.addButton {
+    position: sticky;
+    top: 60px;
+    z-index: 2;
+    float: left;
+    margin-top: -10px;
+}
+
+.sortBox {
+    height: 56px;
+}

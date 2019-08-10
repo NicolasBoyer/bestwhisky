@@ -4,6 +4,7 @@ import Box, { EBoxPosition, EBoxType } from '../box'
 import Button from '../button'
 import Icon from '../icon'
 import PopupButton from '../popup-button'
+import Toast, { EToastPosition } from '../toast'
 import styles from './search.module.css'
 
 export enum ESearchKeyOrder { asc = 'asc', desc = 'desc' }
@@ -24,7 +25,6 @@ export interface ISearchProps {
 
 interface ISearchState {
     isResetButtonVisible: boolean
-    isActive: boolean
     isFacetsOpen: boolean
     facetsTop: number
     facetsLeft: number
@@ -37,17 +37,16 @@ export default class Search extends React.Component<ISearchProps, ISearchState> 
     protected filteredDatas = this.props.datas
     protected filter: string[] = []
     protected facetsDatas: any = {}
-    protected initialDatas: any
     protected initialInBetweenFacetTargetValue: any = {}
     protected sortKey: any
     protected sortKeyOrder: any
 
     constructor(props: ISearchProps) {
         super(props)
-        this.state = { isResetButtonVisible: false, isActive: false, isFacetsOpen: false, facetsLeft: 0, facetsTop: 0, facets: [] }
+        this.state = { isResetButtonVisible: false, isFacetsOpen: false, facetsLeft: 0, facetsTop: 0, facets: [] }
     }
 
-    public componentDidMount = () => document.body.addEventListener('dispatchDatabaseEndAccess', () => this.buildFacets())
+    public componentDidMount = () => document.body.addEventListener('databaseEndAccess', () => this.buildFacets())
 
     public render() {
         return (
@@ -55,7 +54,7 @@ export default class Search extends React.Component<ISearchProps, ISearchState> 
                 <form className={styles.form} role='search' onSubmit={(e) => e.preventDefault()}>
                     <input type='search' placeholder={this.props.placeHolder} onChange={this.onChange} autoComplete='off' autoCorrect='off' autoCapitalize='off' ref={this.refInput} required />
                     <Icon name='search' className={styles.searchIcon} />
-                    <Button className={styles.reset + (this.state.isResetButtonVisible ? ' ' + styles.isVisible : '')} iconName='cross' label='Reset' handleClick={this.reset} />
+                    <Button className={styles.reset + (this.state.isResetButtonVisible ? ' ' + styles.isVisible : '')} iconName='cross' label='Reset' handleClick={this.resetFullText} />
                 </form>
                 {this.props.facetsAlwaysVisible &&
                     <Box type={EBoxType.vertical}>
@@ -64,13 +63,16 @@ export default class Search extends React.Component<ISearchProps, ISearchState> 
                 }
                 {this.props.facets && !this.props.facetsAlwaysVisible &&
                     <Fragment>
-                        <PopupButton allowScroll={true} className={styles.facetsButton} label='Facettes' iconName='sliders' onBeforeOpen={this.buildFacets}>
+                        <PopupButton disabled={!this.filteredDatas.length} allowScroll={true} className={styles.facetsButton} label='Facettes' iconName='sliders' onBeforeOpen={this.buildFacets}>
                             {this.state.facets}
                         </PopupButton>
-                        {this.filter.length !== 0 &&
-                            <Box type={EBoxType.horizontal}>
-                                {this.displayCurrentFacets()}
-                            </Box>
+                        {
+                            <Toast open={this.filter.length !== 0} position={EToastPosition.bottom} closeButton={true} onClose={this.resetFilter}>
+                                <Box className={styles.usedFacets} type={EBoxType.vertical} position={EBoxPosition.start}>
+                                    <div className={styles.title}>Facettes utilisées</div>
+                                    {this.displayCurrentFacets()}
+                                </Box>
+                            </Toast>
                         }
                     </Fragment>
                 }
@@ -79,22 +81,31 @@ export default class Search extends React.Component<ISearchProps, ISearchState> 
     }
 
     protected buildFacets = (event: React.SyntheticEvent | null = null) => {
+        if (!this.filteredDatas.length) {
+            return
+        }
         const currentTarget = event && event.currentTarget as HTMLInputElement
         const currentFacetValue = currentTarget && currentTarget.getAttribute('data-facet-value')
         const facets: any = []
-        const usedFacets = Object.keys(this.filter.reduce((acc: any, filter: any) => (acc[Object.keys(filter)[0]] = true, acc), {}))
+        const usedFacets = this.getUsedFacets()
         const isCurrentTargetChecked = currentTarget && currentTarget.checked
         const currentTargetValue = currentTarget && Number(currentTarget.value)
+        const isSearchValue = this.refInput.current && this.refInput.current.value !== ''
         this.props.facets.forEach((facet: any) => {
             // Aggreagation FILTER
-            //  TODO affichage filtre en cours
             const isInBetweenFacet = facet.type === 'inBetween'
             const initialInBetweenFacetTargetValue = this.initialInBetweenFacetTargetValue[facet.value]
-            if (currentFacetValue && currentFacetValue !== facet.value) {
-                this.facetsDatas[facet.value] = isInBetweenFacet || isCurrentTargetChecked || this.filter.length > 1 && !usedFacets.includes(facet.value) || !isCurrentTargetChecked && (this.filter.length === 1 && !this.filter.some((filter) => filter.hasOwnProperty(facet.value)) || usedFacets.length > 1) ? this.filteredDatas : this.datas
-            }
-            if (currentFacetValue && currentFacetValue === facet.value && currentTargetValue) {
-                this.facetsDatas[facet.value] = initialInBetweenFacetTargetValue && (currentTargetValue > initialInBetweenFacetTargetValue.min || currentTargetValue < initialInBetweenFacetTargetValue.max) || usedFacets.length > 1 && isCurrentTargetChecked || !isCurrentTargetChecked && (!usedFacets.includes(facet.value) || usedFacets.length > 1) ? this.filteredDatas : this.datas
+            if (currentFacetValue) {
+                if (currentFacetValue !== facet.value) {
+                    this.facetsDatas[facet.value] = isInBetweenFacet || isCurrentTargetChecked || this.filter.length > 1 && !usedFacets.includes(facet.value) || !isCurrentTargetChecked && (this.filter.length === 1 && !this.filter.some((filter) => filter.hasOwnProperty(facet.value)) || usedFacets.length > 1) || isSearchValue ? this.filteredDatas : this.datas
+                }
+                if (currentFacetValue === facet.value && (isInBetweenFacet && currentTargetValue || !isInBetweenFacet)) {
+                    this.facetsDatas[facet.value] = initialInBetweenFacetTargetValue && (currentTargetValue && (currentTargetValue > initialInBetweenFacetTargetValue.min || currentTargetValue < initialInBetweenFacetTargetValue.max)) || usedFacets.length > 1 && isCurrentTargetChecked || !isCurrentTargetChecked && (!usedFacets.includes(facet.value) || usedFacets.length > 1) || isSearchValue ? this.filteredDatas : this.datas
+                }
+            } else if (isSearchValue) {
+                this.facetsDatas[facet.value] = this.filteredDatas
+            } else if (!this.filter.length) {
+                this.facetsDatas[facet.value] = this.datas
             }
             const datas = this.facetsDatas[facet.value] || this.datas
             const values: { [key: string]: number } = {}
@@ -125,6 +136,7 @@ export default class Search extends React.Component<ISearchProps, ISearchState> 
                                                 // } else {
                                                 //     this.filter.push(value[0])
                                                 // }
+                                                // console.log(this.datas)
                                                 const checkbox: any = {}
                                                 checkbox[facet.value] = value[0]
                                                 const index = this.filter.findIndex((val: any) => val[facet.value] === value[0])
@@ -141,7 +153,7 @@ export default class Search extends React.Component<ISearchProps, ISearchState> 
                                     )
                                 })
                             }
-                        </fieldset>
+                        </fieldset >
                     )
                     break
                 case EFacetsType.inBetween:
@@ -208,15 +220,12 @@ export default class Search extends React.Component<ISearchProps, ISearchState> 
         this.onChange(e)
     }
 
-    protected onChange = (e: React.SyntheticEvent) => {
+    protected onChange = (e: React.SyntheticEvent | null = null) => {
         if (this.refInput.current) {
             const currentValue = this.refInput.current.value
-            if (!this.state.isActive && (currentValue.length === 1 || this.filter.length === 1)) {
-                // Permet de remettre les données comme envoyées avant le sort si pas de changement de sort pendant la recherche grace a isActive
-                this.initialDatas = Array.from(this.props.datas)
-            }
             this.setState({ isResetButtonVisible: this.refInput.current.value !== '' })
-            const results: any = []
+            const filterResults: any = []
+            const searchResults: any = []
             if (currentValue !== '' || this.filter.length) {
                 let requestResults: any = {}
                 // Sort by key
@@ -224,9 +233,6 @@ export default class Search extends React.Component<ISearchProps, ISearchState> 
                     this.sortKey = this.props.sortKey
                     this.sortKeyOrder = this.props.sortKeyOrder
                     Utils.sortObjectsArrayByKey(this.datas, this.props.sortKey, this.props.sortKeyOrder || ESearchKeyOrder.asc)
-                    if (this.state.isActive) {
-                        this.initialDatas = this.datas
-                    }
                 }
                 // Searching request
                 if (currentValue !== '') {
@@ -261,56 +267,114 @@ export default class Search extends React.Component<ISearchProps, ISearchState> 
                         // transforme en object {el, count} pour permettre le décompte du nombre d'éléments et son dédoublonnage
                         .reduce((acc: any, item: any) => ((acc[acc.findIndex((d: any) => d.el === item)] || acc[acc.push({ el: item, count: 0 }) - 1]).count++ , acc), [])
                         // si le nombre d'élément est égale au nombre de filtres différents on récupère les éléments sous forme {el, count}
-                        .filter((item: any) => item.count === Object.keys(this.filter.reduce((acc: any, filter: any) => (acc[Object.keys(filter)[0]] = true, acc), {})).length)
+                        .filter((item: any) => item.count === this.getUsedFacets().length)
                         // on recrée l'objet en data à partir du tableau de form arr[{el, count}]
                         .reduce((acc: any, item: any) => (acc[item.el.key] = item.el, acc), {})
-                    // Adapte this.filter aux résultats pour ne garder que les filter en cours d'execution
-                    this.filter = this.filter.filter((filter) => {
-                        let returnFilter = false
-                        // tslint:disable-next-line:forin
-                        for (const key in requestResults) {
-                            const facet = Object.keys(filter)[0]
-                            const value = Object.values(filter)[0]
-                            if (requestResults[key][facet] === value || requestResults[key][facet] === Number(value) || requestResults[key][facet] <= (value as any).max && requestResults[key][facet] >= (value as any).min) {
-                                returnFilter = true
-                                break
+                    // Adapte this.filter aux résultats pour ne garder que les filter en cours d'execution s'il existe des résultats
+                    if (Object.keys(requestResults).length) {
+                        this.filter = this.filter.filter((filter) => {
+                            let returnFilter = false
+                            // tslint:disable-next-line:forin
+                            for (const key in requestResults) {
+                                const facet = Object.keys(filter)[0]
+                                const value = Object.values(filter)[0]
+                                if (requestResults[key][facet] === value || requestResults[key][facet] === Number(value) || requestResults[key][facet] <= (value as any).max && requestResults[key][facet] >= (value as any).min) {
+                                    returnFilter = true
+                                    break
+                                }
                             }
-                        }
-                        return returnFilter
-                    })
+                            return returnFilter
+                        })
+                    }
                 }
-                // Hihglight term
+                // Création des tableaux de résultats recherche et facettes
                 this.datas.forEach((data: any) => {
                     if (requestResults[data.key]) {
-                        if (currentValue !== '') {
-                            this.props.fields.forEach((field) => {
-                                requestResults[data.key][field] = data[field].replace(new RegExp('(' + currentValue + ')', 'gi'), '~s§s§$1~s')
-                            })
-                        }
                         // Nécessaire pour que les résultats soient dans l'ordre des datas défini dans sortByKey
-                        results.push(requestResults[data.key])
+                        filterResults.push(requestResults[data.key])
+                        // Hihglight term dans un autre tableau pour ne pas garder les caractères de recherche dans les facettes
+                        if (currentValue !== '') {
+                            const highlightData: any = {}
+                            for (const key in data) {
+                                if (data.hasOwnProperty(key) && typeof data[key] !== 'object' && this.props.fields.includes(key)) {
+                                    highlightData[key] = String(data[key]).replace(new RegExp('(' + currentValue + ')', 'gi'), '~s§s§$1~s')
+                                } else {
+                                    highlightData[key] = data[key]
+                                }
+                            }
+                            searchResults.push(highlightData)
+                        }
                     }
                 })
             }
-            this.setState({ isActive: currentValue.length > 0 || this.filter.length > 0 })
-            this.filteredDatas = results.length || currentValue !== '' || this.filter.length ? results : this.initialDatas
+            this.filteredDatas = filterResults.length || currentValue !== '' || this.filter.length ? filterResults : this.datas
             this.buildFacets(e)
-            this.props.onChange(this.filteredDatas)
+            this.props.onChange(searchResults.length ? searchResults : filterResults.length || currentValue !== '' || this.filter.length ? filterResults : this.datas)
         }
     }
 
-    protected reset = () => {
+    protected resetFullText = () => {
         if (this.refInput.current) {
             this.refInput.current.value = ''
-            Utils.sortObjectsArrayByKey(this.datas, this.props.sortKey, this.props.sortKeyOrder || ESearchKeyOrder.asc)
-            this.props.onChange(this.datas)
+            this.onChange()
         }
         this.setState({ isResetButtonVisible: false })
     }
 
+    protected resetFilter = () => {
+        this.filter = []
+        this.facetsDatas = {}
+        this.onChange()
+    }
+
+    protected getUsedFacets = () => Object.keys(this.filter.reduce((acc: any, filter: any) => (acc[Object.keys(filter)[0]] = true, acc), {}))
+
     protected displayCurrentFacets() {
-        console.log(this.filter)
-        console.log(this.props.facets)
-        return '10'
+        // TODO a voir si je peux mutualiser ce qui se ressemble
+        const usedFacets = this.props.facets.map((facet: any) => {
+            if (this.getUsedFacets().includes(facet.value)) {
+                switch (facet.type) {
+                    case EFacetsType.checkbox:
+                        return (
+                            <Box className={styles.facetType} key={Utils.generateId()} type={EBoxType.horizontal} position={EBoxPosition.start}>
+                                <Box type={EBoxType.horizontal} position={EBoxPosition.start} className={styles.title}>{facet.name}</Box>
+                                <div className={styles.content}>
+                                    {
+                                        this.filter.map((filter: any) => {
+                                            if (filter[facet.value]) {
+                                                return <span key={Utils.generateId()}>{filter[facet.value]}</span>
+                                            }
+                                        })
+                                    }
+                                </div>
+                            </Box>
+                        )
+                    case EFacetsType.inBetween:
+                        return (
+                            <Box className={styles.facetType} key={Utils.generateId()} type={EBoxType.horizontal} position={EBoxPosition.start}>
+                                <Box type={EBoxType.horizontal} position={EBoxPosition.start} className={styles.title}>{facet.name}</Box>
+                                <div className={styles.content}>
+                                    {
+                                        this.filter.map((filter: any) => {
+                                            if (filter[facet.value]) {
+                                                return (
+                                                    <div key={Utils.generateId()}>
+                                                        <span>Entre </span>
+                                                        <span>{filter[facet.value].min}</span>
+                                                        <span> et </span>
+                                                        <span>{filter[facet.value].max}</span>
+                                                        <span> {facet.unit}</span>
+                                                    </div>
+                                                )
+                                            }
+                                        })
+                                    }
+                                </div>
+                            </Box>
+                        )
+                }
+            }
+        })
+        return usedFacets
     }
 }

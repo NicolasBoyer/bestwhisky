@@ -198,3 +198,33 @@ input[type="number"]::-webkit-inner-spin-button {
     vertical-align: middle;
     color: rgb(120, 120, 120);
 }
+
+.usedFacets {
+    width: 25em;
+}
+
+.usedFacets>.title {
+    font-family: 'title', Arial, Helvetica, sans-serif;
+    width: 25em;
+}
+
+.facetType>.title {
+    font-weight: bold;
+}
+
+.facetType>.title::after {
+    content: '-';
+    padding-left: 0.3em;
+}
+
+.facetType>.content {
+    padding-left: 0.3em;
+}
+
+.facetType>.content>span::after {
+    content: ', '
+}
+
+.facetType>.content>span:last-child::after {
+    content: ''
+}

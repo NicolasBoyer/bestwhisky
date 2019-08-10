@@ -119,6 +119,7 @@ class Home extends React.Component<IHomeProps, any> {
     protected sortKey = 'name'
     protected sortKeyOrder = ESearchKeyOrder.asc
     protected states: any
+    protected isLoaded = true
 
     constructor(props: IHomeProps) {
         super(props)
@@ -165,14 +166,12 @@ class Home extends React.Component<IHomeProps, any> {
         }
     }
 
-    public shouldComponentUpdate(nextProps: IHomeProps, nextStates: any) {
-        if (Object(nextStates.datas).length) {
-            return true
-        }
-        return false
+    public componentDidMount = () => {
+        document.body.addEventListener('databaseEndAccess', () => {
+            this.isLoaded = false
+            this.setState({ datas: this.states })
+        })
     }
-
-    public componentDidMount = () => document.body.addEventListener('dispatchDatabaseEndAccess', () => this.setState({ datas: this.states }))
 
     public render() {
         return (
@@ -182,11 +181,17 @@ class Home extends React.Component<IHomeProps, any> {
                         <Search datas={this.state.datas} facets={facets} fields={searchFields} sortKey={this.sortKey} sortKeyOrder={this.sortKeyOrder} onChange={this.search} />
                     </div>
                 </Box>
-                <Box type={EBoxType.horizontal} position={EBoxPosition.end}>
-                    <Sort entries={sortEntries} defaultValue={this.sortKey + '-' + this.sortKeyOrder} datas={this.state.datas} onChange={this.sort} />
-                </Box>
-                {this.global.user && <FormDialog inputs={addWhiskyInputs} title='Ajouter un Whisky' mode={EFormDialogMode.add} />}
-                <List children={this.state.datas} component={Whisky} />
+                {this.global.user && <FormDialog inputs={addWhiskyInputs} title='Ajouter un Whisky' mode={EFormDialogMode.add} addButtonClassName={styles.addButton} />}
+                {
+                    !!this.state.datas.length &&
+                    <Box type={EBoxType.horizontal} position={EBoxPosition.end} className={styles.sortBox}>
+                        <Sort entries={sortEntries} defaultValue={this.sortKey + '-' + this.sortKeyOrder} datas={this.state.datas} onChange={this.sort} />
+                    </Box>
+                }
+                {
+                    // TODO Changer chargement en cours par un skeleton
+                    !this.isLoaded ? (!this.state.datas.length ? <Box className={styles.noResult} type={EBoxType.horizontal}>Pas de résultat</Box> : <List children={this.state.datas} component={Whisky} />) : <Box className={styles.noResult} type={EBoxType.horizontal}>Chargement en cours...</Box>
+                }
             </Fragment>
         )
     }
@@ -201,6 +206,8 @@ class Home extends React.Component<IHomeProps, any> {
         // TODO manque pertinence ?
         // TODO field box image ?
         // TODO sauvegarder recherche sortKey ?
+        // TODO le champ recquis ne marche plus sur la note
+        // TODO general transform px en rem ...
         this.setState({ datas })
     }
 

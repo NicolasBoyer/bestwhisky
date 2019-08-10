@@ -55,6 +55,13 @@
 }
 
 @font-face {
+    font-family: "NoResult";
+    src: url(./unispace.ttf) format("opentype");
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
     font-family: 'Search';
     src: url('./search.eot?14882036');
     src: url('./search.eot?14882036#iefix') format('embedded-opentype'),
