@@ -15,6 +15,7 @@ export interface IToastProps {
     closeButton?: boolean
     position?: EToastPosition
     offset?: { x: number, y: number }
+    onClose?: (e: React.SyntheticEvent) => void
     open: boolean
 }
 
@@ -74,10 +75,13 @@ export default class Toast extends React.Component<IToastProps, IToastState> {
         }, 225)
     }
 
-    protected onClose = () => {
+    protected onClose = (e: React.SyntheticEvent) => {
         Utils.toggleClass(this.refToaster.current as HTMLElement, styles.visibilityOn, styles.visibilityOff)
         setTimeout(() => {
             this.setState({ isOpen: false })
+            if (this.props.onClose) {
+                this.props.onClose(e)
+            }
         }, 225)
     }
 }
