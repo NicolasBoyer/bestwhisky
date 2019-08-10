@@ -5,6 +5,10 @@ a {
     text-decoration: none;
 }
 
+button:disabled {
+    opacity: 0.5;
+}
+
 .textButton {
     border: none;
     background: transparent;
