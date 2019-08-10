@@ -4,7 +4,6 @@ import Button, { EVariant } from '../button'
 import Dialog from '../dialog'
 import { IFormInput } from '../form'
 import Survey from '../survey'
-import styles from './form-dialog.module.css'
 
 export enum EFormDialogMode { add = 'add', edit = 'edit' }
 
@@ -15,6 +14,9 @@ export interface IFormDialogProps {
     datas?: any
     onClose?: (e: React.SyntheticEvent, datas?: any) => void
     onChange?: (e: React.SyntheticEvent, datas?: any) => void
+    addButtonVariant?: EVariant
+    addButtonClassName?: string
+    editButtonClassName?: string
 }
 
 interface IFormDialogState {
@@ -31,10 +33,9 @@ export default class FormDialog extends React.Component<IFormDialogProps, IFormD
 
     public render() {
         const { isModalOpen } = this.state
-        const { datas, inputs, mode, title } = this.props
+        const { addButtonClassName, addButtonVariant, editButtonClassName, datas, inputs, mode, title } = this.props
         const cancelButton = <Button label='Annuler' handleClick={this.closeForm} />
-        // TODO : renvoyer des styles pour les boutons sur les props
-        const openButton = mode === EFormDialogMode.add ? <Button ref={this.refOpenButton} className={styles.addButton} variant={EVariant.fab} label='Ajouter' iconName='add' handleClick={this.openForm} /> : <Button ref={this.refOpenButton} className={styles.editButton} label='Editer' handleClick={this.openForm} />
+        const openButton = mode === EFormDialogMode.add ? <Button ref={this.refOpenButton} className={addButtonClassName} variant={addButtonVariant || EVariant.fab} label='Ajouter' iconName='add' handleClick={this.openForm} /> : <Button ref={this.refOpenButton} className={editButtonClassName} label='Editer' handleClick={this.openForm} />
         return (
             <Fragment>
                 {openButton}
