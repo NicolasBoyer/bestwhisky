@@ -40,7 +40,6 @@ export default class WhiskyDetails extends React.Component<IWhiskyDetailsProps, 
     constructor(props: IWhiskyDetailsProps) {
         super(props)
         this.state = { ...this.props.location.state, isAlertOpen: false }
-        // TODO : changer la taille de la section et suppr header sur cette page sans doute aussi sur auth + pb footer pas bien placé ...
     }
 
     public render() {
