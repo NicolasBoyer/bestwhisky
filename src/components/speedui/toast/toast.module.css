@@ -17,7 +17,7 @@
 }
 
 .top.visibilityOn {
-    transform: translate(calc(0 + var(--translate-offsetX)), calc(0.625rem + var(--translate-offsetY)));
+    transform: translate(calc(0rem + var(--translate-offsetX)), calc(0.625rem + var(--translate-offsetY)));
 }
 
 .wrapper.topLeft {
@@ -84,7 +84,7 @@
 }
 
 .bottom.visibilityOn {
-    transform: translate(calc(0 + var(--translate-offsetX)), calc(-0.625rem + var(--translate-offsetY)));
+    transform: translate(calc(0rem + var(--translate-offsetX)), calc(-0.625rem + var(--translate-offsetY)));
 }
 
 .wrapper.bottomLeft {
