@@ -1,8 +1,8 @@
 .header {
     background: #2b7a77;
-    height: 56px;
+    height: 3.5rem;
     width: 100%;
-    box-shadow: 0 0 5px rgba(0, 0, 0, .5);
+    box-shadow: 0 0 0.3125rem rgba(0, 0, 0, .5);
     position: fixed;
     left: 0;
     top: 0;
@@ -15,17 +15,17 @@
 }
 
 .header+* {
-    padding-top: 56px;
+    padding-top: 3.5rem;
 }
 
 .header nav {
     position: relative;
-    width: 600px;
+    width: 37.5rem;
 }
 
 .header.isBack nav {
     justify-content: space-between;
-    width: 800px;
+    width: 50rem;
 }
 
 .header nav a,
@@ -33,15 +33,15 @@
     font-family: 'HeaderFont', Arial, Helvetica, sans-serif;
     display: inline-flex;
     position: relative;
-    height: 56px;
-    line-height: 56px;
-    padding: 0 15px;
-    min-width: 50px;
+    height: 3.5rem;
+    line-height: 3.5rem;
+    padding: 0 0.9375rem;
+    min-width: 3.125rem;
     border: none;
     text-align: center;
     background-color: hsla(0, 0%, 100%, 0);
     text-decoration: none;
-    font-size: 10px;
+    font-size: 0.625rem;
     color: #eee;
     cursor: pointer;
     align-items: center;
@@ -54,7 +54,7 @@
 }
 
 .log svg {
-    width: 2.5em !important;
-    height: 2.5em !important;
-    margin-right: 1.2em;
+    width: 1.5rem !important;
+    height: 1.5rem !important;
+    margin-right: 0.8rem;
 }

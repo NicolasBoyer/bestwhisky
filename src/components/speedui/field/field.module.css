@@ -6,13 +6,13 @@
     min-width: 0;
     flex-direction: column;
     vertical-align: top;
-    /* width: 200px; */
+    /* width: 12.5rem; */
     width: 100%;
-    margin-bottom: 8px;
+    margin-bottom: 0.5rem;
 }
 
 .area {
-    width: 500px;
+    width: 31.25rem;
 }
 
 .number {}
@@ -40,7 +40,7 @@
     top: 0;
     left: 0;
     position: absolute;
-    transform: translate(0, 24px) scale(1);
+    transform: translate(0, 1.5rem) scale(1);
     transform-origin: top left;
     color: rgba(0, 0, 0, 0.54);
     padding: 0;
@@ -50,7 +50,7 @@
 }
 
 .field label+.inputContainer {
-    margin-top: 16px;
+    margin-top: 1rem;
 }
 
 .required label:after {
@@ -75,7 +75,7 @@
     content: "\00a0";
     position: absolute;
     transition: border-bottom-color 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.42);
+    border-bottom: 0.0625rem solid rgba(0, 0, 0, 0.42);
     pointer-events: none;
 }
 
@@ -87,7 +87,7 @@
     position: absolute;
     transform: scaleX(0);
     transition: transform 200ms cubic-bezier(0.0, 0, 0.2, 1) 0ms;
-    border-bottom: 2px solid #2b7a77;
+    border-bottom: 0.125rem solid #2b7a77;
     pointer-events: none;
 }
 
@@ -97,13 +97,13 @@
     width: 100%;
     border: 0;
     margin: 0;
-    padding: 6px 0 7px;
+    padding: 0.375rem 0 0.4375rem;
     display: block;
     min-width: 0;
     box-sizing: content-box;
     background: none;
     -webkit-tap-highlight-color: transparent;
-    padding-top: 3px;
+    padding-top: 0.1875rem;
 }
 
 .inputContainer input::-webkit-input-placeholder,
@@ -129,25 +129,25 @@
 
 .image label,
 .images label {
-    height: 32px;
+    height: 2rem;
     margin-bottom: 0;
     margin-top: 0;
-    font-size: 13px;
+    font-size: 0.8125rem;
     display: block;
     background: #2b7a77;
     color: #fff;
-    border-radius: 2px;
+    border-radius: 0.125rem;
     font-weight: 500;
-    min-width: 88px;
-    padding: 5px 16px;
+    min-width: 5.5rem;
+    padding: 0.3125rem 1rem;
     text-transform: uppercase;
-    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12), 0 3px 1px -2px rgba(0, 0, 0, .2);
+    box-shadow: 0 0.125rem 0.125rem 0 rgba(0, 0, 0, .14), 0 0.0625rem 0.3125rem 0 rgba(0, 0, 0, .12), 0 0.1875rem 0.0625rem -0.125rem rgba(0, 0, 0, .2);
     transition: background .15s, box-shadow .3s, color .15s;
     position: static;
     display: flex;
     align-items: center;
     cursor: pointer;
-    width: 165px;
+    width: 10.3125rem;
 }
 
 .image label:hover,
@@ -163,7 +163,7 @@
     fill: currentColor;
     margin-left: 1.5em;
     position: relative;
-    top: -2px;
+    top: -0.125rem;
 }
 
 .image .inputContainer,
@@ -185,7 +185,7 @@
 }
 
 .image img {
-    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12), 0 3px 1px -2px rgba(0, 0, 0, .2);
+    box-shadow: 0 0.125rem 0.125rem 0 rgba(0, 0, 0, .14), 0 0.0625rem 0.3125rem 0 rgba(0, 0, 0, .12), 0 0.1875rem 0.0625rem -0.125rem rgba(0, 0, 0, .2);
 }
 
 .fileLoader {
@@ -225,7 +225,7 @@
 .field.focus label,
 .field.hasValue label,
 .note label {
-    transform: translate(0, 1.5px) scale(0.75);
+    transform: translate(0, 0.0625rem) scale(0.75);
     transform-origin: top left;
 }
 

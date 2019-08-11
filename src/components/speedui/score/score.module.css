@@ -1,8 +1,8 @@
 .note {
     opacity: 0.3;
     color: #eeb829;
-    min-width: 24px;
-    min-height: 24px;
+    min-width: 1.5rem;
+    min-height: 1.5rem;
     padding: 0;
 }
 

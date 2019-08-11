@@ -1,6 +1,6 @@
 .buttons {
     flex: 0 0 auto;
-    margin: 8px 4px;
+    margin: 0.5rem 0.25rem;
     display: flex;
     align-items: center;
     justify-content: flex-end;

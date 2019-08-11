@@ -13,11 +13,11 @@
 }
 
 .top.visibilityOff {
-    transform: translate(0px, -100px);
+    transform: translate(0, -6.25rem);
 }
 
 .top.visibilityOn {
-    transform: translate(calc(0px + var(--translate-offsetX)), calc(10px + var(--translate-offsetY)));
+    transform: translate(calc(0 + var(--translate-offsetX)), calc(0.625rem + var(--translate-offsetY)));
 }
 
 .wrapper.topLeft {
@@ -26,11 +26,11 @@
 }
 
 .topLeft.visibilityOff {
-    transform: translate(4%, -100px);
+    transform: translate(4%, -6.25rem);
 }
 
 .topLeft.visibilityOn {
-    transform: translate(calc(4% + var(--translate-offsetX)), calc(10px + var(--translate-offsetY)));
+    transform: translate(calc(4% + var(--translate-offsetX)), calc(0.625rem + var(--translate-offsetY)));
 }
 
 .wrapper.topRight {
@@ -39,11 +39,11 @@
 }
 
 .topRight.visibilityOff {
-    transform: translate(-4%, -100px);
+    transform: translate(-4%, -6.25rem);
 }
 
 .topRight.visibilityOn {
-    transform: translate(calc(-4% + var(--translate-offsetX)), calc(10px + var(--translate-offsetY)));
+    transform: translate(calc(-4% + var(--translate-offsetX)), calc(0.625rem + var(--translate-offsetY)));
 }
 
 .wrapper.right {
@@ -80,11 +80,11 @@
 }
 
 .bottom.visibilityOff {
-    transform: translate(0px, 100px);
+    transform: translate(0, 6.25rem);
 }
 
 .bottom.visibilityOn {
-    transform: translate(calc(0px + var(--translate-offsetX)), calc(-10px + var(--translate-offsetY)));
+    transform: translate(calc(0 + var(--translate-offsetX)), calc(-0.625rem + var(--translate-offsetY)));
 }
 
 .wrapper.bottomLeft {
@@ -93,11 +93,11 @@
 }
 
 .bottomLeft.visibilityOff {
-    transform: translate(4%, 100px);
+    transform: translate(4%, 6.25rem);
 }
 
 .bottomLeft.visibilityOn {
-    transform: translate(calc(4% + var(--translate-offsetX)), calc(-10px + var(--translate-offsetY)));
+    transform: translate(calc(4% + var(--translate-offsetX)), calc(-0.625rem + var(--translate-offsetY)));
 }
 
 .wrapper.bottomRight {
@@ -106,18 +106,18 @@
 }
 
 .bottomRight.visibilityOff {
-    transform: translate(-4%, 100px);
+    transform: translate(-4%, 6.25rem);
 }
 
 .bottomRight.visibilityOn {
-    transform: translate(calc(-4% + var(--translate-offsetX)), calc(-10px + var(--translate-offsetY)));
+    transform: translate(calc(-4% + var(--translate-offsetX)), calc(-0.625rem + var(--translate-offsetY)));
 }
 
 .toast {
-    min-width: 340px;
-    border-radius: 4px;
+    min-width: 21.25rem;
+    border-radius: 0.25rem;
     color: #fff;
-    padding: 6px 16px;
+    padding: 0.375rem 1rem;
     flex-wrap: wrap;
     align-items: center;
     background-color: rgb(49, 49, 49);
@@ -125,7 +125,7 @@
     font-weight: 400;
     line-height: 1.5;
     letter-spacing: 0.01071em;
-    box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.2), 0px 6px 10px 0px rgba(0, 0, 0, 0.14), 0px 1px 18px 0px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 0.1875rem 0.3125rem -0.0625rem rgba(0, 0, 0, 0.2), 0 0.375rem 0.625rem 0 rgba(0, 0, 0, 0.14), 0 0.0625rem 1.125rem 0 rgba(0, 0, 0, 0.12);
 }
 
 .toast.success {
@@ -154,11 +154,11 @@
     fill: currentColor;
     margin-right: 1em;
     position: relative;
-    top: -2px;
+    top: -0.125rem;
 }
 
 .toast>div {
-    padding: 8px 0;
+    padding: 0.5rem 0;
     display: inline-block;
 }
 
