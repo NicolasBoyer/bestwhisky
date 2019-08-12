@@ -208,6 +208,7 @@ class Home extends React.Component<IHomeProps, any> {
         // TODO sauvegarder recherche sortKey ?
         // TODO le champ recquis ne marche plus sur la note
         // TODO ajout iodé, fruité, avec une sorte de roue ... A voir
+        // TODO : rgpd
         this.setState({ datas })
     }
 
