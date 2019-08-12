@@ -23,6 +23,8 @@ export interface IFieldProps {
     required?: boolean
     placeHolder?: string
     value?: string
+    customProps?: any
+    className?: string
 }
 
 interface IFieldStates {
@@ -42,7 +44,7 @@ export default class Field extends React.Component<IFieldProps, IFieldStates> {
     }
 
     public render() {
-        const { label, name, placeHolder, pattern, required, type, value } = this.props
+        const { className, customProps, label, name, placeHolder, pattern, required, type, value } = this.props
         const { isFileLoading, previewImage } = this.state
         let input = null
         switch (type) {
@@ -56,21 +58,21 @@ export default class Field extends React.Component<IFieldProps, IFieldStates> {
                 if (type === EFieldType.images) {
                     attributes.multiple = 'multiple'
                 }
-                input = <input tabIndex={0} aria-invalid='false' accept='image/*' {...attributes} id={name} type='file' onChange={this.uploadFile} required={required} ref={this.refInput} />
+                input = <input tabIndex={0} aria-invalid='false' accept='image/*' {...attributes} {...customProps} id={name} type='file' onChange={this.uploadFile} required={required} ref={this.refInput} />
                 break
             case EFieldType.video:
             case EFieldType.videos:
                 return null
             case EFieldType.checkbox:
             case EFieldType.radio:
-                return null
+                input = <input tabIndex={0} aria-invalid='false' type={type} {...customProps} id={name} onChange={this.onChange} onFocus={this.onFocus} onBlur={this.onBlur} required={required} ref={this.refInput} />
             case EFieldType.text:
             case EFieldType.number:
             case EFieldType.password:
             case EFieldType.search:
             case EFieldType.email:
             case EFieldType.url:
-                input = <input tabIndex={0} aria-invalid='false' id={name} type={type} placeholder={placeHolder} onChange={this.onChange} onFocus={this.onFocus} onBlur={this.onBlur} ref={this.refInput} required={required} pattern={pattern} />
+                input = <input tabIndex={0} aria-invalid='false' id={name} type={type} placeholder={placeHolder} {...customProps} onChange={this.onChange} onFocus={this.onFocus} onBlur={this.onBlur} ref={this.refInput} required={required} pattern={pattern} />
                 break
             case EFieldType.select:
             case EFieldType.color:
@@ -78,22 +80,26 @@ export default class Field extends React.Component<IFieldProps, IFieldStates> {
             case EFieldType.range:
                 return null
             case EFieldType.area:
-                input = <textarea tabIndex={0} aria-invalid='false' id={name} onChange={this.onChange} onFocus={this.onFocus} onBlur={this.onBlur} ref={this.refTextArea} rows={10}></textarea>
+                input = <textarea tabIndex={0} aria-invalid='false' id={name} onChange={this.onChange} {...customProps} onFocus={this.onFocus} onBlur={this.onBlur} ref={this.refTextArea} rows={10}></textarea>
                 break
         }
 
         return (
-            <div className={styles[type] + ' ' + styles.field + (required ? ' ' + styles.required : '') + (type !== EFieldType.image && type !== EFieldType.images && value ? ' ' + styles.hasValue : '')} ref={this.refRoot}>
+            <div className={(className ? className + ' ' : '') + styles[type] + ' ' + styles.field + (required ? ' ' + styles.required : '') + (type !== EFieldType.image && type !== EFieldType.images && value ? ' ' + styles.hasValue : '')} ref={this.refRoot}>
                 <label htmlFor={name}>
+                    {(type === EFieldType.checkbox || type === EFieldType.radio) && input}
                     <span>{label}</span>
                     {type === EFieldType.image || type === EFieldType.images ? <Icon className={styles.fileIcon} name='upload' /> : null}
-                    <Ink />
+                    {(type !== EFieldType.checkbox && type !== EFieldType.radio) && <Ink />}
                 </label>
-                <Box type={EBoxType.inline} className={styles.inputContainer}>
-                    {input}
-                    {isFileLoading && <Box type={EBoxType.horizontal} position={EBoxPosition.center} className={styles.fileLoader}><div className={styles.fileLoaderBg}></div><Loader /></Box>}
-                    {previewImage && <Image cloudName={cloudinary.cloudName} publicId={previewImage} width='140' crop='scale' />}
-                </Box>
+                {
+                    (type !== EFieldType.checkbox && type !== EFieldType.radio) &&
+                    <Box type={EBoxType.inline} className={styles.inputContainer}>
+                        {input}
+                        {isFileLoading && <Box type={EBoxType.horizontal} position={EBoxPosition.center} className={styles.fileLoader}><div className={styles.fileLoaderBg}></div><Loader /></Box>}
+                        {previewImage && <Image cloudName={cloudinary.cloudName} publicId={previewImage} width='140' crop='scale' />}
+                    </Box>
+                }
             </div>
         )
     }

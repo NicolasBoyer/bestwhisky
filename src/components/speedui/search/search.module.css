@@ -79,38 +79,31 @@ input[type="search"]::-webkit-search-results-decoration {
 }
 
 .facet label {
-    display: block;
-    cursor: pointer;
     margin: 0.2em 0;
-    position: relative;
-    padding-left: 1.4em;
     font-size: .8em;
+    transform: none !important;
+    color: #000;
 }
 
-.facet label input[type="checkbox"]:checked+span {
-    font-weight: bold;
-}
-
-.facet label input[type="checkbox"] {
-    position: absolute;
-    left: -624.9375rem;
+.facet label input[type="checkbox"]+span {
+    flex-direction: row !important;
+    justify-content: flex-start !important;
 }
 
 .facet label input[type="checkbox"]+span::before {
-    font-family: "search";
-    content: "\f096";
-    position: absolute;
-    left: 0;
-    top: 0;
-    font-size: 1.2em;
-    font-weight: normal;
+    padding: 0 0.3rem 0 0 !important;
 }
 
 .facet label input[type="checkbox"]:checked+span::before {
-    font-family: "search";
-    content: "\e800";
-    font-weight: normal;
     color: #2b7a77;
+}
+
+.facet .checkbox>div {
+    margin: 0;
+}
+
+.facet .checkbox {
+    align-items: center;
 }
 
 .aggCount::before {
@@ -124,6 +117,7 @@ input[type="search"]::-webkit-search-results-decoration {
 .aggCount {
     margin: 0 0.5em;
     color: #999;
+    font-size: .8em;
 }
 
 .inBetweenFacet {

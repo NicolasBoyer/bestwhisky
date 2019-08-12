@@ -25,6 +25,7 @@ export default class Sort extends React.Component<ISortProps, ISortState> {
     public render() {
         Utils.sortObjectsArrayByKey(this.datas, this.state.currentValue.substring(0, this.state.currentValue.lastIndexOf('-')), this.state.currentValue.substring(this.state.currentValue.lastIndexOf('-') + 1))
         return (
+            // TODO : A passer dans field + aussi pour sort ?
             <div className={styles.select}>
                 <select name='Sort' onChange={this.onChange} value={this.state.currentValue}>
                     {this.props.entries.map((entry) => <option key={Utils.generateId()} value={entry.value}>{entry.name}</option>)}

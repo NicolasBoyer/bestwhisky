@@ -27,6 +27,12 @@
 
 .note {}
 
+.checkbox {
+    width: auto;
+}
+
+.radio {}
+
 .image,
 .images {
     width: 100%;
@@ -230,7 +236,8 @@
 }
 
 .field.focus label,
-.note label {
+.note label,
+.checkbox label {
     color: #2b7a77;
 }
 
@@ -245,4 +252,41 @@
 .error .inputContainer:before,
 .error .inputContainer:after {
     border-color: #f44336 !important;
+}
+
+.field.checkbox label {
+    position: static;
+    cursor: pointer;
+    transform: translate(0, 0.0625rem) scale(1);
+    transform-origin: top left;
+}
+
+.field.checkbox label input[type="checkbox"]:checked+span {
+    font-weight: bold;
+}
+
+.field.checkbox label input[type="checkbox"] {
+    position: absolute;
+    left: -624.9375rem;
+}
+
+.field.checkbox label input[type="checkbox"]+span {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.field.checkbox label input[type="checkbox"]+span::before {
+    font-family: "checkbox";
+    content: "\f096";
+    font-size: 1.2em;
+    font-weight: normal;
+    padding-left: 0.2rem;
+}
+
+.field.checkbox label input[type="checkbox"]:checked+span::before {
+    font-family: "checkbox";
+    content: "\e800";
+    font-weight: normal;
 }

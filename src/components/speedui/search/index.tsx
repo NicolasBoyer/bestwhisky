@@ -2,6 +2,7 @@ import React, { createRef, Fragment } from 'react'
 import Utils from '../../../tools/utils'
 import Box, { EBoxPosition, EBoxType } from '../box'
 import Button from '../button'
+import Field, { EFieldType } from '../field'
 import Icon from '../icon'
 import PopupButton from '../popup-button'
 import Toast, { EToastPosition } from '../toast'
@@ -127,16 +128,9 @@ export default class Search extends React.Component<ISearchProps, ISearchState> 
                             {
                                 Object.entries(values).map((value: any) => {
                                     return (
-                                        // TODO : A passer en checkbox dans field + aussi pour sort ?
-                                        <label key={Utils.generateId()}>
-                                            <input type='checkbox' data-facet-value={facet.value} value={value[0]} defaultChecked={this.filter.some((val: any) => val[facet.value] === value[0])} onChange={(e: React.SyntheticEvent) => {
+                                        <Box type={EBoxType.horizontal} key={Utils.generateId()} position={EBoxPosition.start} className={styles.checkbox}>
+                                            <Field customProps={{ 'data-facet-value': facet.value, 'defaultChecked': this.filter.some((val: any) => val[facet.value] === value[0]) }} type={EFieldType.checkbox} label={value[0]} name={value[0]} value={value[0]} onChange={(e: React.SyntheticEvent) => {
                                                 // TODO Faire pays + régions au lieu d'origine ou appeler le filtre Origine IMPORTANT !! A changer dans home whisky et whisky details mais ensuite à commiter car faudra changer la BDD
-                                                // if (this.filter.includes(value[0])) {
-                                                //     this.filter.splice(this.filter.indexOf(value[0]), 1)
-                                                // } else {
-                                                //     this.filter.push(value[0])
-                                                // }
-                                                // console.log(this.datas)
                                                 const checkbox: any = {}
                                                 checkbox[facet.value] = value[0]
                                                 const index = this.filter.findIndex((val: any) => val[facet.value] === value[0])
@@ -147,9 +141,8 @@ export default class Search extends React.Component<ISearchProps, ISearchState> 
                                                 }
                                                 this.onChange(e)
                                             }} />
-                                            <span>{value[0]}</span>
                                             <span className={styles.aggCount}>{value[1]}</span>
-                                        </label>
+                                        </Box>
                                     )
                                 })
                             }

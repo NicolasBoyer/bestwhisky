@@ -53,6 +53,12 @@ export const addWhiskyInputs: IFormInput[] = [
         type: EFieldType.image
     },
     {
+        label: 'Tourbé',
+        name: 'tourbe',
+        tables: 'views/' + ETableVar.key + '/' + ETableVar.user,
+        type: EFieldType.checkbox
+    },
+    {
         label: 'Votre note',
         name: 'note',
         required: true,
