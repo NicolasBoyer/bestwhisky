@@ -110,15 +110,14 @@ export default class Search extends React.Component<ISearchProps, ISearchState> 
             }
             const datas = this.facetsDatas[facet.value] || this.datas
             const values: { [key: string]: number } = {}
+            // Aggrégation NUMBER
             datas.forEach((data: any) => {
                 const addValue = (value: string) => values[value] = values[value] ? values[value] + 1 : 1
                 const exisitingValue = Object.keys(values).find((value) => typeof data[facet.value] === 'string' ? data[facet.value].includes(value) : data[facet.value] === value)
-                // Si la valeur est incluse dans une valeure existante on l'ajoute au décompte
-                if (exisitingValue) {
-                    addValue(exisitingValue)
+                // Si la valeur est incluse dans une valeure existante on l'ajoute au décompte sinon on enregistre la première valeur si elle existe
+                if (exisitingValue || data[facet.value]) {
+                    addValue(exisitingValue || data[facet.value])
                 }
-                // On ajoute toujours la valeur courante
-                addValue(data[facet.value])
             })
             switch (facet.type) {
                 case EFacetsType.checkbox:
@@ -130,7 +129,6 @@ export default class Search extends React.Component<ISearchProps, ISearchState> 
                                     return (
                                         <Box type={EBoxType.horizontal} key={Utils.generateId()} position={EBoxPosition.start} className={styles.checkbox}>
                                             <Field customProps={{ 'data-facet-value': facet.value, 'defaultChecked': this.filter.some((val: any) => val[facet.value] === value[0]) }} type={EFieldType.checkbox} label={value[0]} name={value[0]} value={value[0]} onChange={(e: React.SyntheticEvent) => {
-                                                // TODO Faire pays + régions au lieu d'origine ou appeler le filtre Origine IMPORTANT !! A changer dans home whisky et whisky details mais ensuite à commiter car faudra changer la BDD
                                                 const checkbox: any = {}
                                                 checkbox[facet.value] = value[0]
                                                 const index = this.filter.findIndex((val: any) => val[facet.value] === value[0])
@@ -150,7 +148,7 @@ export default class Search extends React.Component<ISearchProps, ISearchState> 
                     )
                     break
                 case EFacetsType.inBetween:
-                    // TODO bug notation ajout tourbé / pas tourbé + facet notation
+                    // TODO bug notation + facet notation
                     // TODO si plus d'un certain nombre afficher un +
                     const numberValue = Object.keys(values).filter((value) => !isNaN(Number(value))).map(Number)
                     const min = Math.min(...numberValue)
@@ -165,7 +163,6 @@ export default class Search extends React.Component<ISearchProps, ISearchState> 
                                 <div className={styles.inBetweenPart}>
                                     <div className={styles.inBetweenContainer}>
                                         <div className={styles.inBetweenInput}>
-                                            {/* onBlur={(e: React.SyntheticEvent) => this.inBetweenChange(e, facet)} delete */}
                                             <input id={facet.value + '_min'} step='1' name={facet.value + '-first'} type='number' max={String(max)} min={String(min)} defaultValue={currentTarget && currentTarget.id.includes('min') && currentFacetValue === facet.value ? currentTarget.value : String(min)} data-facet-value={facet.value} onKeyUp={(e: React.KeyboardEvent) => {
                                                 if (e.key === 'Enter') {
                                                     this.inBetweenChange(e, facet)

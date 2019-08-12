@@ -28,10 +28,12 @@ interface IWhiskyDetailsState {
     description: any
     image: string
     price: number
-    origin: string
+    country: string
+    district: string
     size: number
     views: Array<{ author: string, stars: number }>
     isAlertOpen: boolean
+    peat: boolean
 }
 
 export default class WhiskyDetails extends React.Component<IWhiskyDetailsProps, IWhiskyDetailsState> {
@@ -43,7 +45,7 @@ export default class WhiskyDetails extends React.Component<IWhiskyDetailsProps, 
     }
 
     public render() {
-        const { createdBy, name, description, image, price, origin, size, views } = this.state
+        const { country, createdBy, district, name, description, image, peat, price, size, views } = this.state
         const isAuth = this.global.user && this.global.user.displayName === createdBy
         return (
             <Fragment>
@@ -55,14 +57,13 @@ export default class WhiskyDetails extends React.Component<IWhiskyDetailsProps, 
                 </h2>
                 <Box type={EBoxType.horizontal} position={EBoxPosition.spaceBetween}>
                     <div>
-                        {(origin || size) &&
-                            <div className={styles.metas}>
-                                {origin && <span>{Utils.displaySearchTerm(origin)}</span>}
-                                {(origin && size) && <span>, </span>}
-                                {size && <span>{size}cl</span>}
-                            </div>
-                        }
-                        {price && <div className={styles.price}>Prix : {price} €</div>}
+                        <div className={styles.metas}>
+                            <span>{Utils.displaySearchTerm(country)} {district && (' / ' + Utils.displaySearchTerm(district))}</span>
+                            {size && <span>, </span>}
+                            {size && <span>{size}cl</span>}
+                        </div>
+                        <div className={styles.price}>Prix : {price} €</div>
+                        <div>Tourbé : {peat ? 'Oui' : 'Non'}</div>
                     </div>
                     <Box type={EBoxType.horizontal} position={EBoxPosition.spaceBetween} className={styles.score}>
                         {isAuth ? <Score maxScore={5} onChange={this.onChange} ref={this.refScore} /> : <Stars views={views} />}

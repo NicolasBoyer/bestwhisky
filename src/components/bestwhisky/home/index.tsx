@@ -23,20 +23,22 @@ export const addWhiskyInputs: IFormInput[] = [
         type: EFieldType.text
     },
     {
-        label: 'Origine',
-        name: 'origin',
+        label: 'Pays',
+        name: 'country',
+        required: true,
+        tables: 'whiskies/' + ETableVar.key,
+        type: EFieldType.text
+    },
+    {
+        label: 'Région',
+        name: 'district',
         tables: 'whiskies/' + ETableVar.key,
         type: EFieldType.text
     },
     {
         label: 'Prix (€)',
         name: 'price',
-        tables: 'whiskies/' + ETableVar.key,
-        type: EFieldType.number
-    },
-    {
-        label: 'Contenance (cl)',
-        name: 'size',
+        required: true,
         tables: 'whiskies/' + ETableVar.key,
         type: EFieldType.number
     },
@@ -54,8 +56,8 @@ export const addWhiskyInputs: IFormInput[] = [
     },
     {
         label: 'Tourbé',
-        name: 'tourbe',
-        tables: 'views/' + ETableVar.key + '/' + ETableVar.user,
+        name: 'peat',
+        tables: 'whiskies/' + ETableVar.key,
         type: EFieldType.checkbox
     },
     {
@@ -67,7 +69,7 @@ export const addWhiskyInputs: IFormInput[] = [
     }
 ]
 
-const searchFields = ['name', 'description', 'createdBy', 'origin']
+const searchFields = ['name', 'description', 'createdBy', 'country', 'district']
 
 const sortEntries = [
     {
@@ -100,20 +102,14 @@ const facets = [
         value: 'price'
     },
     {
-        name: 'Contenance',
-        type: EFacetsType.inBetween,
-        unit: 'cl',
-        value: 'size'
-    },
-    {
         name: 'Pays',
         type: EFacetsType.checkbox,
-        value: 'origin'
+        value: 'country'
     },
     {
-        name: 'Nom',
+        name: 'Région',
         type: EFacetsType.checkbox,
-        value: 'name'
+        value: 'district'
     }
 ]
 
@@ -206,14 +202,12 @@ class Home extends React.Component<IHomeProps, any> {
 
     protected search = (datas: any) => {
         console.log(datas)
-        // TODO filter
         // TODO presentation avec attente de chargement comme youtube
-        // TODO facettes prix / origin / size ?
         // TODO manque pertinence ?
         // TODO field box image ?
         // TODO sauvegarder recherche sortKey ?
         // TODO le champ recquis ne marche plus sur la note
-        // TODO general transform px en rem ...
+        // TODO ajout iodé, fruité, avec une sorte de roue ... A voir
         this.setState({ datas })
     }
 
