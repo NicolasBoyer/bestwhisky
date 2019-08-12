@@ -320,33 +320,19 @@ export default class Search extends React.Component<ISearchProps, ISearchState> 
     protected getUsedFacets = () => Object.keys(this.filter.reduce((acc: any, filter: any) => (acc[Object.keys(filter)[0]] = true, acc), {}))
 
     protected displayCurrentFacets() {
-        // TODO a voir si je peux mutualiser ce qui se ressemble
         const usedFacets = this.props.facets.map((facet: any) => {
             if (this.getUsedFacets().includes(facet.value)) {
-                switch (facet.type) {
-                    case EFacetsType.checkbox:
-                        return (
-                            <Box className={styles.facetType} key={Utils.generateId()} type={EBoxType.horizontal} position={EBoxPosition.start}>
-                                <Box type={EBoxType.horizontal} position={EBoxPosition.start} className={styles.title}>{facet.name}</Box>
-                                <div className={styles.content}>
-                                    {
-                                        this.filter.map((filter: any) => {
-                                            if (filter[facet.value]) {
+                return (
+                    <Box className={styles.facetType} key={Utils.generateId()} type={EBoxType.horizontal} position={EBoxPosition.start}>
+                        <Box type={EBoxType.horizontal} position={EBoxPosition.start} className={styles.title}>{facet.name}</Box>
+                        <div className={styles.content}>
+                            {
+                                this.filter.map((filter: any) => {
+                                    if (filter[facet.value]) {
+                                        switch (facet.type) {
+                                            case EFacetsType.checkbox:
                                                 return <span key={Utils.generateId()}>{filter[facet.value]}</span>
-                                            }
-                                        })
-                                    }
-                                </div>
-                            </Box>
-                        )
-                    case EFacetsType.inBetween:
-                        return (
-                            <Box className={styles.facetType} key={Utils.generateId()} type={EBoxType.horizontal} position={EBoxPosition.start}>
-                                <Box type={EBoxType.horizontal} position={EBoxPosition.start} className={styles.title}>{facet.name}</Box>
-                                <div className={styles.content}>
-                                    {
-                                        this.filter.map((filter: any) => {
-                                            if (filter[facet.value]) {
+                                            case EFacetsType.inBetween:
                                                 return (
                                                     <div key={Utils.generateId()}>
                                                         <span>Entre </span>
@@ -356,13 +342,13 @@ export default class Search extends React.Component<ISearchProps, ISearchState> 
                                                         <span> {facet.unit}</span>
                                                     </div>
                                                 )
-                                            }
-                                        })
+                                        }
                                     }
-                                </div>
-                            </Box>
-                        )
-                }
+                                })
+                            }
+                        </div>
+                    </Box>
+                )
             }
         })
         return usedFacets
