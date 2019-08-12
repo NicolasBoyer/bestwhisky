@@ -9,7 +9,7 @@ import Box, { EBoxType } from '../../speedui/box'
 import Card from '../../speedui/card'
 import FormDialog, { EFormDialogMode } from '../../speedui/form-dialog'
 import { addWhiskyInputs } from '../home'
-import Stars from '../stars'
+import Note from '../note'
 import styles from './whisky.module.css'
 
 export interface IWhiskyProps {
@@ -58,7 +58,7 @@ export default class Whisky extends React.Component<IWhiskyProps, IWhiskyState> 
                         </div>
                         <div className={styles.price}>Prix : {price} €</div>
                         <div>Tourbé : {peat ? 'Oui' : 'Non'}</div>
-                        <Stars views={views} />
+                        <Note className={styles.note} views={views} readonly={true} />
                         {description && <div className={styles.description}>{Utils.toParagraph(description, 200)}</div>}
                     </Box>
                 </Card>

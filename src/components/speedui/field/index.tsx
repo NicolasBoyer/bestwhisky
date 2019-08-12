@@ -33,7 +33,6 @@ interface IFieldStates {
 }
 
 export default class Field extends React.Component<IFieldProps, IFieldStates> {
-    protected refScore: React.RefObject<Score> = createRef()
     protected refInput: React.RefObject<HTMLInputElement> = createRef()
     protected refTextArea: React.RefObject<HTMLTextAreaElement> = createRef()
     protected refRoot: React.RefObject<HTMLDivElement> = createRef()
@@ -49,7 +48,7 @@ export default class Field extends React.Component<IFieldProps, IFieldStates> {
         let input = null
         switch (type) {
             case EFieldType.note:
-                input = <Score maxScore={5} onChange={this.onChange} required={required} ref={this.refScore} />
+                input = <Score onChange={this.onChange} required={required} note={Number(this.props.value)} />
                 break
             case EFieldType.image:
             case EFieldType.images:
@@ -106,9 +105,6 @@ export default class Field extends React.Component<IFieldProps, IFieldStates> {
 
     componentDidMount = () => {
         if (this.props.value) {
-            if (this.refScore.current) {
-                this.refScore.current.setValue(Number(this.props.value))
-            }
             if (this.refInput.current) {
                 if (this.refInput.current.type === 'file') {
                     this.refInput.current.setAttribute('data-cloudId', this.props.value as string)

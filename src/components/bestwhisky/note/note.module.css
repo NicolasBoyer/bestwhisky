@@ -1,0 +1,9 @@
+.note {
+    align-items: baseline;
+}
+
+.views {
+    font-family: 'CardTitle', Arial, Helvetica, sans-serif;
+    font-size: 0.75em;
+    margin-left: 0.5em;
+}
