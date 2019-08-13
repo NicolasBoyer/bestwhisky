@@ -192,16 +192,14 @@ class Home extends React.Component<IHomeProps, any> {
                     <Box type={EBoxType.horizontal} position={EBoxPosition.end} className={styles.sortBox}>
 
                         {
-                            this.isLoaded ? <Skeleton width={16.7} height={2} /> : <Sort entries={sortEntries} defaultValue={this.sortKey + '-' + this.sortKeyOrder} datas={this.state.datas} onChange={this.sort} />
+                            this.isLoaded ? <Skeleton width={16.7} height={2} borderRadius={true} /> : <Sort entries={sortEntries} defaultValue={this.sortKey + '-' + this.sortKeyOrder} datas={this.state.datas} onChange={this.sort} />
                         }
                     </Box>
                 }
                 {
                     // TODO Changer chargement en cours par un skeleton
                     // TODO changer le this.loader en global state ou alors je fais ça comme ça avec une répétition de deux ou trois
-                    // TODO autre possibilité entrez un nombre permettant d'avoir plusieurs skeletton pour éviter de répéter
-                    // TODO Garder la possibilité de tout modifier ou mettre des trucs auto ?
-                    !this.isLoaded ? (!this.state.datas.length ? <Box className={styles.noResult} type={EBoxType.horizontal}>Pas de résultat</Box> : <List children={this.state.datas} component={Whisky} />) : <Fragment><Skeleton repeat={3} width={37.5} spacing={{ top: 0.6, bottom: 2 }} borderRadius={0.3} height={23} /></Fragment>
+                    !this.isLoaded ? (!this.state.datas.length ? <Box className={styles.noResult} type={EBoxType.horizontal}>Pas de résultat</Box> : <List children={this.state.datas} component={Whisky} />) : <Fragment><Skeleton repeat={3} className={styles.skeletonWhisky} width={37.5} borderRadius={true} height={23} /></Fragment>
                 }
             </Fragment>
         )
