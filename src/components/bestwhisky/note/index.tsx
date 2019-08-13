@@ -10,6 +10,7 @@ interface INoteProps {
     onChange?: (e: React.SyntheticEvent, value: number) => void
 }
 
+// TODO voir si possible de passer ça en speedui generique donc
 export default class Note extends React.Component<INoteProps> {
     protected refScore: React.RefObject<Score> = React.createRef()
 
