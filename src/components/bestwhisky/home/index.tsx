@@ -7,6 +7,7 @@ import { IFormInput } from '../../speedui/form'
 import FormDialog, { EFormDialogMode } from '../../speedui/form-dialog'
 import List from '../../speedui/list'
 import Search, { EFacetsType, ESearchKeyOrder } from '../../speedui/search'
+import Skeleton, { ESkeletonVariant } from '../../speedui/skeleton'
 import Sort from '../../speedui/sort'
 import { ETableVar } from '../../speedui/survey'
 import Whisky from '../whisky'
@@ -183,16 +184,24 @@ class Home extends React.Component<IHomeProps, any> {
                         <Search datas={this.state.datas} facets={facets} fields={searchFields} sortKey={this.sortKey} sortKeyOrder={this.sortKeyOrder} onChange={this.search} />
                     </div>
                 </Box>
-                {this.global.user && <FormDialog inputs={addWhiskyInputs} title='Ajouter un Whisky' mode={EFormDialogMode.add} addButtonClassName={styles.addButton} />}
+                {this.isLoaded && <Skeleton className={styles.addButton} variant={ESkeletonVariant.circle} width={3.5} height={3.5} />}
+                {this.global.user && !this.isLoaded && <FormDialog inputs={addWhiskyInputs} title='Ajouter un Whisky' mode={EFormDialogMode.add} addButtonClassName={styles.addButton} />}
                 {
-                    !!this.state.datas.length &&
+                    // TODO peut etre pas utile
+                    // !!this.state.datas.length &&
                     <Box type={EBoxType.horizontal} position={EBoxPosition.end} className={styles.sortBox}>
-                        <Sort entries={sortEntries} defaultValue={this.sortKey + '-' + this.sortKeyOrder} datas={this.state.datas} onChange={this.sort} />
+
+                        {
+                            this.isLoaded ? <Skeleton width={16.7} height={2} /> : <Sort entries={sortEntries} defaultValue={this.sortKey + '-' + this.sortKeyOrder} datas={this.state.datas} onChange={this.sort} />
+                        }
                     </Box>
                 }
                 {
                     // TODO Changer chargement en cours par un skeleton
-                    !this.isLoaded ? (!this.state.datas.length ? <Box className={styles.noResult} type={EBoxType.horizontal}>Pas de résultat</Box> : <List children={this.state.datas} component={Whisky} />) : <Box className={styles.noResult} type={EBoxType.horizontal}>Chargement en cours...</Box>
+                    // TODO changer le this.loader en global state ou alors je fais ça comme ça avec une répétition de deux ou trois
+                    // TODO autre possibilité entrez un nombre permettant d'avoir plusieurs skeletton pour éviter de répéter
+                    // TODO Garder la possibilité de tout modifier ou mettre des trucs auto ?
+                    !this.isLoaded ? (!this.state.datas.length ? <Box className={styles.noResult} type={EBoxType.horizontal}>Pas de résultat</Box> : <List children={this.state.datas} component={Whisky} />) : <Fragment><Skeleton repeat={3} width={37.5} spacing={{ top: 0.6, bottom: 2 }} borderRadius={0.3} height={23} /></Fragment>
                 }
             </Fragment>
         )

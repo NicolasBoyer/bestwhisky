@@ -1,0 +1,24 @@
+.rect,
+.circle {
+    height: 1.2em;
+    background-color: rgba(0, 0, 0, 0.08);
+    animation: animate 1.5s ease-in-out infinite;
+}
+
+.circle {
+    border-radius: 50%;
+}
+
+@keyframes animate {
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.4;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
