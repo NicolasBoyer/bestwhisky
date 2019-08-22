@@ -13,10 +13,10 @@ export interface ISkeletonProps {
     borderRadius?: boolean
     repeat?: number
 }
-// TODO créer text plusieurs blocks à différentes tailles dans la hauteur indiquée
+
 export default class Skeleton extends React.Component<ISkeletonProps> {
     public render() {
         const { borderRadius, className, height, repeat, tag, variant, width } = this.props
-        return [...new Array(repeat || 1)].map(() => Utils.createComponent(tag || 'div', { style: { width: width + 'rem', height: height + 'rem' }, className: styles[variant || 'rect'] + (className ? ' ' + className : '') + (borderRadius ? ' ' + styles.borderRadius : ''), key: Utils.generateId() }))
+        return [...new Array(repeat || 1)].map(() => Utils.createComponent(tag || 'div', { style: { width: width + 'rem', height: height + 'rem' }, className: styles[variant || 'rect'] + (className ? ' ' + className : '') + (borderRadius ? ' ' + styles.borderRadius : ''), key: Utils.generateId() }, variant === ESkeletonVariant.text ? [...new Array(Math.round((height || 1.2) / 1.2))].map(() => <div key={Utils.generateId()}></div>) : null))
     }
 }

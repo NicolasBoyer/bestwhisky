@@ -187,8 +187,6 @@ class Home extends React.Component<IHomeProps, any> {
                 {this.isLoaded && <Skeleton className={styles.addButton} variant={ESkeletonVariant.circle} width={3.5} height={3.5} />}
                 {this.global.user && !this.isLoaded && <FormDialog inputs={addWhiskyInputs} title='Ajouter un Whisky' mode={EFormDialogMode.add} addButtonClassName={styles.addButton} />}
                 {
-                    // TODO peut etre pas utile
-                    // !!this.state.datas.length &&
                     <Box type={EBoxType.horizontal} position={EBoxPosition.end} className={styles.sortBox}>
 
                         {
@@ -197,8 +195,6 @@ class Home extends React.Component<IHomeProps, any> {
                     </Box>
                 }
                 {
-                    // TODO Changer chargement en cours par un skeleton
-                    // TODO changer le this.loader en global state ou alors je fais ça comme ça avec une répétition de deux ou trois
                     !this.isLoaded ? (!this.state.datas.length ? <Box className={styles.noResult} type={EBoxType.horizontal}>Pas de résultat</Box> : <List children={this.state.datas} component={Whisky} />) : <Fragment><Skeleton repeat={3} className={styles.skeletonWhisky} width={37.5} borderRadius={true} height={23} /></Fragment>
                 }
             </Fragment>
@@ -209,7 +205,6 @@ class Home extends React.Component<IHomeProps, any> {
 
     protected search = (datas: any) => {
         console.log(datas)
-        // TODO presentation avec attente de chargement comme youtube
         // TODO manque pertinence ?
         // TODO field box image ?
         // TODO sauvegarder recherche sortKey ?
