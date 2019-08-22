@@ -148,7 +148,6 @@ export default class Search extends React.Component<ISearchProps, ISearchState> 
                     )
                     break
                 case EFacetsType.inBetween:
-                    // TODO bug notation + facet notation
                     // TODO si plus d'un certain nombre afficher un +
                     const numberValue = Object.keys(values).filter((value) => !isNaN(Number(value))).map(Number)
                     const min = Math.min(...numberValue)

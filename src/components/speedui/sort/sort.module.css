@@ -1,5 +1,6 @@
 .select {
     position: relative;
+    width: auto;
 }
 
 .select select {
