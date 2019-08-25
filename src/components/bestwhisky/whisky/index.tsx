@@ -9,7 +9,7 @@ import Box, { EBoxType } from '../../speedui/box'
 import Card from '../../speedui/card'
 import FormDialog, { EFormDialogMode } from '../../speedui/form-dialog'
 import { addWhiskyInputs } from '../home'
-import Stars from '../stars'
+import Note from '../note'
 import styles from './whisky.module.css'
 
 export interface IWhiskyProps {
@@ -19,8 +19,10 @@ export interface IWhiskyProps {
     key: string
     name: string
     description: any
-    price?: number
-    origin?: string
+    price: number
+    country: string
+    district?: string
+    peat?: boolean
     size?: number
     image?: string
     views: Array<{ author: string, stars: number }>
@@ -37,7 +39,7 @@ export default class Whisky extends React.Component<IWhiskyProps, IWhiskyState> 
     }
 
     public render() {
-        const { id, createdBy, name, views, description, image, price, origin, size } = this.props
+        const { id, country, createdBy, name, views, description, district, image, price, peat, size } = this.props
         const usersNote = views.reduce((sum, view) => sum + view.stars, 0) / views.length
         const userView = views.find((view) => this.global.user && this.global.user.displayName === view.author)
         const note = userView && userView.stars
@@ -46,16 +48,17 @@ export default class Whisky extends React.Component<IWhiskyProps, IWhiskyState> 
         return (
             <Fragment>
                 <AlertDialog message='Etes vous sur de vouloir supprimer ?' open={this.state.isAlertOpen} title='Attention !' accept={this.remove} type={EDialogAlertType.confirm} onClose={this.alertClose} />
-                <Card name={name} click={ERoutes.whisky + Utils.slugify(name)} historyState={{ usersNote, note, ...this.props }} editButton={editButton} remove={this.alertOpen} isAuth={this.global.user && this.global.user.displayName === createdBy}>
+                <Card name={Utils.displaySearchTerm(name)} click={ERoutes.whisky + Utils.slugify(name)} historyState={{ usersNote, note, ...this.props }} editButton={editButton} remove={this.alertOpen} isAuth={this.global.user && this.global.user.displayName === createdBy}>
                     <Box type={EBoxType.aroundFirstLeft}>
                         {image && <Image cloudName={cloudinary.cloudName} publicId={image} width='180' crop='scale' />}
-                        {(origin || size) && <div className={styles.metas}>
-                            {origin && <span>{origin}</span>}
-                            {(origin && size) && <span>, </span>}
+                        <div className={styles.metas}>
+                            <span>{Utils.displaySearchTerm(country)} {district && (' / ' + Utils.displaySearchTerm(district))}</span>
+                            {size && <span>, </span>}
                             {size && <span>{size}cl</span>}
-                        </div>}
-                        {price && <div className={styles.price}>Prix : {price} €</div>}
-                        <Stars views={views} />
+                        </div>
+                        <div className={styles.price}>Prix : {price} €</div>
+                        <div>Tourbé : {peat ? 'Oui' : 'Non'}</div>
+                        <Note className={styles.note} views={views} readonly={true} />
                         {description && <div className={styles.description}>{Utils.toParagraph(description, 200)}</div>}
                     </Box>
                 </Card>

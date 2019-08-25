@@ -1,0 +1,27 @@
+.select {
+    position: relative;
+    width: auto;
+}
+
+.select select {
+    border: 0.0625rem solid #2b7a77;
+    border-radius: 0.1875rem;
+    background: #FFFFFF;
+    color: #2b7a77;
+    padding: 0.5rem 1.625rem 0.5rem 0.625rem;
+    -webkit-appearance: button;
+    appearance: button;
+    -moz-appearance: button;
+    outline: none;
+}
+
+.select::before {
+    content: " ";
+    position: absolute;
+    top: 0.625rem;
+    right: 0.5625rem;
+    transform: rotate(45deg);
+    border: solid #2b7a77;
+    border-width: 0 0.1875rem 0.1875rem 0;
+    padding: 0.1875rem;
+}

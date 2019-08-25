@@ -1,10 +1,11 @@
 import React from 'react'
 import { ERoutes } from '../../../tools/routes'
+import Box, { EBoxPosition, EBoxType } from '../box'
 import Button from '../button'
 import styles from './card.module.css'
 
 export interface ICardProps {
-    name: string
+    name: any
     isAuth?: boolean
     className?: string
     click?: ((e: React.SyntheticEvent) => void) | ERoutes | string
@@ -23,10 +24,10 @@ export default class Card extends React.Component<ICardProps> {
             <article className={(className ? (className + ' ') : '') + styles.simple}>
                 {
                     isAuth && (edit || remove) &&
-                    <div className={styles.buttonsActions}>
+                    <Box type={EBoxType.horizontal} position={EBoxPosition.start} className={styles.buttonsActions}>
                         {(edit || editButton) && (editButton || <Button label='Editer' handleClick={edit} />)}
                         {(remove || removeButton) && (removeButton || <Button label='Supprimer' handleClick={remove} />)}
-                    </div>
+                    </Box>
                 }
                 <h2 className={styles.title}>
                     <span>{name}</span>

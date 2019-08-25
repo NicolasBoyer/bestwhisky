@@ -1,0 +1,60 @@
+.searchWrapper {
+    position: fixed;
+    z-index: 1000;
+    top: 0.8em;
+}
+
+.searchWrapper>div {
+    margin: 0 0.9375rem 0 0;
+}
+
+.searchWrapper form {
+    margin: 0 0 0 0.9375rem;
+}
+
+.searchWrapper input {
+    width: 6.25rem;
+    transition: width .25s ease;
+    border: 0.0625rem solid #2c7c7a;
+    border-bottom-color: #3e8a88;
+    background-color: #266b69;
+    padding: 0.5rem 0.25rem 0.5rem 2rem;
+    box-shadow: inset 0 0.125rem 0.3125rem rgba(0, 0, 0, .2);
+    color: #d9e8da;
+}
+
+.searchWrapper input:focus,
+.searchWrapper input:valid {
+    outline: 0;
+    width: 14.0625rem;
+}
+
+.searchWrapper button {
+    color: #d9e8da;
+}
+
+.searchWrapper svg {
+    fill: #2b7a77;
+}
+
+.noResult {
+    font-size: 1.5em;
+    font-family: "NoResult", "Helvetica", "Arial", sans-serif;
+}
+
+.addButton {
+    position: sticky;
+    top: 3.75rem;
+    z-index: 2;
+    float: left;
+    margin-top: -0.625rem;
+}
+
+.sortBox {
+    height: 3.5rem;
+}
+
+.skeletonWhisky {
+    margin-top: 0.6rem;
+    margin-bottom: 2rem;
+}

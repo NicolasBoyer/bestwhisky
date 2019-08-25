@@ -5,8 +5,8 @@
 /* Spinner Type */
 .container_spinner {
     animation: progress-circular-rotate 1.4s linear infinite;
-    width: 40px;
-    height: 40px;
+    width: 2.5rem;
+    height: 2.5rem;
     color: #2b7a77;
 }
 
@@ -23,30 +23,30 @@
 
 .spinner {
     stroke: currentColor;
-    stroke-dasharray: 80px, 200px;
-    stroke-dashoffset: 0px;
+    stroke-dasharray: 5rem, 12.5rem;
+    stroke-dashoffset: 0;
     animation: progress-circular-dash 1.4s ease-in-out infinite;
 }
 
 @keyframes progress-circular-dash {
     0% {
-        stroke-dasharray: 1px, 200px;
-        stroke-dashoffset: 0px;
+        stroke-dasharray: 0.0625rem, 12.5rem;
+        stroke-dashoffset: 0;
     }
 
     50% {
-        stroke-dasharray: 100px, 200px;
-        stroke-dashoffset: -15px;
+        stroke-dasharray: 6.25rem, 12.5rem;
+        stroke-dashoffset: -0.9375rem;
     }
 
     100% {
-        stroke-dasharray: 100px, 200px;
-        stroke-dashoffset: -120px;
+        stroke-dasharray: 6.25rem, 12.5rem;
+        stroke-dashoffset: -7.5rem;
     }
 }
 
 .progress .spinner {
     stroke-dasharray: 126;
-    stroke-dashoffset: 126px;
+    stroke-dashoffset: 7.875rem;
     animation: none;
 }

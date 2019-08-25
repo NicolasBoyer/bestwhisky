@@ -79,7 +79,24 @@ export default abstract class Utils {
 
     public static toParagraph(text: string, reduceTo: number = 0, separator: string = '\n') {
         text = reduceTo && text.length > reduceTo ? text.substring(0, reduceTo) + ' ...' : text
-        return text.split(separator).map((txt) => <p key={Utils.generateId()}>{txt}</p>)
+        return text.split(separator).map((txt) => <p key={Utils.generateId()}>{Utils.displaySearchTerm(txt)}</p>)
+    }
+
+    public static displaySearchTerm(text: string) {
+        // String utile si text est un any (number)
+        return String(text).split('~s').map((txt) => txt.includes('§s§') ? <em key={Utils.generateId()} className='searchTerm'>{txt.replace('§s§', '')}</em> : txt)
+    }
+
+    public static sortObjectsArrayByKey(array: any[], key: any, order: string = 'asc') {
+        array.sort((a, b) => {
+            if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {
+                return 0
+            }
+            const varA = (typeof a[key] === 'string') ? a[key].toUpperCase() : a[key]
+            const varB = (typeof b[key] === 'string') ? b[key].toUpperCase() : b[key]
+            const comparison = varA > varB ? 1 : -1
+            return order === 'desc' ? comparison * -1 : comparison
+        })
     }
 
     public static generateId() {
@@ -87,7 +104,14 @@ export default abstract class Utils {
     }
 
     // tslint:disable-next-line:variable-name
-    public static createComponent = (Component: any, props: any) => (
-        <Component {...props} />
+    public static createComponent = (Component: any, props: any, children?: any) => (
+        <Component {...props}>
+            {children}
+        </Component>
     )
+
+    public static dispatchEvent = (name: string, property: object, parent: HTMLElement = document.body) => {
+        const event = new CustomEvent(name, { detail: property })
+        parent.dispatchEvent(event)
+    }
 }

@@ -1,0 +1,42 @@
+.rect,
+.circle,
+.text>div {
+    height: 1.2em;
+    background-color: rgba(0, 0, 0, 0.08);
+    animation: animate 1.5s ease-in-out infinite;
+}
+
+.text>div {
+    height: 0.5em;
+    margin: 0.8em 0;
+}
+
+.text>div:last-child {
+    width: 80%;
+}
+
+.circle {
+    border-radius: 50%;
+}
+
+.borderRadius {
+    border-radius: 0.3rem;
+}
+
+.borderRadius.text>div {
+    border-radius: 4px;
+}
+
+@keyframes animate {
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.4;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}

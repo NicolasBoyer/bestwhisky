@@ -1,6 +1,7 @@
 import app from 'firebase/app'
 import 'firebase/auth'
 import 'firebase/database'
+import Utils from './utils'
 
 const config = {
     apiKey: 'AIzaSyBpIPKl_FHlp_v-A-NoZdiQCGCvFe-ZTKE',
@@ -48,16 +49,27 @@ class Firebase {
     /* DATABASE API */
     public getKey = () => this.db.ref().push().key
 
-    public read = (location: string, pCb: (datas: app.database.DataSnapshot | null, returnType: string) => void) => {
+    public read = (location: string, pCb: (datas: app.database.DataSnapshot | null, returnType: string) => void, dispatchDatabaseEndAccessEvent: boolean = false) => {
+        const counter: { [key: string]: number } = {}
         const ref = this.db.ref(location)
-        ref.on('child_added', (datas) => pCb(datas, 'added'))
-        ref.on('child_changed', (datas) => pCb(datas, 'changed'))
-        ref.on('child_removed', (datas) => pCb(datas, 'removed'))
+        const query = ref.orderByValue()
+        query.on('child_added', (datas) => {
+            pCb(datas, 'added')
+            this.dispatchDatabaseEndAccess(location, counter, dispatchDatabaseEndAccessEvent)
+        })
+        query.on('child_changed', (datas) => {
+            pCb(datas, 'changed')
+            this.dispatchDatabaseEndAccess(location, counter, dispatchDatabaseEndAccessEvent)
+        })
+        query.on('child_removed', (datas) => {
+            pCb(datas, 'removed')
+            this.dispatchDatabaseEndAccess(location, counter, dispatchDatabaseEndAccessEvent)
+        })
     }
 
-    public getEntry = (location: string, entry: string, pCb: (snapshot: app.database.DataSnapshot | null) => void) => {
+    public async getEntry(location: string, entry: string) {
         const refLocation = this.db.ref(location + '/' + entry)
-        refLocation.on('value', (snapshot) => pCb(snapshot))
+        return await refLocation.once('value', (snapshot) => snapshot)
     }
 
     public async add(location: string, datas: any, inLocation: boolean = false, existingKey: string | null = null) {
@@ -76,6 +88,24 @@ class Firebase {
 
     public async remove(location: string, id: string) {
         await this.db.ref(location + '/' + id).remove()
+    }
+
+    public async getCount(location: string) {
+        const refLocation = this.db.ref(location)
+        let count: number = 0
+        await refLocation.once('value', (snapshot) => count = snapshot.numChildren())
+        return count
+    }
+
+    private async dispatchDatabaseEndAccess(location: string, counter: { [key: string]: number }, dispatchDatabaseEndAccessEvent: boolean) {
+        if (dispatchDatabaseEndAccessEvent) {
+            counter[location] = counter[location] === undefined ? 1 : counter[location] + 1
+            const count = await this.getCount(location)
+            if (counter[location] === count) {
+                Utils.dispatchEvent('databaseEndAccess', {})
+                counter[location] = 1
+            }
+        }
     }
 }
 

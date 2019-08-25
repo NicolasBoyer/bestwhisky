@@ -1,0 +1,233 @@
+.form {
+    display: block;
+    position: relative;
+}
+
+.form input {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    padding: .3rem 1.7rem;
+    width: 100%;
+    position: relative;
+    background-color: #fff;
+    border: 0.0625rem solid #c4c8d8;
+    border-radius: 0.3125rem;
+}
+
+.searchBox {
+    align-items: center;
+}
+
+.searchIcon {
+    position: absolute;
+    z-index: 1;
+    width: 1em;
+    height: 1em;
+    top: 50%;
+    transform: translateY(-50%);
+    left: .3rem;
+    fill: #c4c8d8;
+}
+
+.reset {
+    position: absolute;
+    min-height: 0.9375rem;
+    min-width: 0.9375rem;
+    top: 50%;
+    right: .3rem;
+    transform: translateY(-50%);
+    display: none;
+    color: #AAA;
+}
+
+.isVisible {
+    display: flex;
+}
+
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration {
+    -webkit-appearance: none;
+}
+
+.facetsButton {
+    min-width: 2rem;
+    font-size: 0.7em;
+    color: #AAA;
+}
+
+.facet {
+    display: flex;
+    font-family: 'RobotoRegular', Arial, Helvetica, sans-serif;
+    border: 0.0625rem solid #dddddd;
+    margin: 1em 0.2em;
+    padding: 0.5em;
+}
+
+.facet:first-child {
+    margin-top: 0.2em;
+}
+
+.facet:last-child {
+    margin-bottom: 0.2em;
+}
+
+.facet legend {
+    font-family: 'RobotoBold', Arial, Helvetica, sans-serif;
+}
+
+.facet label {
+    margin: 0.2em 0;
+    font-size: .8em;
+    transform: none !important;
+    color: #000;
+}
+
+.facet label input[type="checkbox"]+span {
+    flex-direction: row !important;
+    justify-content: flex-start !important;
+}
+
+.facet label input[type="checkbox"]+span::before {
+    padding: 0 0.3rem 0 0 !important;
+}
+
+.facet label input[type="checkbox"]:checked+span::before {
+    color: #2b7a77;
+}
+
+.facet .checkbox>div {
+    margin: 0;
+}
+
+.facet .checkbox {
+    align-items: center;
+}
+
+.aggCount::before {
+    content: "(";
+}
+
+.aggCount::after {
+    content: ")";
+}
+
+.aggCount {
+    margin: 0 0.5em;
+    color: #999;
+    font-size: .8em;
+}
+
+.inBetweenFacet {
+    display: flex;
+    align-items: center;
+}
+
+.inBetweenPart {
+    display: block;
+    position: relative;
+    padding: 0 0 0 0.4375rem;
+    color: #3b3b3b;
+    border-radius: 0.1875rem;
+    border: 0.0625rem solid #c7c6c7;
+    background-color: #f4f4f4;
+    flex: 1 1 0%;
+}
+
+.inBetweenContainer {
+    display: table;
+    width: 100%;
+    height: 100%;
+}
+
+.inBetweenInput {
+    height: 2.125rem;
+    display: table-cell;
+    width: inherit;
+    height: 2.125rem;
+    display: table-cell;
+    width: inherit;
+    vertical-align: middle;
+    box-sizing: inherit;
+}
+
+.inBetweenInput input {
+    text-align: right;
+    width: inherit;
+    border: 0;
+    color: #3b3b3b;
+    line-height: 1.375rem;
+    background: transparent;
+    outline: none;
+    font-family: 'Open Sans', Verdana, Tahoma, Arial, Helvetica, sans-serif;
+    font-weight: 400;
+    font-size: 0.875rem;
+    transition: color .25s cubic-bezier(.25, .8, .25, 1);
+    padding: 0;
+    margin: 0;
+}
+
+.inBetweenInput input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.inBetweenInput input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+.divider {
+    position: relative;
+    top: -0.0625rem;
+    margin: 0 0.5rem;
+}
+
+.unit {
+    display: table-cell;
+    padding-left: 0.5rem;
+    padding-right: 0.4375rem;
+    vertical-align: middle;
+    color: rgb(120, 120, 120);
+}
+
+.usedFacets {
+    width: 25em;
+}
+
+.usedFacets>.title {
+    font-family: 'title', Arial, Helvetica, sans-serif;
+    width: 25em;
+}
+
+.facetType>.title {
+    font-weight: bold;
+}
+
+.facetType>.title::after {
+    content: '-';
+    padding-left: 0.3em;
+}
+
+.facetType>.content {
+    padding-left: 0.3em;
+}
+
+.facetType>.content>span::after {
+    content: ', '
+}
+
+.facetType>.content>span:last-child::after {
+    content: ''
+}
+
+.hidden {
+    display: none;
+}
+
+.checkboxMore {
+    width: 100%;
+    margin-top: 0.5rem;
+}

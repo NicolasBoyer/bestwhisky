@@ -1,17 +1,21 @@
 import React from 'react'
 import Utils from '../../../tools/utils'
+import Box, { EBoxType } from '../box'
 import Button, { EVariant } from '../button'
 import Icon from '../icon'
 import styles from './toast.module.css'
 
 export enum EToastType { error = 'error', warning = 'warning', info = 'info', success = 'success' }
 
-// TODO gérer les Positions left right et bottom !
+export enum EToastPosition { top = 'top', topLeft = 'topLeft', topRight = 'topRight', bottom = 'bottom', bottomLeft = 'bottomLeft', bottomRight = 'bottomRight', left = 'left', right = 'right' }
 
 export interface IToastProps {
     type?: EToastType
     autoHideDuration?: number
     closeButton?: boolean
+    position?: EToastPosition
+    offset?: { x: number, y: number }
+    onClose?: (e: React.SyntheticEvent) => void
     open: boolean
 }
 
@@ -48,26 +52,36 @@ export default class Toast extends React.Component<IToastProps, IToastState> {
             return null
         }
         return (
-            <div className={styles.wrapper + ' ' + styles.visibilityOff} ref={this.refToaster}>
-                <div className={styles.toast + (type ? ' ' + styles[type] : '')} role='alertDialog' aria-describedby='toaster'>
+            <div className={styles.wrapper + ' ' + styles.visibilityOff + ' ' + (this.props.position ? styles[this.props.position] : styles.top)} ref={this.refToaster}>
+                <Box className={styles.toast + (type ? ' ' + styles[type] : '')} role='alertDialog' aria-describedby='toaster' type={EBoxType.horizontal}>
                     {type && <Icon name={type} className={styles['icon_' + type]} />}
-                    <span>{children}</span>
+                    <div>{children}</div>
                     {closeButton && <Button className={styles.close} iconName='cross' label='fermer' handleClick={this.onClose} variant={EVariant.rounded} />}
-                </div>
+                </Box>
             </div>
         )
     }
 
     public componentDidUpdate() {
+        if (this.refToaster && this.refToaster.current) {
+            const currentToaster = (this.refToaster.current as HTMLElement)
+            if (!currentToaster.style.getPropertyValue('--translate-offsetX') && !currentToaster.style.getPropertyValue('--translate-offsetY')) {
+                currentToaster.style.setProperty('--translate-offsetX', (this.props.offset && this.props.offset.x || 0) + 'px')
+                currentToaster.style.setProperty('--translate-offsetY', (this.props.offset && this.props.offset.y || 0) + 'px')
+            }
+        }
         setTimeout(() => {
             Utils.toggleClass(this.refToaster.current as HTMLElement, styles.visibilityOff, styles.visibilityOn)
         }, 225)
     }
 
-    protected onClose = () => {
+    protected onClose = (e: React.SyntheticEvent) => {
         Utils.toggleClass(this.refToaster.current as HTMLElement, styles.visibilityOn, styles.visibilityOff)
         setTimeout(() => {
             this.setState({ isOpen: false })
+            if (this.props.onClose) {
+                this.props.onClose(e)
+            }
         }, 225)
     }
 }

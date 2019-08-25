@@ -53,3 +53,22 @@
     font-weight: normal;
     font-style: normal;
 }
+
+@font-face {
+    font-family: "NoResult";
+    src: url(./unispace.ttf) format("opentype");
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'checkbox';
+    src: url('./checkbox.eot?14882036');
+    src: url('./checkbox.eot?14882036#iefix') format('embedded-opentype'),
+        url('./checkbox.woff2?14882036') format('woff2'),
+        url('./checkbox.woff?14882036') format('woff'),
+        url('./checkbox.ttf?14882036') format('truetype'),
+        url('./checkbox.svg?14882036#checkbox') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}

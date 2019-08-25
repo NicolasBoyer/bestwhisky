@@ -4,6 +4,7 @@ import Ink from 'react-ink'
 import React from 'reactn'
 import { cloudinary } from '../../../tools/config'
 import Utils from '../../../tools/utils'
+import Box, { EBoxPosition, EBoxType } from '../box'
 import Icon from '../icon'
 import Loader from '../loader'
 import Score from '../score'
@@ -14,7 +15,7 @@ import styles from './field.module.css'
 export enum EFieldType { text = 'text', area = 'area', number = 'number', password = 'password', search = 'search', email = 'email', url = 'url', image = 'image', images = 'images', video = 'video', videos = 'videos', checkbox = 'checkbox', radio = 'radio', select = 'select', color = 'color', date = 'date', range = 'range', note = 'note' }
 
 export interface IFieldProps {
-    label: string
+    label?: string
     name: string
     type: EFieldType
     onChange: (e: React.SyntheticEvent) => void
@@ -22,6 +23,9 @@ export interface IFieldProps {
     required?: boolean
     placeHolder?: string
     value?: string
+    customProps?: any
+    className?: string
+    options?: Array<{ name: string, value: string }>
 }
 
 interface IFieldStates {
@@ -30,7 +34,6 @@ interface IFieldStates {
 }
 
 export default class Field extends React.Component<IFieldProps, IFieldStates> {
-    protected refScore: React.RefObject<Score> = createRef()
     protected refInput: React.RefObject<HTMLInputElement> = createRef()
     protected refTextArea: React.RefObject<HTMLTextAreaElement> = createRef()
     protected refRoot: React.RefObject<HTMLDivElement> = createRef()
@@ -41,12 +44,12 @@ export default class Field extends React.Component<IFieldProps, IFieldStates> {
     }
 
     public render() {
-        const { label, name, placeHolder, pattern, required, type, value } = this.props
+        const { className, customProps, label, name, placeHolder, pattern, required, type, value } = this.props
         const { isFileLoading, previewImage } = this.state
-        let input = null
+        let field = null
         switch (type) {
             case EFieldType.note:
-                input = <Score maxScore={5} onChange={this.onChange} required={required} ref={this.refScore} />
+                field = <Score onChange={this.onChange} required={required} note={Number(this.props.value)} {...customProps} />
                 break
             case EFieldType.image:
             case EFieldType.images:
@@ -55,53 +58,65 @@ export default class Field extends React.Component<IFieldProps, IFieldStates> {
                 if (type === EFieldType.images) {
                     attributes.multiple = 'multiple'
                 }
-                input = <input tabIndex={0} aria-invalid='false' accept='image/*' {...attributes} id={name} type='file' onChange={this.uploadFile} required={required} ref={this.refInput} />
+                field = <input tabIndex={0} aria-invalid='false' accept='image/*' {...attributes} {...customProps} id={name} type='file' onChange={this.uploadFile} required={required} ref={this.refInput} />
                 break
             case EFieldType.video:
             case EFieldType.videos:
                 return null
             case EFieldType.checkbox:
             case EFieldType.radio:
-                return null
+                field = <input tabIndex={0} aria-invalid='false' type={type} {...customProps} id={name} onChange={this.onChange} onFocus={this.onFocus} onBlur={this.onBlur} required={required} ref={this.refInput} />
             case EFieldType.text:
             case EFieldType.number:
             case EFieldType.password:
             case EFieldType.search:
             case EFieldType.email:
             case EFieldType.url:
-                input = <input tabIndex={0} aria-invalid='false' id={name} type={type} placeholder={placeHolder} onChange={this.onChange} onFocus={this.onFocus} onBlur={this.onBlur} ref={this.refInput} required={required} pattern={pattern} />
+                field = <input tabIndex={0} aria-invalid='false' id={name} type={type} placeholder={placeHolder} {...customProps} onChange={this.onChange} onFocus={this.onFocus} onBlur={this.onBlur} ref={this.refInput} required={required} pattern={pattern} />
                 break
             case EFieldType.select:
+                field = !this.props.options
+                    ?
+                    <div>Aucune option n'est délarée : dans un select, un attribut "options" du type "name: string, value: string" est nécessaire</div>
+                    :
+                    <select name={name} onChange={this.onChange} value={this.props.value} {...customProps}>
+                        {this.props.options.map((option: any) => <option key={Utils.generateId()} value={option.value}>{option.name}</option>)}
+                    </select>
+                break
             case EFieldType.color:
             case EFieldType.date:
             case EFieldType.range:
                 return null
             case EFieldType.area:
-                input = <textarea tabIndex={0} aria-invalid='false' id={name} onChange={this.onChange} onFocus={this.onFocus} onBlur={this.onBlur} ref={this.refTextArea} rows={10}></textarea>
+                field = <textarea tabIndex={0} aria-invalid='false' id={name} onChange={this.onChange} {...customProps} onFocus={this.onFocus} onBlur={this.onBlur} ref={this.refTextArea} rows={10}></textarea>
                 break
         }
 
         return (
-            <div className={styles[type] + ' ' + styles.field + (required ? ' ' + styles.required : '') + (type !== EFieldType.image && type !== EFieldType.images && value ? ' ' + styles.hasValue : '')} ref={this.refRoot}>
-                <label htmlFor={name}>
-                    <span>{label}</span>
-                    {type === EFieldType.image || type === EFieldType.images ? <Icon className={styles.fileIcon} name='upload' /> : null}
-                    <Ink />
-                </label>
-                <div className={styles.inputContainer}>
-                    {input}
-                    {isFileLoading && <div className={styles.fileLoader}><div className={styles.fileLoaderBg}></div><Loader /></div>}
-                    {previewImage && <Image cloudName={cloudinary.cloudName} publicId={previewImage} width='140' crop='scale' />}
-                </div>
+            <div className={(className ? className + ' ' : '') + styles[type] + ' ' + styles.field + (required ? ' ' + styles.required : '') + (type !== EFieldType.image && type !== EFieldType.images && value ? ' ' + styles.hasValue : '')} ref={this.refRoot}>
+                {
+                    type === EFieldType.select ? field :
+                        <label htmlFor={name}>
+                            {(type === EFieldType.checkbox || type === EFieldType.radio) && field}
+                            <span>{label}</span>
+                            {type === EFieldType.image || type === EFieldType.images ? <Icon className={styles.fileIcon} name='upload' /> : null}
+                            {(type !== EFieldType.checkbox && type !== EFieldType.radio) && <Ink />}
+                        </label>
+                }
+                {
+                    (type !== EFieldType.select && type !== EFieldType.checkbox && type !== EFieldType.radio) &&
+                    <Box type={EBoxType.inline} className={styles.inputContainer}>
+                        {field}
+                        {isFileLoading && <Box type={EBoxType.horizontal} position={EBoxPosition.center} className={styles.fileLoader}><div className={styles.fileLoaderBg}></div><Loader /></Box>}
+                        {previewImage && <Image cloudName={cloudinary.cloudName} publicId={previewImage} width='140' crop='scale' />}
+                    </Box>
+                }
             </div>
         )
     }
 
     componentDidMount = () => {
         if (this.props.value) {
-            if (this.refScore.current) {
-                this.refScore.current.setValue(Number(this.props.value))
-            }
             if (this.refInput.current) {
                 if (this.refInput.current.type === 'file') {
                     this.refInput.current.setAttribute('data-cloudId', this.props.value as string)

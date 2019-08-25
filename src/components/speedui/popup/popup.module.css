@@ -1,0 +1,72 @@
+.scrollLock {
+    overflow: hidden !important;
+}
+
+.popup {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1300;
+    position: fixed;
+}
+
+.background {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+    position: fixed;
+    touch-action: none;
+    background-color: transparent;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.container,
+.tooltip {
+    outline: none;
+    position: absolute;
+    border-radius: 0.25rem;
+}
+
+.container {
+    box-shadow: 0 0.3125rem 0.3125rem -0.1875rem rgba(0, 0, 0, 0.2), 0 0.5rem 0.625rem 0.0625rem rgba(0, 0, 0, 0.14), 0 0.1875rem 0.875rem 0.125rem rgba(0, 0, 0, 0.12);
+    background-color: #fff;
+    max-width: calc(100% - 2rem);
+    min-height: 1rem;
+    max-height: calc(100% - 2rem);
+    min-width: 1rem;
+    padding: 1rem;
+    overflow-y: auto;
+    overflow-x: hidden;
+    outline: none;
+}
+
+.tooltip {
+    z-index: 1300;
+    background: rgba(97, 97, 97, .9);
+    color: #fff;
+    max-width: 15.625rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 0.625rem;
+    padding-top: 0.375rem;
+    padding-bottom: 0.375rem;
+}
+
+.opacityOn {
+    opacity: 1;
+}
+
+.opacityOff {
+    opacity: 0;
+}
+
+.opacityOn,
+.opacityOff {
+    will-change: opacity;
+    transition: opacity 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+}
