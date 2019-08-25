@@ -103,11 +103,13 @@ const facets = [
         value: 'price'
     },
     {
+        limit: 5,
         name: 'Pays',
         type: EFacetsType.checkbox,
         value: 'country'
     },
     {
+        limit: 5,
         name: 'Région',
         type: EFacetsType.checkbox,
         value: 'district'

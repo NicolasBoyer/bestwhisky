@@ -1,7 +1,7 @@
 import React, { createRef, Fragment } from 'react'
 import Utils from '../../../tools/utils'
 import Box, { EBoxPosition, EBoxType } from '../box'
-import Button from '../button'
+import Button, { ESize } from '../button'
 import Field, { EFieldType } from '../field'
 import Icon from '../icon'
 import PopupButton from '../popup-button'
@@ -30,6 +30,7 @@ interface ISearchState {
     facetsTop: number
     facetsLeft: number
     facets: any
+    checkBoxFacetsPartialHidden: any
 }
 
 export default class Search extends React.Component<ISearchProps, ISearchState> {
@@ -44,7 +45,7 @@ export default class Search extends React.Component<ISearchProps, ISearchState> 
 
     constructor(props: ISearchProps) {
         super(props)
-        this.state = { isResetButtonVisible: false, isFacetsOpen: false, facetsLeft: 0, facetsTop: 0, facets: [] }
+        this.state = { isResetButtonVisible: false, isFacetsOpen: false, facetsLeft: 0, facetsTop: 0, facets: [], checkBoxFacetsPartialHidden: {} }
     }
 
     public componentDidMount = () => document.body.addEventListener('databaseEndAccess', () => this.buildFacets())
@@ -92,6 +93,7 @@ export default class Search extends React.Component<ISearchProps, ISearchState> 
         const isCurrentTargetChecked = currentTarget && currentTarget.checked
         const currentTargetValue = currentTarget && Number(currentTarget.value)
         const isSearchValue = this.refInput.current && this.refInput.current.value !== ''
+        const checkBoxFacetsPartialHidden: any = {}
         this.props.facets.forEach((facet: any) => {
             // Aggreagation FILTER
             const isInBetweenFacet = facet.type === 'inBetween'
@@ -121,13 +123,15 @@ export default class Search extends React.Component<ISearchProps, ISearchState> 
             })
             switch (facet.type) {
                 case EFacetsType.checkbox:
+                    // Gestion du bouton plus
+                    checkBoxFacetsPartialHidden[facet.value] = this.state.checkBoxFacetsPartialHidden[facet.value] !== undefined ? this.state.checkBoxFacetsPartialHidden[facet.value] : true
                     facets.push(
                         <fieldset className={styles.facet + ' ' + facet.value} key={Utils.generateId()}>
                             <legend>{facet.name}</legend>
                             {
-                                Object.entries(values).map((value: any) => {
+                                Object.entries(values).map((value: any, i: number) => {
                                     return (
-                                        <Box type={EBoxType.horizontal} key={Utils.generateId()} position={EBoxPosition.start} className={styles.checkbox}>
+                                        <Box type={EBoxType.horizontal} key={Utils.generateId()} position={EBoxPosition.start} className={styles.checkbox + (facet.limit && i >= facet.limit && this.state.checkBoxFacetsPartialHidden[facet.value] ? ' ' + styles.hidden : '')}>
                                             <Field customProps={{ 'data-facet-value': facet.value, 'defaultChecked': this.filter.some((val: any) => val[facet.value] === value[0]) }} type={EFieldType.checkbox} label={value[0]} name={value[0]} value={value[0]} onChange={(e: React.SyntheticEvent) => {
                                                 const checkbox: any = {}
                                                 checkbox[facet.value] = value[0]
@@ -144,11 +148,14 @@ export default class Search extends React.Component<ISearchProps, ISearchState> 
                                     )
                                 })
                             }
+                            {facet.limit && Object.entries(values).length > facet.limit && <Button iconName={this.state.checkBoxFacetsPartialHidden[facet.value] ? 'add' : 'minus'} className={styles.checkboxMore} label='Voir plus' size={ESize.small} handleClick={(e: React.SyntheticEvent) => {
+                                checkBoxFacetsPartialHidden[facet.value] = !this.state.checkBoxFacetsPartialHidden[facet.value]
+                                this.buildFacets(e)
+                            }} />}
                         </fieldset >
                     )
                     break
                 case EFacetsType.inBetween:
-                    // TODO si plus d'un certain nombre afficher un +
                     const numberValue = Object.keys(values).filter((value) => !isNaN(Number(value))).map(Number)
                     const min = Math.min(...numberValue)
                     const max = Math.max(...numberValue)
@@ -190,6 +197,7 @@ export default class Search extends React.Component<ISearchProps, ISearchState> 
                     break
             }
         })
+        this.setState({ checkBoxFacetsPartialHidden })
         this.setState({ facets })
     }
 
