@@ -47,11 +47,8 @@ button:disabled {
     user-select: none;
 }
 
-.small {
-    min-width: 2rem;
-}
-
-.textButton:hover {
+.textButton:hover,
+.light:hover {
     background-color: rgba(33, 150, 243, 0.08);
 }
 
@@ -74,6 +71,12 @@ button:disabled {
     fill: currentColor;
     /* margin-top: -0.1rem; */
     /* position: absolute; */
+}
+
+.textButton.small .icon,
+.iconButton.small .icon {
+    width: 0.9rem;
+    height: 0.9rem;
 }
 
 .textButton:focus:before,
@@ -173,4 +176,11 @@ button[disabled] {
 
 button[disabled]:hover {
     background: none;
+}
+
+.small {
+    padding: 0;
+    min-height: 1.5rem;
+    min-width: 2rem;
+    font-size: 80%;
 }

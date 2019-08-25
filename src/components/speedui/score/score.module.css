@@ -17,6 +17,10 @@
     height: 1.9em !important;
 }
 
+.score:hover .note {
+    background: none;
+}
+
 .score:hover .note:not(.readonly) {
     opacity: 0.3;
 }
